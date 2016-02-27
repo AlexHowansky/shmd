@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ruleset name="Ork Base">
+    <rule ref="vendor/ork/phpcs/Ork"/>
+    <file>src</file>
+</ruleset>

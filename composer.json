@@ -1,0 +1,14 @@
+{
+    "name": "shmd/gallery",
+    "require": {
+        "php": ">=7"
+    },
+    "require-dev": {
+        "ork/phpcs": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shmd\\": "src/"
+        }
+    }
+}
