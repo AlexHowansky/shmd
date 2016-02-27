@@ -172,7 +172,7 @@ class Gallery
      */
     public function setName($name)
     {
-        if (preg_match('/^[a-z0-9]+$/', $name) === false) {
+        if (preg_match('/^[a-z0-9]+$/', $name) !== 1) {
             throw new \Exception('Invalid gallery.');
         }
         $dir = realpath($this->getApp()->getPhotoDir() . '/' . $name);

@@ -17,7 +17,7 @@ include '_menu.php';
 </div>
 <div class="ui raised container segment">
     <form class="ui form" method="post" action="">
-        <input type="hidden" name="folder" value="<?= $folder ?>">
+        <input type="hidden" name="folder" value="<?= $gallery->getName() ?>">
         <input type="hidden" name="photo" value="<?= $photo ?>">
         <div class="fields">
             <div class="field">

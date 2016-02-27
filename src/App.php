@@ -269,7 +269,7 @@ class App
         $matches = [];
         foreach ($this->getGalleries() as $gallery) {
             foreach ($gallery->getPhotos() as $photo) {
-                if (preg_match('/' . $text . '/i', $photo)) {
+                if (preg_match('/' . $text . '/i', $photo) === 1) {
                     $matches[] = [
                         'gallery' => $gallery,
                         'photo' => $photo,
@@ -327,7 +327,7 @@ class App
         if (empty($page) === true) {
             $page = self::DEFAULT_PAGE;
         } else {
-            if (preg_match('/^[a-z0-9]$/', $page) === false) {
+            if (preg_match('/^[a-z0-9]+$/', $page) !== 1) {
                 throw new \Exception('Invalid page name.');
             }
         }
