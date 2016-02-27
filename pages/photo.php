@@ -1,19 +1,12 @@
 <?php
 $gallery = $this->getGallery($this->getParam(0));
 $photo = $this->getParam(1);
+$menu = [
+    '/' => 'Home',
+    '/gallery/' . $gallery->getName() => $gallery->getTitle(),
+];
+include '_menu.php';
 ?>
-<div class="ui inverted blue attached huge menu">
-    <a class="item" href="/">Home</a>
-    <a class="item" href="/gallery/<?= $gallery->getName() ?>"><?= $gallery->getTitle() ?></a>
-    <div class="right menu">
-        <div class="item">
-            <div class="ui icon input">
-                <input type="text" placeholder="Search...">
-                <i class="search link icon"></i>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="ui raised container segment">
     <div class="ui list">
         <div class="item">

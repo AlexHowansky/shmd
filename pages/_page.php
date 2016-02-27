@@ -4,6 +4,7 @@
         <link rel="stylesheet" type="text/css" href="/semantic.min.css">
         <script src="/jquery.min.js"></script>
         <script src="/semantic.min.js"></script>
+        <script src="/shmd.js"></script>
     </head>
     <body>
 <?php $this->body(); ?>
