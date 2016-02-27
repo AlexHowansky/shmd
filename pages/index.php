@@ -2,8 +2,8 @@
     <div class="right menu">
         <div class="item">
             <div class="ui icon input">
-                <input type="text" placeholder="Search...">
-                <i class="search link icon"></i>
+                <input id="text" type="text" placeholder="Search...">
+                <i id="search" class="search link icon"></i>
             </div>
         </div>
     </div>
@@ -21,3 +21,21 @@
     </div>
 <?php endforeach; ?>
 </div>
+<script>
+$().ready(function() {
+    function search() {
+        if ($('#text').val()) {
+            window.location.href = '/search/' + $('#text').val();
+        }
+    }
+    $('#text').focus();
+    $('#text').keypress(function(e) {
+        if (e.keyCode == 13) {
+            search();
+        }
+    });
+    $('#search').click(function() {
+        search();
+    });
+});
+</script>

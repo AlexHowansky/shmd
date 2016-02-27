@@ -27,6 +27,8 @@ class App
 
     const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
+    const SEARCH_LIMIT = 10;
+
     /**
      * The last error that occurred.
      *
@@ -253,6 +255,32 @@ class App
     public function render()
     {
         include $this->getFileForPage($this->getPageWrapper());
+    }
+
+    /**
+     * Search for photos.
+     *
+     * @param string $text The text to search for.
+     *
+     * @return array The matching photos.
+     */
+    public function search($text)
+    {
+        $matches = [];
+        foreach ($this->getGalleries() as $gallery) {
+            foreach ($gallery->getPhotos() as $photo) {
+                if (preg_match('/' . $text . '/i', $photo)) {
+                    $matches[] = [
+                        'gallery' => $gallery,
+                        'photo' => $photo,
+                    ];
+                    if (count($matches) >= self::SEARCH_LIMIT) {
+                        return $matches;
+                    }
+                }
+            }
+        }
+        return $matches;
     }
 
     /**
