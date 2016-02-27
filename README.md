@@ -1,5 +1,4 @@
-South High Marathon Dance Photo Orders
-======================================
+# South High Marathon Dance Photo Orders
 
 See [shmd.org](http://shmd.org) to learn what SHMD is all about.
 
