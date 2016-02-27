@@ -18,19 +18,12 @@
 </div>
 <?php else: ?>
 <div class="ui cards" style="padding: 25px;">
-<?php foreach ($results as $match): ?>
-    <div class="card">
-        <div class="image">
-            <img src="<?= $match['gallery']->getRelativePath() ?>/<?= $match['photo'] ?>.jpg">
-        </div>
-        <div class="content">
-            <div class="header">Photo ID: <?= $match['photo'] ?></div>
-        </div>
-        <a href="/photo/<?= $match['gallery']->getName() ?>/<?= $match['photo'] ?>" class="ui bottom attached button">
-            <i class="shop icon"></i>
-            Order
-        </a>
-    </div>
-<?php endforeach; ?>
+<?php
+foreach ($results as $match) {
+    $gallery = $match['gallery'];
+    $photo = $match['photo'];
+    include '_card.php';
+}
+?>
 <?php endif; ?>
 </div>
