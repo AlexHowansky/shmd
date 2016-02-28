@@ -17,6 +17,8 @@ namespace Shmd;
 class App
 {
 
+    const DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
+
     const DEFAULT_ERROR_PAGE = 'error';
 
     const DEFAULT_ORDER_DIR = __DIR__ . '/../orders';
@@ -30,6 +32,13 @@ class App
     const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
     const SEARCH_LIMIT = 10;
+
+    /**
+     * The order archive dir.
+     *
+     * @var string
+     */
+    protected $archiveDir = null;
 
     /**
      * The last error that occurred.
@@ -119,6 +128,21 @@ class App
     }
 
     /**
+     * Archive an order.
+     *
+     * @param string $id The order ID.
+     *
+     * @return \Shmd\App Allow method chaining.
+     */
+    public function archiveOrder($id)
+    {
+        if (rename($this->getFileForOrder($id), $this->getFileForArchive($id)) === false) {
+            throw new \Exception('Failed to archive order.');
+        }
+        return $this;
+    }
+
+    /**
      * Render the page body.
      *
      * @return null
@@ -152,6 +176,31 @@ class App
             throw new \Exception('Error creating order.');
         }
         return $orderHash;
+    }
+
+    /**
+     * Get the order archive dir.
+     *
+     * @return string The order archive dir.
+     */
+    public function getArchiveDir()
+    {
+        if ($this->archiveDir === null) {
+            $this->setArchiveDir(self::DEFAULT_ARCHIVE_DIR);
+        }
+        return $this->archiveDir;
+    }
+
+    /**
+     * Get the full path to an order archive file.
+     *
+     * @param string $id The order ID.
+     *
+     * @return string The full path to an order file.
+     */
+    protected function getFileForArchive($id)
+    {
+        return $this->getArchiveDir() . '/' . $id . '.json';
     }
 
     /**
@@ -409,6 +458,23 @@ class App
             }
         }
         return $matches;
+    }
+
+    /**
+     * Set the order archive directory.
+     *
+     * @param string $dir The order archive directory.
+     *
+     * @return \Shmd\App Allow method chaining.
+     */
+    public function setArchiveDir($dir)
+    {
+        $dir = realpath($dir);
+        if (is_dir($dir) === false) {
+            throw new \Exception('Invalid order archive directory.');
+        }
+        $this->archiveDir = $dir;
+        return $this;
     }
 
     /**

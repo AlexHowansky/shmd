@@ -1,0 +1,12 @@
+<?php
+$menu = ['/orders' => 'Orders'];
+include '_order_menu.php';
+?>
+<div class="ui relaxed list">
+    <div class="item">
+        <h1 class="ui centered header">Order Archived</h1>
+    </div>
+</div>
+<div style="padding: 25px;">
+    <a class="ui huge blue button" href="/orders">Continue</a>
+</div>

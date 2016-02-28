@@ -1,3 +1,3 @@
 <?php
-$orderHash = $this->createOrder($_POST);
-header('Location: /ok');
+$this->createOrder($_POST);
+header('Location: /okorder');
