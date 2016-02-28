@@ -1,12 +1,8 @@
-<div class="card">
+<a class="ui card" href="/photo/<?= $gallery->getName() ?>/<?= $photo ?>">
     <div class="image">
         <img src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
     </div>
     <div class="content">
-        <div class="header">Photo ID: <?= $photo ?></div>
+        <div class="header"><?= $photo ?></div>
     </div>
-    <a href="/photo/<?= $gallery->getName() ?>/<?= $photo ?>" class="ui bottom attached button">
-        <i class="shop icon"></i>
-        Order
-    </a>
-</div>
+</a>
