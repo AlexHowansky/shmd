@@ -16,13 +16,13 @@ include '_menu.php';
     <img class="ui big centered rounded bordered image" src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
 </div>
 <div class="ui raised container segment">
-    <form class="ui form" method="post" action="">
-        <input type="hidden" name="folder" value="<?= $gallery->getName() ?>">
+    <form class="ui form" method="post" action="/order">
+        <input type="hidden" name="gallery" value="<?= $gallery->getName() ?>">
         <input type="hidden" name="photo" value="<?= $photo ?>">
         <div class="fields">
             <div class="field">
                 <label>Name</label>
-                <input type="text" name="name" placeholder="Name">
+                <input type="text" name="name" placeholder="Name" autocomplete="off">
             </div>
         </div>
         <div class="fields">

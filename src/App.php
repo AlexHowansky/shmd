@@ -17,7 +17,9 @@ namespace Shmd;
 class App
 {
 
-    const DEFAULT_ERROR_PAGE = '_error';
+    const DEFAULT_ERROR_PAGE = 'error';
+
+    const DEFAULT_ORDER_DIR = __DIR__ . '/../orders';
 
     const DEFAULT_PAGE = 'index';
 
@@ -35,6 +37,13 @@ class App
      * @var \Exception
      */
     protected $lastError = null;
+
+    /**
+     * The order directory.
+     *
+     * @var string
+     */
+    protected $orderDir = null;
 
     /**
      * The page to render.
@@ -108,6 +117,32 @@ class App
     }
 
     /**
+     * Create a new order.
+     *
+     * @return string The order ID.
+     */
+    public function createOrder()
+    {
+        $order = [];
+        foreach (['gallery', 'photo', 'name', 'quantity', 'size'] as $field) {
+            if (empty($_POST[$field]) === true) {
+                throw new \Exception('Field "' . $field . '" can not be empty.');
+            }
+            $order[$field] = $_POST[$field];
+        }
+        $order['time'] = microtime(true);
+        $orderJson = json_encode($order);
+        $orderHash = sha1($orderJson);
+        if (is_writable($this->getOrderDir()) === false) {
+            throw new \Exception('Order directory is not writable.');
+        }
+        if (file_put_contents($this->getOrderDir() . '/' . $orderHash, $orderJson) === false) {
+            throw new \Exception('Error creating order.');
+        }
+        return $orderHash;
+    }
+
+    /**
      * Get the full path to a named page.
      *
      * @param string $page The page to get.
@@ -164,6 +199,19 @@ class App
     public function getLastError()
     {
         return $this->lastError;
+    }
+
+    /**
+     * Get the order directory.
+     *
+     * @return string The order directory.
+     */
+    public function getOrderDir()
+    {
+        if ($this->orderDir === null) {
+            $this->setOrderDir(self::DEFAULT_ORDER_DIR);
+        }
+        return $this->orderDir;
     }
 
     /**
@@ -311,6 +359,23 @@ class App
     public function setLastError(\Exception $e)
     {
         $this->lastError = $e;
+        return $this;
+    }
+
+    /**
+     * Set the order directory.
+     *
+     * @param string $dir The order directory.
+     *
+     * @return \Shmd\App Allow method chaining.
+     */
+    public function setOrderDir($dir)
+    {
+        $dir = realpath($dir);
+        if (is_dir($dir) === false) {
+            throw new \Exception('Invalid order directory.');
+        }
+        $this->orderDir = $dir;
         return $this;
     }
 
