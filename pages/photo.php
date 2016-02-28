@@ -48,3 +48,21 @@ include '_menu.php';
         <button class="ui blue button" type="submit">Order</button>
     </form>
 </div>
+<script>
+$().ready(function() {
+    $('.ui.form').form({
+        fields: {
+            name: {
+                identifier: 'name',
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: 'Please enter a name.'
+                    }
+                ]
+            }
+        },
+        inline: true
+    });
+});
+</script>
