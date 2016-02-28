@@ -1,5 +1,5 @@
 <?php
-$gallery = $this->getGallery($this->getParam());
+$order = $this->getOrder($this->getParam());
 $menu = ['/' => 'Home'];
 include '_menu.php';
 ?>
@@ -8,6 +8,7 @@ include '_menu.php';
         <h1 class="ui centered header">Order Placed</h1>
     </div>
 </div>
-<div style="padding: 25px;">
+<div class="ui raised container segment">
+    <h1 class="ui header">Total Due: <?= money_format('%n', $order['total']) ?></h1>
     <a class="ui huge blue button" href="/">Continue</a>
 </div>

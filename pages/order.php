@@ -1,3 +1,3 @@
 <?php
-$this->createOrder($_POST);
-header('Location: /okorder');
+$id = $this->createOrder($_POST);
+header('Location: /okorder/' . $id);
