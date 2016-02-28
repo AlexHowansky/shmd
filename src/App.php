@@ -81,10 +81,22 @@ class App
     protected $photoDir = null;
 
     /**
+     * Prices.
+     *
+     * @var array
+     */
+    protected $prices = [
+        '4x6' => '2',
+        '5x7' => '4',
+        '8x10' => '8',
+    ];
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
+        setlocale(LC_MONETARY, 'en_US');
         try {
             $url = parse_url($_SERVER['REQUEST_URI']);
             $params = explode('/', trim($url['path'], '/'));
@@ -136,10 +148,22 @@ class App
         if (is_writable($this->getOrderDir()) === false) {
             throw new \Exception('Order directory is not writable.');
         }
-        if (file_put_contents($this->getOrderDir() . '/' . $orderHash, $orderJson) === false) {
+        if (file_put_contents($this->getFileForOrder($orderHash), $orderJson) === false) {
             throw new \Exception('Error creating order.');
         }
         return $orderHash;
+    }
+
+    /**
+     * Get the full path to an order file.
+     *
+     * @param string $id The order ID.
+     *
+     * @return string The full path to an order file.
+     */
+    protected function getFileForOrder($id)
+    {
+        return $this->getOrderDir() . '/' . $id . '.json';
     }
 
     /**
@@ -202,6 +226,28 @@ class App
     }
 
     /**
+     * Get an order.
+     *
+     * @param string $id The order ID.
+     *
+     * @return array The order data.
+     */
+    public function getOrder($id)
+    {
+        $orderFile = $this->getFileForOrder($id);
+        if (file_exists($orderFile) === false) {
+            throw new \Exception('No such order.');
+        }
+        $order = json_decode(file_get_contents($orderFile), true);
+        if (is_array($order) === false) {
+            throw new \Exception('Bad order.');
+        }
+        $order['id'] = $id;
+        $order['total'] = $this->getPriceForSize($order['size']) * $order['quantity'];
+        return $order;
+    }
+
+    /**
      * Get the order directory.
      *
      * @return string The order directory.
@@ -212,6 +258,25 @@ class App
             $this->setOrderDir(self::DEFAULT_ORDER_DIR);
         }
         return $this->orderDir;
+    }
+
+    /**
+     * Get all pending orders.
+     *
+     * @return array All pending orders.
+     */
+    public function getOrders()
+    {
+        $orders = [];
+        foreach (new \DirectoryIterator($this->getOrderDir()) as $item) {
+            if ($item->isDir() === false && $item->isDot() === false && $item->getExtension() === 'json') {
+                $orders[$item->getBasename('.json')] = $item->getCTime();
+            }
+        }
+        arsort($orders);
+        foreach (array_keys($orders) as $order) {
+            yield $this->getOrder($order);
+        }
     }
 
     /**
@@ -280,6 +345,21 @@ class App
             $this->setPhotoDir(self::DEFAULT_PHOTO_DIR);
         }
         return $this->photoDir;
+    }
+
+    /**
+     * Get the price for a photo size.
+     *
+     * @param string $size The size to get the price for.
+     *
+     * @return float The price for that size.
+     */
+    public function getPriceForSize($size)
+    {
+        if (array_key_exists($size, $this->prices) === false) {
+            throw new \Exception('Invalid size.');
+        }
+        return $this->prices[$size];
     }
 
     /**
