@@ -11,7 +11,7 @@ do
     PHOTO=$(basename ${FILE})
     if [ ! -d ${PHOTO_DIR}/${GALLERY} ]
     then
-        mkdir ${PHOTO_DIR}/${GALLERY}
+        mkdir -p ${PHOTO_DIR}/${GALLERY}
     fi
     if [ -f ${PHOTO_DIR}/${GALLERY}/${PHOTO} ]
     then
