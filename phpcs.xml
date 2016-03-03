@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="Ork Base">
-    <rule ref="vendor/ork/phpcs/Ork"/>
+    <rule ref="vendor/ork/phpcs/Ork">
+        <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before"/>
+    </rule>
     <file>src</file>
 </ruleset>
