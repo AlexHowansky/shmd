@@ -123,11 +123,11 @@ class Gallery
         $photos = [];
         foreach (new \DirectoryIterator($this->getDir()) as $item) {
             if ($item->isFile() === true && $item->isDot() === false && $item->getExtension() === 'jpg') {
-                $photos[$item->getBasename('.jpg')] = $item->getCTime();
+                $photos[] = $item->getBasename('.jpg');
             }
         }
         asort($photos);
-        return array_keys($photos);
+        return $photos;
     }
 
     /**
