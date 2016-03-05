@@ -1,5 +1,4 @@
 <?php
-$order = $this->getOrder($this->getParam());
 $menu = ['/' => 'Home'];
 include '_menu.php';
 ?>
@@ -9,6 +8,5 @@ include '_menu.php';
     </div>
 </div>
 <div class="ui raised container segment">
-    <h1 class="ui header">Total Due: <?= money_format('%n', $order['total']) ?></h1>
     <a class="ui huge blue button" href="/">Continue</a>
 </div>
