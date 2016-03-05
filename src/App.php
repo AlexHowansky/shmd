@@ -180,6 +180,7 @@ class App
             throw new \Exception('Error creating order.');
         }
 
+        $printed = false;
         try {
             $lp = new \Shmd\Epson();
             $lp
@@ -205,8 +206,13 @@ class App
                 ->writeLineCenter('Thank You For Your Support', true)
                 ->linefeed(8)
                 ->cutPartial();
+            $printed = true;
         } catch (\Exception $e) {
             // nothing
+        }
+
+        if ($printed === true) {
+            $this->archiveOrder($orderHash);
         }
 
         return $orderHash;
