@@ -180,30 +180,34 @@ class App
             throw new \Exception('Error creating order.');
         }
 
-        $lp = new \Shmd\Epson();
-        $lp
-            ->linefeed()
-            ->writeLineCenter('South High Marathon Dance 2016', true)
-            ->linefeed(2)
-            ->writeLabel('Name', $order['name'], true)
-            ->linefeed(2)
-            ->writeLabel('Time', date(self::DATE_FORMAT, $order['time']))
-            ->writeLabel('Order', substr($orderHash, 0, 16))
-            ->linefeed()
-            ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
-            ->writeLabel('Photo', $order['photo'])
-            ->writeLabel('Size', $order['size'])
-            ->writeLabel('Quantity', $order['quantity'])
-            ->linefeed(2)
-            ->writeLabel(
-                'Total Due',
-                money_format('%n', $this->getPriceForSize($order['size']) * $order['quantity']),
-                true
-            )
-            ->linefeed(2)
-            ->writeLineCenter('Thank You For Your Support', true)
-            ->linefeed(8)
-            ->cutPartial();
+        try {
+            $lp = new \Shmd\Epson();
+            $lp
+                ->linefeed()
+                ->writeLineCenter('South High Marathon Dance 2016', true)
+                ->linefeed(2)
+                ->writeLabel('Name', $order['name'], true)
+                ->linefeed(2)
+                ->writeLabel('Time', date(self::DATE_FORMAT, $order['time']))
+                ->writeLabel('Order', substr($orderHash, 0, 16))
+                ->linefeed()
+                ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
+                ->writeLabel('Photo', $order['photo'])
+                ->writeLabel('Size', $order['size'])
+                ->writeLabel('Quantity', $order['quantity'])
+                ->linefeed(2)
+                ->writeLabel(
+                    'Total Due',
+                    money_format('%n', $this->getPriceForSize($order['size']) * $order['quantity']),
+                    true
+                )
+                ->linefeed(2)
+                ->writeLineCenter('Thank You For Your Support', true)
+                ->linefeed(8)
+                ->cutPartial();
+        } catch (\Exception $e) {
+            // nothing
+        }
 
         return $orderHash;
 
