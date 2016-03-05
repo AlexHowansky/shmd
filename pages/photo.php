@@ -42,6 +42,7 @@ include '_menu.php';
                     <option value="4x6">4x6 [<?= money_format('%n', $this->getPriceForSize('4x6')) ?> ea.]</option>
                     <option value="5x7">5x7 [<?= money_format('%n', $this->getPriceForSize('5x7')) ?> ea.]</option>
                     <option value="8x10">8x10 [<?= money_format('%n', $this->getPriceForSize('8x10')) ?> ea.]</option>
+                    <option value="13x19">13x19 [<?= money_format('%n', $this->getPriceForSize('13x19')) ?> ea.]</option>
                 </select>
             </div>
         </div>
