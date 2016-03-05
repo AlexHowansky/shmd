@@ -18,7 +18,6 @@ do
         echo "${GALLERY}/${PHOTO} ... skipped"
     else
         echo "${GALLERY}/${PHOTO} ... resizing"
-        cp ${FILE} ${PHOTO_DIR}/${GALLERY}/${PHOTO}
-        mogrify -resize 600x600 ${PHOTO_DIR}/${GALLERY}/${PHOTO}
+        convert -resize 600x600 ${FILE} ${PHOTO_DIR}/${GALLERY}/${PHOTO}
     fi
 done
