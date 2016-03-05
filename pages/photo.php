@@ -46,6 +46,12 @@ include '_menu.php';
                 </select>
             </div>
         </div>
+        <div class="fields">
+            <div class="field">
+                <label>Comments</label>
+                <textarea name="comments"></textarea>
+            </div>
+        </div>
         <button class="ui blue button" type="submit">Order</button>
     </form>
 </div>

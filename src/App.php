@@ -170,6 +170,7 @@ class App
             }
             $order[$field] = $_POST[$field];
         }
+        $order['comments'] = $_POST['comments'];
         $order['time'] = microtime(true);
         $orderJson = json_encode($order);
         $orderHash = sha1($orderJson);
@@ -195,7 +196,14 @@ class App
                 ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
                 ->writeLabel('Photo', $order['photo'])
                 ->writeLabel('Size', $order['size'])
-                ->writeLabel('Quantity', $order['quantity'])
+                ->writeLabel('Quantity', $order['quantity']);
+            if (empty($order['comments']) === false) {
+                $lp
+                    ->linefeed(2)
+                    ->writeLine('Comments:')
+                    ->writeLine($order['comments']);
+            }
+            $lp
                 ->linefeed(2)
                 ->writeLabel(
                     'Total Due',
