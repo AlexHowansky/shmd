@@ -13,8 +13,5 @@ if ($e === null) {
     <h1>Page Not Found</h1>
 <?php else: ?>
     <h1><?= $this->getLastError()->getMessage() ?></h1>
-    <div>
-<?= nl2br($this->getLastError()->getTraceAsString()) ?>
-    </div>
 <?php endif; ?>
 </div>
