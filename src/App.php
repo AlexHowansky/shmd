@@ -4,7 +4,7 @@
  * SHMD
  *
  * @package   SHMD
- * @copyright 2016 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2016-2017 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/shmd/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/shmd
  */
@@ -186,7 +186,7 @@ class App
             $lp = new \Shmd\Epson();
             $lp
                 ->linefeed()
-                ->writeLineCenter('South High Marathon Dance 2016', true)
+                ->writeLineCenter('South High Marathon Dance 2017', true)
                 ->linefeed(2)
                 ->writeLabel('Name', $order['name'], true)
                 ->linefeed(2)
