@@ -22,10 +22,8 @@ include '_menu.php';
         <div class="fields">
             <div class="field">
                 <label>Name</label>
-                <input type="text" name="name" placeholder="Name" autocomplete="off">
+                <input type="text" name="name" autocomplete="off">
             </div>
-        </div>
-        <div class="fields">
             <div class="field">
                 <label>Quantity</label>
                 <select class="ui dropdown" name="quantity">
@@ -45,14 +43,15 @@ include '_menu.php';
                     <option value="13x19">13x19 [<?= money_format('%n', $this->getPriceForSize('13x19')) ?> ea.]</option>
                 </select>
             </div>
-        </div>
-        <div class="fields">
             <div class="field">
                 <label>Comments</label>
-                <textarea name="comments"></textarea>
+                <input type="text" name="comments" autocomplete="off">
+            </div>
+            <div class="field">
+                <label>&nbsp;</label>
+                <button class="ui blue button" type="submit">Order</button>
             </div>
         </div>
-        <button class="ui blue button" type="submit">Order</button>
     </form>
 </div>
 <script>
