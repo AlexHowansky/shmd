@@ -4,7 +4,7 @@
         "php": ">=7"
     },
     "require-dev": {
-        "ork/phpcs": "*"
+        "ork/phpcs": "dev-master"
     },
     "autoload": {
         "psr-4": {
