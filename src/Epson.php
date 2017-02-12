@@ -50,7 +50,7 @@ class Epson
     protected $lp = null;
 
     /**
-     * Descructor.
+     * Destructor.
      */
     public function __destruct()
     {
