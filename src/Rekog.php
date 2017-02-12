@@ -131,7 +131,6 @@ class Rekog
                 ];
                 $db->write('faces', $row);
                 $out->write($row);
-                exit;
             }
         }
 
