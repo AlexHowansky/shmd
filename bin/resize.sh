@@ -4,6 +4,8 @@ SCRIPT_DIR=$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 STAGE_DIR=${SCRIPT_DIR}/../staging
 PHOTO_DIR=${SCRIPT_DIR}/../public/photos
 
+umask 0022
+
 cd ${STAGE_DIR} || exit
 for FILE in $(find . -mindepth 2 -maxdepth 2 -type f -name "*.jpg")
 do
