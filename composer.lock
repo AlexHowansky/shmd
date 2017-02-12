@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2f86b8729c038cb469c9be30bb5d77e",
+    "content-hash": "97bdae30373992dd9ec5bfb2d58f0352",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -313,6 +313,49 @@
             "time": "2016-12-03T22:08:25+00:00"
         },
         {
+            "name": "ork/base",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AlexHowansky/ork-base.git",
+                "reference": "5f4ab14e63bbc8b17898639fd1fff86ee6659bb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-base/zipball/5f4ab14e63bbc8b17898639fd1fff86ee6659bb0",
+                "reference": "5f4ab14e63bbc8b17898639fd1fff86ee6659bb0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": ">=1.2",
+                "ork/phpcs": "dev-master",
+                "phpunit/phpunit": ">=4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ork\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Howansky",
+                    "email": "alex.howansky@gmail.com",
+                    "homepage": "https://github.com/AlexHowansky"
+                }
+            ],
+            "description": "A PHP utility library used by Ork packages.",
+            "homepage": "http://github.com/AlexHowansky/ork-base",
+            "time": "2016-09-26 16:36:17"
+        },
+        {
             "name": "psr/http-message",
             "version": "1.0.1",
             "source": {
@@ -398,7 +441,7 @@
             ],
             "description": "A set of PHPCS rules that describe the Ork coding standard.",
             "homepage": "http://github.com/AlexHowansky/ork-phpcs",
-            "time": "2016-12-12T23:24:21+00:00"
+            "time": "2016-12-12 23:24:21"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -482,13 +525,14 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "ork/base": 20,
         "ork/phpcs": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7",
-        "ext-imagick": "*"
+        "ext-sqlite3": "*"
     },
     "platform-dev": []
 }

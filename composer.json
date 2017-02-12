@@ -3,7 +3,8 @@
     "require": {
         "php": ">=7",
         "aws/aws-sdk-php": "*",
-        "ext-imagick": "*"
+        "ork/base": "dev-master",
+        "ext-sqlite3": "*"
     },
     "require-dev": {
         "ork/phpcs": "dev-master"
