@@ -108,7 +108,7 @@ class Rekog
             foreach ($csv as $row) {
                 $name = trim($row[5]) . ' ' . trim($row[4]);
                 $photo = $dataDir . $row[2];
-                 if (file_exists($photo) === false) {
+                if (file_exists($photo) === false) {
                     throw new \RuntimeException('Missing photo file: ' . $photo);
                 }
                 $result = $api->indexFaces([

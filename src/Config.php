@@ -73,7 +73,9 @@ class Config implements \ArrayAccess
      * ArrayAccess interface.
      *
      * @param string $offset The offset to set.
-     * @param type $value The value to set.
+     * @param mixed  $value  The value to set.
+     *
+     * @return void
      */
     public function offsetSet($offset, $value)
     {
@@ -84,6 +86,8 @@ class Config implements \ArrayAccess
      * ArrayAccess interface.
      *
      * @param string $offset The offset to unset.
+     *
+     * @return void
      */
     public function offsetUnset($offset)
     {

@@ -33,15 +33,15 @@ class Db
         $exists = file_exists($file);
         $this->db = new \SQLite3(realpath(__DIR__ . '/..') . '/shmd.sq3');
         if ($exists === false) {
-            $this->db->exec('
-                CREATE TABLE IF NOT EXISTS faces (
+            $this->db->exec(
+                'CREATE TABLE IF NOT EXISTS faces (
                     id TEXT NOT NULL PRIMARY KEY,
                     name TEXT NOT NULL,
                     gender TEXT,
                     class INT,
                     photo TEXT
-                );
-            ');
+                );'
+            );
         }
     }
 
@@ -66,7 +66,9 @@ class Db
             }
         }
         $stmt = $this->db->prepare(
-            'INSERT INTO ' . $table . ' (' . join(', ', array_keys($row)) . ') VALUES (:' . join(', :', array_keys($row)) . ');'
+            'INSERT INTO ' . $table . ' (' .
+            join(', ', array_keys($row)) . ') VALUES (:' .
+            join(', :', array_keys($row)) . ');'
         );
         foreach ($row as $key => $value) {
             $stmt->bindValue(':' . $key, $value);
