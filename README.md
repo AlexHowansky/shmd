@@ -76,3 +76,6 @@ Pending orders are stored in the `orders` subdirectory. There will be one file
 per order, named with a unique hash, and formatted in plain text JSON. Once an
 order is fulfilled, the file will be moved to the `orders/archive` directory.
 These files can be easily parsed for statistics once the event is complete.
+Note that if order slips are pulled from a receipt printer rather than the
+`/orders` URL, then the order JSON files will never be moved to the
+`orders/archive` directory.
