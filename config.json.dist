@@ -2,6 +2,7 @@
     "aws": {
         "key": "<put your AWS key here>",
         "secret": "<put your AWS secret here>",
-        "region": "us-east-1"
+        "region": "us-east-1",
+        "collection": "<put your collection name here>"
     }
 }
