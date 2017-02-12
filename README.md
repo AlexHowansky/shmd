@@ -32,9 +32,9 @@ time finding photos to purchase. To create a gallery, create a subdirectory
 under the `staging` directory. Use lowercase names with no spaces or special
 characters. The directory name will be used as the URL slug for the gallery.
 Create another subdirectory with the same name under the `public/photos`
-directory. If you would like the app to show a more descriptive name for the
-gallery, you may create a text file `public/photos/<gallery>/title` containing
-a descriptive gallery title.
+directory. Make sure it's readable by the web server user. If you would like
+the app to show a more descriptive name for the gallery, you may create a text
+file `public/photos/<gallery>/title` containing a descriptive gallery title.
 
 ### Photos
 
