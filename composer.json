@@ -1,7 +1,9 @@
 {
     "name": "shmd/gallery",
     "require": {
-        "php": ">=7"
+        "php": ">=7",
+        "aws/aws-sdk-php": "*",
+        "ext-imagick": "*"
     },
     "require-dev": {
         "ork/phpcs": "dev-master"
