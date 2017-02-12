@@ -39,7 +39,7 @@ file `public/photos/<gallery>/title` containing a descriptive gallery title.
 ### Photos
 
 As raw photos from the photographers are acquired, they should be copied into
-appropriate `staging/<gallery>` directory. This is the *only* location that
+the appropriate `staging/<gallery>` directory. This is the *only* location that
 photos should be manually placed. Note that these files can be quite large and
 will never be served raw. At any time, you may run the `bin/resize` script.
 This will scan for newly added photos in `staging`, resize them to something
