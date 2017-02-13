@@ -19,34 +19,17 @@ namespace Shmd;
 class Rekog
 {
 
+    use \Shmd\Configurable;
+
     // The API version to use.
     const API_VERSION = '2016-06-27';
-
-    /**
-     * The configuration.
-     *
-     * @var \Shmd\Config
-     */
-    protected $config = null;
-
-    /**
-     * Constructor.
-     *
-     * @param \Shmd\Config $config The configuration.
-     */
-    public function __construct(\Shmd\Config $config = null)
-    {
-        if ($config !== null) {
-            $this->setConfig($config);
-        }
-    }
 
     /**
      * Get an API instance.
      *
      * @return \Aws\Rekognition\RekognitionClient
      */
-    protected function getApi()
+    protected function getApi(): \Aws\Rekognition\RekognitionClient
     {
         return new \Aws\Rekognition\RekognitionClient([
             'credentials' => [
@@ -67,9 +50,9 @@ class Rekog
      * @param string $directory The directory containing the photos.
      * @param array  $grades    Only process these grades.
      *
-     * @return \Shmd\Rekog Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function index(string $directory, array $grades): \Shmd\Rekog
+    public function index(string $directory, array $grades): self
     {
 
         if (is_dir($directory) === false) {
@@ -93,7 +76,7 @@ class Rekog
 
         $out = new \Ork\Csv\Writer();
 
-        foreach ($grades ?: [9, 10, 11, 12] as $grade) {
+        foreach (empty($grades) === false ? $grades : [9, 10, 11, 12] as $grade) {
             $class = $year + 12 - $grade;
             $dataDir = $directory . '/' . $grade . '/';
             $dataFile = $dataDir . $grade . '.TXT';
@@ -136,19 +119,6 @@ class Rekog
 
         return $this;
 
-    }
-
-    /**
-     * Set the configuration.
-     *
-     * @param \Shmd\Config $config The configuration.
-     *
-     * @return $this Allow method chaining.
-     */
-    public function setConfig(\Shmd\Config $config): \Shmd\Rekog
-    {
-        $this->config = $config;
-        return $this;
     }
 
 }

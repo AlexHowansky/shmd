@@ -4,5 +4,6 @@
         "secret": "<put your AWS secret here>",
         "region": "us-east-1",
         "collection": "<put your collection name here>"
-    }
+    },
+    "printer": "/dev/usb/lp0"
 }

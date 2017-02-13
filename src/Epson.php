@@ -17,7 +17,7 @@ namespace Shmd;
 class Epson
 {
 
-    const DEFAULT_DEVICE = '/dev/usb/lp0';
+    use \Shmd\Configurable;
 
     const CUT_FULL = "\x1D\x56\x00";
     const CUT_PARTIAL = "\x1D\x56\x01";
@@ -34,13 +34,6 @@ class Epson
     const JUSTIFY_RIGHT = "\x1B\x61\x02";
 
     const WIDTH = 42;
-
-    /**
-     * The printer device.
-     *
-     * @var string
-     */
-    protected $device = null;
 
     /**
      * The printer resource.
@@ -62,9 +55,9 @@ class Epson
     /**
      * Perform a full cut.
      *
-     * @return null
+     * @return self Allow method chaining.
      */
-    public function cutFull()
+    public function cutFull(): self
     {
         return $this->write(self::CUT_FULL);
     }
@@ -72,35 +65,22 @@ class Epson
     /**
      * Perform a partial cut.
      *
-     * @return null
+     * @return self Allow method chaining.
      */
-    public function cutPartial()
+    public function cutPartial(): self
     {
         return $this->write(self::CUT_PARTIAL);
     }
 
     /**
-     * Get the default device.
+     * Get the printer resource, opening it if needed.
      *
-     * @return string The default device.
-     */
-    public function getDevice()
-    {
-        if ($this->device === null) {
-            $this->setDevice(self::DEFAULT_DEVICE);
-        }
-        return $this->device;
-    }
-
-    /**
-     * Get the printer device, opening it if needed.
-     *
-     * @return resource The printer device.
+     * @return resource The printer resource.
      */
     protected function getLp()
     {
         if ($this->lp === null) {
-            $this->lp = fopen($this->getDevice(), 'wb');
+            $this->lp = fopen($this->config['printer'], 'wb');
             if (is_resource($this->lp) === false) {
                 throw new \Exception('Unable to open printer.');
             }
@@ -112,11 +92,11 @@ class Epson
     /**
      * Send a line feed.
      *
-     * @param integer $n The number of line feeds to send
+     * @param int $n The number of line feeds to send
      *
-     * @return \Shmd\Epson Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function linefeed($n = 1)
+    public function linefeed(int $n = 1): self
     {
         return $this->write(str_repeat("\n", $n));
     }
@@ -124,27 +104,11 @@ class Epson
     /**
      * Reset the printer to base settings.
      *
-     * @return \Shmd\Epson Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function reset()
+    public function reset(): self
     {
         return $this->write(self::DOUBLE_HEIGHT_OFF . self::DOUBLE_STRIKE_OFF . self::JUSTIFY_LEFT);
-    }
-
-    /**
-     * Set the printer device.
-     *
-     * @param string $device The printer device.
-     *
-     * @return \Shmd\Epson Allow method chaining.
-     */
-    public function setDevice($device)
-    {
-        if (file_exists($device) === false) {
-            throw new \Exception('Invalid printer device.');
-        }
-        $this->device = $device;
-        return $this;
     }
 
     /**
@@ -152,9 +116,9 @@ class Epson
      *
      * @param string $string The data to send.
      *
-     * @return \Shmd\Epson Allow method chaining.
+     * @return self Allow method chaining.
      */
-    protected function write($string)
+    protected function write(string $string): self
     {
         fwrite($this->getLp(), $string);
         return $this;
@@ -163,13 +127,13 @@ class Epson
     /**
      * Send a label/value line to the printer.
      *
-     * @param string  $label The label.
-     * @param string  $value The value.
-     * @param boolean $bold  True to bold the line.
+     * @param string $label The label.
+     * @param string $value The value.
+     * @param bool   $bold  True to bold the line.
      *
-     * @return \Shmd\Epson Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function writeLabel($label, $value, $bold = false)
+    public function writeLabel(string $label, string $value, bool $bold = false): self
     {
         if ($bold === true) {
             $this->write(self::DOUBLE_HEIGHT_ON . self::DOUBLE_STRIKE_ON);
@@ -185,9 +149,9 @@ class Epson
      *
      * @param string $string The string to send.
      *
-     * @return \Shmd\Epson Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function writeLine($string)
+    public function writeLine(string $string): self
     {
         return $this->write($string . "\n");
     }
@@ -195,12 +159,12 @@ class Epson
     /**
      * Send a center-aligned line to the printer.
      *
-     * @param string  $string The string to send.
-     * @param boolean $bold   True to bold the line.
+     * @param string $string The string to send.
+     * @param bool   $bold   True to bold the line.
      *
-     * @return \Shmd\Epson Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function writeLineCenter($string, $bold = false)
+    public function writeLineCenter(string $string, bool $bold = false): self
     {
         if ($bold === true) {
             $this->write(self::DOUBLE_HEIGHT_ON . self::DOUBLE_STRIKE_ON);

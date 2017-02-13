@@ -183,7 +183,7 @@ class App
 
         $printed = false;
         try {
-            $lp = new \Shmd\Epson();
+            $lp = new \Shmd\Epson(new \Shmd\Config(realpath(__DIR__ . '/../config.json')));
             $lp
                 ->linefeed()
                 ->writeLineCenter('South High Marathon Dance 2017', true)
