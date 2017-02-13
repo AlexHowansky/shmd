@@ -1,3 +1,3 @@
 <?php
-require_once '../vendor/autoload.php';
+require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 new \Shmd\App();
