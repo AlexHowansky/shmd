@@ -172,6 +172,8 @@ class App
         }
         $order['comments'] = $_POST['comments'];
         $order['time'] = microtime(true);
+        $order['price'] = $this->getPriceForSize($order['size']) * $order['quantity'];
+
         $orderJson = json_encode($order);
         $orderHash = sha1($orderJson);
         if (is_writable($this->getOrderDir()) === false) {
