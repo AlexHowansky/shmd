@@ -183,45 +183,7 @@ class App
             throw new \Exception('Error creating order.');
         }
 
-        $printed = false;
-        try {
-            $lp = new \Shmd\Epson(new \Shmd\Config(realpath(__DIR__ . '/../config.json')));
-            $lp
-                ->linefeed()
-                ->writeLineCenter('South High Marathon Dance 2017', true)
-                ->linefeed(2)
-                ->writeLabel('Name', $order['name'], true)
-                ->linefeed(2)
-                ->writeLabel('Time', date(self::DATE_FORMAT, $order['time']))
-                ->writeLabel('Order', substr($orderHash, 0, 16))
-                ->linefeed()
-                ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
-                ->writeLabel('Photo', $order['photo'])
-                ->writeLabel('Size', $order['size'])
-                ->writeLabel('Quantity', $order['quantity']);
-            if (empty($order['comments']) === false) {
-                $lp
-                    ->linefeed(2)
-                    ->writeLine('Comments:')
-                    ->writeLine($order['comments']);
-            }
-            $lp
-                ->linefeed(2)
-                ->writeLabel(
-                    'Total Due',
-                    money_format('%n', $this->getPriceForSize($order['size']) * $order['quantity']),
-                    true
-                )
-                ->linefeed(2)
-                ->writeLineCenter('Thank You For Your Support', true)
-                ->linefeed(8)
-                ->cutPartial();
-            $printed = true;
-        } catch (\Exception $e) {
-            // nothing
-        }
-
-        if ($printed === true) {
+        if ($this->printReceipt($orderHash) === true) {
             $this->archiveOrder($orderHash);
         }
 
@@ -473,6 +435,54 @@ class App
             throw new \Exception('Photo dir must be located under DOCUMENT_ROOT.');
         }
         return substr($this->getPhotoDir(), strlen($_SERVER['DOCUMENT_ROOT']));
+    }
+
+    /**
+     * Print an order receipt.
+     *
+     * @param string $id The order ID.
+     *
+     * @return bool True if the receipt printed successfully.
+     */
+    public function printReceipt($id): bool
+    {
+        try {
+            $order = $this->getOrder($id);
+            $lp = new \Shmd\Epson(new \Shmd\Config(realpath(__DIR__ . '/../config.json')));
+            $lp
+                ->linefeed()
+                ->writeLineCenter('South High Marathon Dance 2017', true)
+                ->linefeed(2)
+                ->writeLabel('Name', $order['name'], true)
+                ->linefeed(2)
+                ->writeLabel('Time', date(self::DATE_FORMAT, $order['time']))
+                ->writeLabel('Order', substr($orderHash, 0, 16))
+                ->linefeed()
+                ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
+                ->writeLabel('Photo', $order['photo'])
+                ->writeLabel('Size', $order['size'])
+                ->writeLabel('Quantity', $order['quantity']);
+            if (empty($order['comments']) === false) {
+                $lp
+                    ->linefeed(2)
+                    ->writeLine('Comments:')
+                    ->writeLine($order['comments']);
+            }
+            $lp
+                ->linefeed(2)
+                ->writeLabel(
+                    'Total Due',
+                    money_format('%n', $this->getPriceForSize($order['size']) * $order['quantity']),
+                    true
+                )
+                ->linefeed(2)
+                ->writeLineCenter('Thank You For Your Support', true)
+                ->linefeed(8)
+                ->cutPartial();
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -18,5 +18,6 @@ include '_order_menu.php';
 </div>
 <div class="ui raised container segment">
     <h1 class="ui header">Total Due: <?= money_format('%n', $order['total']) ?></h1>
-    <a href="/archive/<?= $order['id'] ?>" class="ui huge green button" type="submit">Complete</a>
+    <a href="/receipt/<?= $order['id'] ?>" class="ui huge blue button" type="submit">Print Receipt</a>
+    <a href="/archive/<?= $order['id'] ?>" class="ui huge green button" type="submit">Mark As Complete</a>
 </div>
