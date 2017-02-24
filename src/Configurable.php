@@ -20,16 +20,16 @@ trait Configurable
     /**
      * The configuration.
      *
-     * @var \Shmd\Config
+     * @var Config
      */
     protected $config = null;
 
     /**
      * Constructor.
      *
-     * @param \Shmd\Config $config The configuration.
+     * @param Config $config The configuration.
      */
-    public function __construct(\Shmd\Config $config = null)
+    public function __construct(Config $config = null)
     {
         if ($config !== null) {
             $this->setConfig($config);
@@ -39,11 +39,11 @@ trait Configurable
     /**
      * Set the configuration.
      *
-     * @param \Shmd\Config $config The configuration.
+     * @param Config $config The configuration.
      *
      * @return self Allow method chaining.
      */
-    public function setConfig(\Shmd\Config $config): self
+    public function setConfig(Config $config): self
     {
         $this->config = $config;
         return $this;

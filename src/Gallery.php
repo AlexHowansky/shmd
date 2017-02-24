@@ -21,7 +21,7 @@ class Gallery
     /**
      * The app that spawned us.
      *
-     * @var \Shmd\App
+     * @var App
      */
     protected $app = null;
 
@@ -42,7 +42,7 @@ class Gallery
     /**
      * Constructor.
      *
-     * @param \Shmd\App $app  The app that spawned us.
+     * @param App $app  The app that spawned us.
      * @param string    $name The name of this gallery.
      */
     public function __construct(App $app = null, $name = null)
@@ -58,9 +58,9 @@ class Gallery
     /**
      * Get the app that spawned us.
      *
-     * @return \Shmd\App
+     * @return App
      */
-    public function getApp()
+    public function getApp(): App
     {
         if ($this->app === null) {
             throw new \Exception('No App object has been set yet.');
@@ -73,7 +73,7 @@ class Gallery
      *
      * @return string The gallery description.
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->getFileContents(self::DESCRIPTION_FILE);
     }
@@ -83,7 +83,7 @@ class Gallery
      *
      * @return string The gallery base directory.
      */
-    public function getDir()
+    public function getDir(): string
     {
         return $this->dir;
     }
@@ -95,7 +95,7 @@ class Gallery
      *
      * @return string The contents of the file.
      */
-    protected function getFileContents($name)
+    protected function getFileContents(string $name): string
     {
         $file = realpath($this->getDir() . '/' . $name);
         if (file_exists($file) === true) {
@@ -108,7 +108,7 @@ class Gallery
      *
      * @return string The name of the gallery.
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -118,7 +118,7 @@ class Gallery
      *
      * @return array The photos in this gallery.
      */
-    public function getPhotos()
+    public function getPhotos(): array
     {
         $photos = [];
         foreach (new \DirectoryIterator($this->getDir()) as $item) {
@@ -135,7 +135,7 @@ class Gallery
      *
      * @return string The path of this gallery relative to the document root.
      */
-    public function getRelativePath()
+    public function getRelativePath(): string
     {
         return $this->getApp()->getRelativePhotoDir() . '/' . $this->getName();
     }
@@ -145,7 +145,7 @@ class Gallery
      *
      * @return string The gallery title.
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->getFileContents(self::TITLE_FILE) ?? $this->getName();
     }
@@ -153,11 +153,11 @@ class Gallery
     /**
      * Set the spawning app.
      *
-     * @param \Shmd\App $app The spawning app.
+     * @param App $app The spawning app.
      *
-     * @return \Shmd\Gallery Allow method chaining.
+     * @return Gallery Allow method chaining.
      */
-    public function setApp(App $app)
+    public function setApp(App $app): Gallery
     {
         $this->app = $app;
         return $this;
@@ -168,9 +168,9 @@ class Gallery
      *
      * @param string $name The gallery name.
      *
-     * @return \Shmd\Gallery Allow method chaining.
+     * @return Gallery Allow method chaining.
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         if (preg_match('/^[a-z0-9]+$/', $name) !== 1) {
             throw new \Exception('Invalid gallery.');

@@ -135,9 +135,9 @@ class App
      *
      * @param string $id The order ID.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function archiveOrder($id)
+    public function archiveOrder(string $id): self
     {
         if (rename($this->getFileForOrder($id), $this->getFileForArchive($id)) === false) {
             throw new \Exception('Failed to archive order.');
@@ -160,7 +160,7 @@ class App
      *
      * @return string The order ID.
      */
-    public function createOrder()
+    public function createOrder(): string
     {
 
         $order = [];
@@ -196,7 +196,7 @@ class App
      *
      * @return string The order archive dir.
      */
-    public function getArchiveDir()
+    public function getArchiveDir(): string
     {
         if ($this->archiveDir === null) {
             $this->setArchiveDir(self::DEFAULT_ARCHIVE_DIR);
@@ -211,7 +211,7 @@ class App
      *
      * @return string The full path to an order file.
      */
-    protected function getFileForArchive($id)
+    protected function getFileForArchive(string $id): string
     {
         return $this->getArchiveDir() . '/' . $id . '.json';
     }
@@ -223,7 +223,7 @@ class App
      *
      * @return string The full path to an order file.
      */
-    protected function getFileForOrder($id)
+    protected function getFileForOrder(string $id): string
     {
         return $this->getOrderDir() . '/' . $id . '.json';
     }
@@ -249,9 +249,9 @@ class App
     /**
      * Get the list of available galleries
      *
-     * @return \Generator Generates \Shmd\Gallery objects.
+     * @return \Generator Generates Gallery objects.
      */
-    public function getGalleries()
+    public function getGalleries(): \Generator
     {
         $galleries = [];
         foreach (new \DirectoryIterator($this->getPhotoDir()) as $item) {
@@ -270,9 +270,9 @@ class App
      *
      * @param string $gallery The gallery to get.
      *
-     * @return \Shmd\Gallery The gallery.
+     * @return Gallery The gallery.
      */
-    public function getGallery($gallery)
+    public function getGallery(string $gallery): Gallery
     {
         return new Gallery($this, $gallery);
     }
@@ -280,9 +280,9 @@ class App
     /**
      * Get the last error that occurred.
      *
-     * @return \Eception
+     * @return \Exception
      */
-    public function getLastError()
+    public function getLastError(): \Exception
     {
         return $this->lastError;
     }
@@ -294,7 +294,7 @@ class App
      *
      * @return array The order data.
      */
-    public function getOrder($id)
+    public function getOrder(string $id): array
     {
         $orderFile = $this->getFileForOrder($id);
         if (file_exists($orderFile) === false) {
@@ -314,7 +314,7 @@ class App
      *
      * @return string The order directory.
      */
-    public function getOrderDir()
+    public function getOrderDir(): string
     {
         if ($this->orderDir === null) {
             $this->setOrderDir(self::DEFAULT_ORDER_DIR);
@@ -327,7 +327,7 @@ class App
      *
      * @return array All pending orders.
      */
-    public function getOrders()
+    public function getOrders(): \Generator
     {
         $orders = [];
         foreach (new \DirectoryIterator($this->getOrderDir()) as $item) {
@@ -356,7 +356,7 @@ class App
      *
      * @return string The page directory.
      */
-    public function getPageDir()
+    public function getPageDir(): string
     {
         if ($this->pageDir === null) {
             $this->setPageDir(self::DEFAULT_PAGE_DIR);
@@ -369,7 +369,7 @@ class App
      *
      * @return string The wrapper page.
      */
-    public function getPageWrapper()
+    public function getPageWrapper(): string
     {
         return $this->pageWrapper;
     }
@@ -377,11 +377,11 @@ class App
     /**
      * Get a parameter by index.
      *
-     * @param integer $index The index of the parameter to get.
+     * @param int $index The index of the parameter to get.
      *
      * @return string The Nth parameter.
      */
-    public function getParam($index = 0)
+    public function getParam(int $index = 0): string
     {
         return $this->params[$index] ?? null;
     }
@@ -391,7 +391,7 @@ class App
      *
      * @return array All the parameters.
      */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
@@ -401,7 +401,7 @@ class App
      *
      * @return string The photo directory.
      */
-    public function getPhotoDir()
+    public function getPhotoDir(): string
     {
         if ($this->photoDir === null) {
             $this->setPhotoDir(self::DEFAULT_PHOTO_DIR);
@@ -429,7 +429,7 @@ class App
      *
      * @return string The photo directory relative to the document root.
      */
-    public function getRelativePhotoDir()
+    public function getRelativePhotoDir(): string
     {
         if (strpos($this->getPhotoDir(), $_SERVER['DOCUMENT_ROOT']) === false) {
             throw new \Exception('Photo dir must be located under DOCUMENT_ROOT.');
@@ -448,7 +448,7 @@ class App
     {
         try {
             $order = $this->getOrder($id);
-            $lp = new \Shmd\Epson(new \Shmd\Config(realpath(__DIR__ . '/../config.json')));
+            $lp = new Epson(new Config(realpath(__DIR__ . '/../config.json')));
             $lp
                 ->linefeed()
                 ->writeLineCenter('South High Marathon Dance 2017', true)
@@ -502,7 +502,7 @@ class App
      *
      * @return array The matching photos.
      */
-    public function search($text)
+    public function search(string $text): array
     {
         $matches = [];
         foreach ($this->getGalleries() as $gallery) {
@@ -526,9 +526,9 @@ class App
      *
      * @param string $dir The order archive directory.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setArchiveDir($dir)
+    public function setArchiveDir(string $dir): self
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
@@ -543,9 +543,9 @@ class App
      *
      * @param array $config The key/value pairs to set.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setConfig(array $config)
+    public function setConfig(array $config): self
     {
         foreach ($config as $k => $v) {
             if (array_key_exists($k, $this->config) === false) {
@@ -561,9 +561,9 @@ class App
      *
      * @param \Exception $e The exception that just occurred.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setLastError(\Exception $e)
+    public function setLastError(\Exception $e): self
     {
         $this->lastError = $e;
         return $this;
@@ -574,9 +574,9 @@ class App
      *
      * @param string $dir The order directory.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setOrderDir($dir)
+    public function setOrderDir(string $dir): self
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
@@ -591,9 +591,9 @@ class App
      *
      * @param string $page The page to render.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setPage($page)
+    public function setPage(string $page): self
     {
         $page = trim(strtolower($page));
         if (empty($page) === true) {
@@ -612,9 +612,9 @@ class App
      *
      * @param string $dir The page directory.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setPageDir($dir)
+    public function setPageDir(string $dir): self
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
@@ -629,9 +629,9 @@ class App
      *
      * @param string $pageWrapper The page wrapper.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setPageWrapper($pageWrapper)
+    public function setPageWrapper(string $pageWrapper): self
     {
         $this->pageWrapper = $pageWrapper;
         return this;
@@ -642,9 +642,9 @@ class App
      *
      * @param array $params The page Parameters
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setParams(array $params)
+    public function setParams(array $params): self
     {
         $this->params = $params;
         return $this;
@@ -655,9 +655,9 @@ class App
      *
      * @param string $dir The photo directory.
      *
-     * @return \Shmd\App Allow method chaining.
+     * @return self Allow method chaining.
      */
-    public function setPhotoDir($dir)
+    public function setPhotoDir(string $dir): self
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {

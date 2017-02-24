@@ -19,7 +19,7 @@ namespace Shmd;
 class Rekog
 {
 
-    use \Shmd\Configurable;
+    use Configurable;
 
     // The API version to use.
     const API_VERSION = '2016-06-27';
@@ -59,7 +59,7 @@ class Rekog
             throw new \RuntimeException('Unable to open directory.');
         }
 
-        $db = new \Shmd\Db();
+        $db = new Db();
 
         $api = $this->getApi();
         if (in_array($this->config['aws']['collection'], $api->listCollections()->get('CollectionIds')) === false) {

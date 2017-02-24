@@ -17,7 +17,7 @@ namespace Shmd;
 class Epson
 {
 
-    use \Shmd\Configurable;
+    use Configurable;
 
     const CUT_FULL = "\x1D\x56\x00";
     const CUT_PARTIAL = "\x1D\x56\x01";

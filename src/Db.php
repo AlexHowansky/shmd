@@ -51,11 +51,11 @@ class Db
      * @param string $table The table to write to.
      * @param array  $row   The data to write.
      *
-     * @return \Shmd\Db Allow method chaining.
+     * @return self Allow method chaining.
      *
      * @throws \RuntimeException On error.
      */
-    public function write(string $table, array $row): \Shmd\Db
+    public function write(string $table, array $row): self
     {
         if (preg_match('/^[a-zA-z][a-zA-Z0-9]+$/', $table) !== 1) {
             throw new \RuntimeException('Bad table name.');
