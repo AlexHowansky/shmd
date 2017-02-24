@@ -75,7 +75,7 @@ class Gallery
      */
     public function getDescription(): string
     {
-        return $this->getFileContents(self::DESCRIPTION_FILE);
+        return $this->getFileContents(self::DESCRIPTION_FILE) ?: $this->getName();
     }
 
     /**
@@ -101,6 +101,7 @@ class Gallery
         if (file_exists($file) === true) {
             return htmlspecialchars(trim(file_get_contents($file)));
         }
+        return '';
     }
 
     /**
@@ -170,7 +171,7 @@ class Gallery
      *
      * @return Gallery Allow method chaining.
      */
-    public function setName(string $name): self
+    public function setName(string $name): Gallery
     {
         if (preg_match('/^[a-z0-9]+$/', $name) !== 1) {
             throw new \Exception('Invalid gallery.');
@@ -181,6 +182,7 @@ class Gallery
         }
         $this->dir = $dir;
         $this->name = $name;
+        return $this;
     }
 
 }

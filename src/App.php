@@ -135,9 +135,9 @@ class App
      *
      * @param string $id The order ID.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function archiveOrder(string $id): self
+    public function archiveOrder(string $id): App
     {
         if (rename($this->getFileForOrder($id), $this->getFileForArchive($id)) === false) {
             throw new \Exception('Failed to archive order.');
@@ -526,9 +526,9 @@ class App
      *
      * @param string $dir The order archive directory.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setArchiveDir(string $dir): self
+    public function setArchiveDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
@@ -543,9 +543,9 @@ class App
      *
      * @param array $config The key/value pairs to set.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setConfig(array $config): self
+    public function setConfig(array $config): App
     {
         foreach ($config as $k => $v) {
             if (array_key_exists($k, $this->config) === false) {
@@ -561,9 +561,9 @@ class App
      *
      * @param \Exception $e The exception that just occurred.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setLastError(\Exception $e): self
+    public function setLastError(\Exception $e): App
     {
         $this->lastError = $e;
         return $this;
@@ -574,9 +574,9 @@ class App
      *
      * @param string $dir The order directory.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setOrderDir(string $dir): self
+    public function setOrderDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
@@ -591,9 +591,9 @@ class App
      *
      * @param string $page The page to render.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setPage(string $page): self
+    public function setPage(string $page): App
     {
         $page = trim(strtolower($page));
         if (empty($page) === true) {
@@ -612,9 +612,9 @@ class App
      *
      * @param string $dir The page directory.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setPageDir(string $dir): self
+    public function setPageDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
@@ -629,9 +629,9 @@ class App
      *
      * @param string $pageWrapper The page wrapper.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setPageWrapper(string $pageWrapper): self
+    public function setPageWrapper(string $pageWrapper): App
     {
         $this->pageWrapper = $pageWrapper;
         return this;
@@ -642,9 +642,9 @@ class App
      *
      * @param array $params The page Parameters
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setParams(array $params): self
+    public function setParams(array $params): App
     {
         $this->params = $params;
         return $this;
@@ -655,9 +655,9 @@ class App
      *
      * @param string $dir The photo directory.
      *
-     * @return self Allow method chaining.
+     * @return App Allow method chaining.
      */
-    public function setPhotoDir(string $dir): self
+    public function setPhotoDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {

@@ -50,9 +50,9 @@ class Rekog
      * @param string $directory The directory containing the photos.
      * @param array  $grades    Only process these grades.
      *
-     * @return self Allow method chaining.
+     * @return Rekog Allow method chaining.
      */
-    public function index(string $directory, array $grades): self
+    public function index(string $directory, array $grades): Rekog
     {
 
         if (is_dir($directory) === false) {

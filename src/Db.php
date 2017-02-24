@@ -51,11 +51,11 @@ class Db
      * @param string $table The table to write to.
      * @param array  $row   The data to write.
      *
-     * @return self Allow method chaining.
+     * @return Db Allow method chaining.
      *
      * @throws \RuntimeException On error.
      */
-    public function write(string $table, array $row): self
+    public function write(string $table, array $row): Db
     {
         if (preg_match('/^[a-zA-z][a-zA-Z0-9]+$/', $table) !== 1) {
             throw new \RuntimeException('Bad table name.');

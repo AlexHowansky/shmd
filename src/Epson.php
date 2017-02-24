@@ -55,9 +55,9 @@ class Epson
     /**
      * Perform a full cut.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function cutFull(): self
+    public function cutFull(): Epson
     {
         return $this->write(self::CUT_FULL);
     }
@@ -65,9 +65,9 @@ class Epson
     /**
      * Perform a partial cut.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function cutPartial(): self
+    public function cutPartial(): Epson
     {
         return $this->write(self::CUT_PARTIAL);
     }
@@ -94,9 +94,9 @@ class Epson
      *
      * @param int $n The number of line feeds to send
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function linefeed(int $n = 1): self
+    public function linefeed(int $n = 1): Epson
     {
         return $this->write(str_repeat("\n", $n));
     }
@@ -104,9 +104,9 @@ class Epson
     /**
      * Reset the printer to base settings.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function reset(): self
+    public function reset(): Epson
     {
         return $this->write(self::DOUBLE_HEIGHT_OFF . self::DOUBLE_STRIKE_OFF . self::JUSTIFY_LEFT);
     }
@@ -116,9 +116,9 @@ class Epson
      *
      * @param string $string The data to send.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    protected function write(string $string): self
+    protected function write(string $string): Epson
     {
         fwrite($this->getLp(), $string);
         return $this;
@@ -131,9 +131,9 @@ class Epson
      * @param string $value The value.
      * @param bool   $bold  True to bold the line.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function writeLabel(string $label, string $value, bool $bold = false): self
+    public function writeLabel(string $label, string $value, bool $bold = false): Epson
     {
         if ($bold === true) {
             $this->write(self::DOUBLE_HEIGHT_ON . self::DOUBLE_STRIKE_ON);
@@ -149,9 +149,9 @@ class Epson
      *
      * @param string $string The string to send.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function writeLine(string $string): self
+    public function writeLine(string $string): Epson
     {
         return $this->write($string . "\n");
     }
@@ -162,9 +162,9 @@ class Epson
      * @param string $string The string to send.
      * @param bool   $bold   True to bold the line.
      *
-     * @return self Allow method chaining.
+     * @return Epson Allow method chaining.
      */
-    public function writeLineCenter(string $string, bool $bold = false): self
+    public function writeLineCenter(string $string, bool $bold = false): Epson
     {
         if ($bold === true) {
             $this->write(self::DOUBLE_HEIGHT_ON . self::DOUBLE_STRIKE_ON);
