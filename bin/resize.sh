@@ -7,7 +7,7 @@ PHOTO_DIR=${SCRIPT_DIR}/../public/photos
 umask 0022
 
 cd ${STAGE_DIR} || exit
-for FILE in $(find . -mindepth 2 -maxdepth 2 -type f -name "*.jpg")
+for FILE in $(find . -mindepth 2 -maxdepth 2 -type f -name "*.jpg" -o -name "*.JPG")
 do
     GALLERY=$(echo ${FILE} | cut -d'/' -f2)
     PHOTO=$(basename ${FILE})
