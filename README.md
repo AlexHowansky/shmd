@@ -16,13 +16,23 @@ need the create some mechanism to relay print orders from the former to the
 latter. This application was hastily thrown together in a weekend in an attempt
 to address that requirement.
 
+After great success in 2017, the app was updated in 2017 to perform facial
+recognition via the Amazon Rekognition service. Armed with student data and
+high quality individual reference portraits from the yearbook vendor, the
+Amazon Rekognition engine can be seeded with baseline images for all students.
+This process creates a unique FaceId for each student, which is kept in a
+SQLite databse. As event photos pour in, they may be passed to Rekognition
+to identify known faces. The results are returned as FaceIds, which are then
+cross referenced to student name, and stored in the database by photo. This
+allows for very quick lookup of all photos that a given student appears in.
+
 ## Setup
 
 This is a PHP app, just point your web server's document root to the `public`
 subdir. Make sure that the `orders` and `orders/archive` directories are
 writable by the web server user. Run `composer install` to fetch dependencies.
 In order to use the facial recognition features, you'll need an Amazon AWS
-account. Copy `config.json.dist` to `config.json` and edit as desired.
+account. Copy `config.json.dist` to `config.json` and edit as indicated.
 
 ### Galleries
 
@@ -41,34 +51,44 @@ file `public/photos/<gallery>/title` containing a descriptive gallery title.
 As raw photos from the photographers are acquired, they should be copied into
 the appropriate `staging/<gallery>` directory. This is the *only* location that
 photos should be manually placed. Note that these files can be quite large and
-will never be served raw. At any time, you may run the `bin/resize` script.
+will never be served raw. At any time, you may run the `bin/resize.sh` script.
 This will scan for newly added photos in `staging`, resize them to something
 more appropriate for the web, and copy them to `public/photos/<gallery>`.
 Photos will not appear in the app until after they have been so processed.
 Note that the files in `public/photos/<gallery>` must be readable by the web
 server process user.
 
+### Facial Recognition
+
+To seed the facial recognition database, run the script `bin/indexPhotos.php`
+which will import your yearbook portraits into your Rekognition collection.
+
 ### Printing
 
 The app supports printing of order slips via a USB ESC/POS receipt printer.
-The printer must be connected to the same machine running the server. It is
-expected to be connected via `/dev/usb/lp0`.
+The printer must be connected to the same machine running the server.
 
 ## Usage
 
 The machine acting as server should be located physically close to the printing
 stations so that the printing personnel have access to the order slips. Once
-photos are processed with the `bin/resize` script, they will appear in the app
-and be available for purchase. Client machines need only a webserver. Laptops,
-Chromebooks, iPads, and even SmartBoards work well. Dance patrons and/or sales
-agents can use the app to browse the galleries, and select individual photos
-for purchase. Submitting the order form will create a new order. If a printer
-is connected, an order slip will immediately print. Workers at the printing
-stations can grab slips as they appear, print the requested photos, and run the
-order out to the patron. Alternatively, print workers may browse the `/orders`
-URL to watch for incoming orders. Once fulfilled, they may click the Complete
-button, which will archive the order and remove it from the order page so that
-it does not get printed twice.
+photos are processed with the `bin/resize.sh` script, they will appear in the
+app and be available for purchase. Client machines need only a webserver.
+Laptops, Chromebooks, iPads, and even SmartBoards work well. Dance patrons
+and/or sales agents can use the app to browse the galleries, and select
+individual photos for purchase. Submitting the order form will create a new
+order. If a printer is connected, an order slip will immediately print. Workers
+at the printing stations can grab slips as they appear, print the requested
+photos, and run the order out to the patron. Alternatively, print workers may
+browse the `/orders` URL to watch for incoming orders. Once fulfilled, they may
+click the Complete button, which will archive the order and remove it from the
+order page so that it does not get printed twice.
+
+### Facial Recognition
+
+To perform facial recognition on photos, run the `bin/identifyPhotos.php`
+script. This can be run at any time, it will not interfere with app usage. The
+process will update the SQLite database and enable searches by name in the app.
 
 ## Data
 
