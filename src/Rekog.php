@@ -79,12 +79,11 @@ class Rekog
         // Iterate over all the files in the named directory.
         foreach (new \DirectoryIterator($directory) as $file) {
 
-            // Skip files that aren't photos and files that we created.
+            // Skip files that aren't photos.
             if (
                 $file->isDot() === true ||
                 $file->isFile() === false ||
-                $file->getExtension() !== 'jpg' ||
-                preg_match('/_face_\d\d\.jpg$/', $file->getFilename()) === 1
+                $file->getExtension() !== 'jpg'
             ) {
                 continue;
             }
@@ -129,9 +128,11 @@ class Rekog
             // to Rekognition for identification.
             foreach ($faces as $face) {
 
-                // This file will contain only the detected face.
+                // This file will contain only the detected face. It will
+                // be a JPG file, but we'll not name it with that extension,
+                // in order to avoid other processing scripts picking it up.
                 $faceFile = sprintf(
-                    '%s/%s_face_%02d.jpg',
+                    '%s/%s_face_%02d',
                     $file->getPath(),
                     $file->getBasename('.' . $file->getExtension()),
                     ++$num
@@ -175,7 +176,7 @@ class Rekog
                             $recognized = [
                                 'name' => $row['name'],
                                 'gallery' => basename($file->getPath()),
-                                'photo' => $file->getFilename(),
+                                'photo' => $file->getBasename('.jpg'),
                             ];
                             $names[] = $recognized;
                             $db->write('photos', $recognized);

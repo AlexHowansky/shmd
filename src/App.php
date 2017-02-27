@@ -512,21 +512,35 @@ class App
      */
     public function search(string $text): array
     {
-        $matches = [];
+
+        $names = (new Db($this->config))->search($text, self::SEARCH_LIMIT);
+        if (empty($names) === false) {
+            $nameMatches = [];
+            foreach ($names as $name) {
+                $nameMatches[] = [
+                    'gallery' => new Gallery($this, $name['gallery']),
+                    'photo' => $name['photo'],
+                ];
+            }
+            return $nameMatches;
+        }
+
+        $fileMatches = [];
         foreach ($this->getGalleries() as $gallery) {
             foreach ($gallery->getPhotos() as $photo) {
                 if (preg_match('/' . $text . '/i', $photo) === 1) {
-                    $matches[] = [
+                    $fileMatches[] = [
                         'gallery' => $gallery,
                         'photo' => $photo,
                     ];
-                    if (count($matches) >= self::SEARCH_LIMIT) {
-                        return $matches;
+                    if (count($fileMatches) >= self::SEARCH_LIMIT) {
+                        return $fileMatches;
                     }
                 }
             }
         }
-        return array_merge($matches, (new Db($this->config))->search($text));
+        return $fileMatches;
+
     }
 
     /**
