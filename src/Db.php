@@ -85,7 +85,7 @@ class Db
     public function search(string $name, int $limit = 20): array
     {
         $photos = [];
-        $stmt = $this->db->prepare('SELECT * FROM photos WHERE name like :name LIMIT :limit');
+        $stmt = $this->db->prepare('SELECT DISTINCT gallery, photo FROM photos WHERE name like :name LIMIT :limit');
         $stmt->bindValue(':name', '%' . $name . '%');
         $stmt->bindValue(':limit', $limit);
         $result = $stmt->execute();
