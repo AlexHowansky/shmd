@@ -17,6 +17,8 @@ namespace Shmd;
 class App
 {
 
+    use Configurable;
+
     const DATE_FORMAT = 'j M Y H:i:s';
 
     const DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
@@ -33,7 +35,7 @@ class App
 
     const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
-    const SEARCH_LIMIT = 10;
+    const SEARCH_LIMIT = 20;
 
     /**
      * The order archive dir.
@@ -105,10 +107,15 @@ class App
 
     /**
      * Constructor.
+     *
+     * @param Config $config The configuration.
      */
-    public function __construct()
+    public function __construct(Config $config = null)
     {
-        setlocale(LC_MONETARY, 'en_US');
+        if ($config !== null) {
+            $this->setConfig($config);
+        }
+        setlocale(LC_MONETARY, $this->config['locale']);
         try {
             $url = parse_url($_SERVER['REQUEST_URI']);
             $params = explode('/', trim($url['path'], '/'));
@@ -448,10 +455,11 @@ class App
     {
         try {
             $order = $this->getOrder($id);
-            $lp = new Epson(new Config(realpath(__DIR__ . '/../config.json')));
+            $lp = new Epson($this->config);
             $lp
                 ->linefeed()
                 ->writeLineCenter('South High Marathon Dance 2017', true)
+                ->writeLineCenter($this->config['title'], true)
                 ->linefeed(2)
                 ->writeLabel('Name', $order['name'], true)
                 ->linefeed(2)
@@ -518,7 +526,7 @@ class App
                 }
             }
         }
-        return $matches;
+        return array_merge($matches, (new Db($this->config))->search($text));
     }
 
     /**
@@ -535,24 +543,6 @@ class App
             throw new \Exception('Invalid order archive directory.');
         }
         $this->archiveDir = $dir;
-        return $this;
-    }
-
-    /**
-     * Set configuration values.
-     *
-     * @param array $config The key/value pairs to set.
-     *
-     * @return App Allow method chaining.
-     */
-    public function setConfig(array $config): App
-    {
-        foreach ($config as $k => $v) {
-            if (array_key_exists($k, $this->config) === false) {
-                throw new \Exception('Invalid configuration parameter "' . $k . '".');
-            }
-            $this->config[$k] = $v;
-        }
         return $this;
     }
 

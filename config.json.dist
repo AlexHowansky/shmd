@@ -5,5 +5,8 @@
         "region": "us-east-1",
         "collection": "<put your collection name here>"
     },
-    "printer": "/dev/usb/lp0"
+    "database": "/path/to/your/sqlite.db",
+    "locale": "en_US",
+    "printer": "/dev/usb/lp0",
+    "title": "The Name of Your Event"
 }

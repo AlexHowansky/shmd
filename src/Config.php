@@ -61,7 +61,7 @@ class Config implements \ArrayAccess
      *
      * @return mixed The value of the offset.
      */
-    public function offsetGet(string $offset)
+    public function offsetGet($offset)
     {
         if ($this->offsetExists($offset) === false) {
             throw new \RuntimeException('Invalid offset.');
@@ -77,7 +77,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
-    public function offsetSet(string $offset, $value)
+    public function offsetSet($offset, $value)
     {
         $this->config[$offset] = $value;
     }
@@ -89,7 +89,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset(string $offset)
+    public function offsetUnset($offset)
     {
         unset($this->config[$offset]);
     }

@@ -17,6 +17,8 @@ namespace Shmd;
 class Db
 {
 
+    use Configurable;
+
     /**
      * Database connector.
      *
@@ -26,12 +28,16 @@ class Db
 
     /**
      * Constructor.
+     *
+     * @param Config $config The configuration.
      */
-    public function __construct()
+    public function __construct(Config $config = null)
     {
-        $file = realpath(__DIR__ . '/..') . '/shmd.sq3';
-        $exists = file_exists($file);
-        $this->db = new \SQLite3(realpath(__DIR__ . '/..') . '/shmd.sq3');
+        if ($config !== null) {
+            $this->setConfig($config);
+        }
+        $exists = file_exists($this->config['database']);
+        $this->db = new \SQLite3($this->config['database']);
         if ($exists === false) {
             $this->db->exec(
                 'CREATE TABLE IF NOT EXISTS faces (
@@ -42,7 +48,51 @@ class Db
                     photo TEXT
                 );'
             );
+            $this->db->exec(
+                'CREATE TABLE IF NOT EXISTS photos (
+                    name TEXT NOT NULL,
+                    gallery TEXT NOT NULL,
+                    photo TEXT NOT NULL
+                );'
+            );
+            $this->db->exec('CREATE UNIQUE INDEX IF NOT EXISTS photos_unique ON photos (name, gallery, photo);');
         }
+    }
+
+    /**
+     * Find the person associated with a FaceID.
+     *
+     * @param string $id The FaceID.
+     *
+     * @return array The record if found.
+     */
+    public function findFace(string $id): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM faces WHERE id = :id LIMIT 1');
+        $stmt->bindValue(':id', $id);
+        $result = $stmt->execute();
+        return $result->fetchArray(SQLITE3_ASSOC) ?: [];
+    }
+
+    /**
+     * Search for the photos a name appears in.
+     *
+     * @param string $name  The name to search for.
+     * @param int    $limit Limit the search to this many records.
+     *
+     * @return array The photos the name appears in.
+     */
+    public function search(string $name, int $limit = 20): array
+    {
+        $photos = [];
+        $stmt = $this->db->prepare('SELECT * FROM photos WHERE name like :name LIMIT :limit');
+        $stmt->bindValue(':name', '%' . $name . '%');
+        $stmt->bindValue(':limit', $limit);
+        $result = $stmt->execute();
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            $photos[] = $row;
+        }
+        return $photos;
     }
 
     /**
@@ -66,7 +116,7 @@ class Db
             }
         }
         $stmt = $this->db->prepare(
-            'INSERT INTO ' . $table . ' (' .
+            'INSERT OR IGNORE INTO ' . $table . ' (' .
             join(', ', array_keys($row)) . ') VALUES (:' .
             join(', :', array_keys($row)) . ');'
         );
@@ -74,7 +124,7 @@ class Db
             $stmt->bindValue(':' . $key, $value);
         }
         if ($stmt->execute() === false) {
-            throw new \RuntimeException('Database write failed.');
+            throw new \RuntimeException('Database error: ' . $this->db->lastErrorMsg());
         }
         return $this;
     }
