@@ -83,7 +83,7 @@ class Rekog
             if (
                 $file->isDot() === true ||
                 $file->isFile() === false ||
-                in_array(strtolower($file->getExtension()), ['jpg', 'png']) === false ||
+                $file->getExtension() !== 'jpg' ||
                 preg_match('/_face_\d\d\.jpg$/', $file->getFilename()) === 1
             ) {
                 continue;
