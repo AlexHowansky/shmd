@@ -4,6 +4,7 @@
         "php": ">=7",
         "aws/aws-sdk-php": "*",
         "ork/base": "dev-master",
+        "ext-gd": "*",
         "ext-sqlite3": "*"
     },
     "require-dev": {

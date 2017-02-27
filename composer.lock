@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "97bdae30373992dd9ec5bfb2d58f0352",
+    "content-hash": "750c9ce757413ce3453b095e88f8bc10",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.22.3",
+            "version": "3.22.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "9c64476e56091baf1202d7deffb9094fe87472e0"
+                "reference": "277939bd789204b314f3aaca06976cf3ddf78f07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9c64476e56091baf1202d7deffb9094fe87472e0",
-                "reference": "9c64476e56091baf1202d7deffb9094fe87472e0",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/277939bd789204b314f3aaca06976cf3ddf78f07",
+                "reference": "277939bd789204b314f3aaca06976cf3ddf78f07",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-02-10T23:27:07+00:00"
+            "time": "2017-02-24T21:47:48+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -532,6 +532,7 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=7",
+        "ext-gd": "*",
         "ext-sqlite3": "*"
     },
     "platform-dev": []
