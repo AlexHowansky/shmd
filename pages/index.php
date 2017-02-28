@@ -1,4 +1,9 @@
 <?php include '_menu.php'; ?>
+<div class="ui relaxed list">
+    <div class="item">
+        <h1 class="ui centered header"><?= $this->config['title'] ?></h1>
+    </div>
+</div>
 <div class="ui huge relaxed celled list">
 <?php foreach ($this->getGalleries() as $gallery): ?>
     <div class="item">
