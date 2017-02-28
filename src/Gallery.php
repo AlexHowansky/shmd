@@ -148,7 +148,7 @@ class Gallery
      */
     public function getTitle(): string
     {
-        return $this->getFileContents(self::TITLE_FILE) ?? $this->getName();
+        return $this->getFileContents(self::TITLE_FILE) ?: $this->getName();
     }
 
     /**

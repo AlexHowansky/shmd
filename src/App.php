@@ -463,7 +463,7 @@ class App
                 ->writeLabel('Name', $order['name'], true)
                 ->linefeed(2)
                 ->writeLabel('Time', date(self::DATE_FORMAT, $order['time']))
-                ->writeLabel('Order', substr($orderHash, 0, 16))
+                ->writeLabel('Order', substr($id, 0, 16))
                 ->linefeed()
                 ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
                 ->writeLabel('Photo', $order['photo'])
