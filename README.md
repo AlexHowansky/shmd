@@ -16,9 +16,9 @@ need the create some mechanism to relay print orders from the former to the
 latter. This application was hastily thrown together in a weekend in an attempt
 to address that requirement.
 
-After great success in 2017, the app was updated in 2017 to perform facial
-recognition via the Amazon Rekognition service. Armed with student data and
-high quality individual reference portraits from the yearbook vendor, the
+After great success in 2016, the app was updated in 2017 to perform facial
+recognition via the Amazon Rekognition service. Armed with student metadata
+and high quality individual reference portraits from the yearbook vendor, the
 Amazon Rekognition engine can be seeded with baseline images for all students.
 This process creates a unique FaceId for each student, which is kept in a
 SQLite databse. As event photos pour in, they may be passed to Rekognition
@@ -44,7 +44,9 @@ characters. The directory name will be used as the URL slug for the gallery.
 Create another subdirectory with the same name under the `public/photos`
 directory. Make sure it's readable by the web server user. If you would like
 the app to show a more descriptive name for the gallery, you may create a text
-file `public/photos/<gallery>/title` containing a descriptive gallery title.
+file `public/photos/<gallery>/title` containing the  gallery title. You may
+also create `public/photos/<gallery>/description` with a short description of
+the gallery contents.
 
 ### Photos
 
