@@ -458,7 +458,6 @@ class App
             $lp = new Epson($this->config);
             $lp
                 ->linefeed()
-                ->writeLineCenter('South High Marathon Dance 2017', true)
                 ->writeLineCenter($this->config['title'], true)
                 ->linefeed(2)
                 ->writeLabel('Name', $order['name'], true)
