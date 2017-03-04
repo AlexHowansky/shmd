@@ -30,17 +30,20 @@ do
         mkdir -p ${PHOTO_DIR}/${GALLERY}
     fi
 
+    SAVEIFS=$IFS
+    IFS=$(echo -en "\n\b")
     for FILE in $(find . -mindepth 1 -maxdepth 1 -type f -name "*.jpg")
     do
-        PHOTO=$(basename ${FILE})
+        PHOTO=$(basename "${FILE}")
         echo -n "    ${PHOTO}"
-        if [ -f ${PHOTO_DIR}/${GALLERY}/${PHOTO} ]
+        if [ -f "${PHOTO_DIR}/${GALLERY}/${PHOTO}" ]
         then
             echo " skipped"
         else
-            convert -resize 600x600 ${FILE} ${PHOTO_DIR}/${GALLERY}/${PHOTO}
+            convert -resize 600x600 ${FILE} "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
             echo " resized"
         fi
     done
+    IFS=$SAVEIFS
 
 done
