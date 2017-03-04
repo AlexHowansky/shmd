@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+ini_set('memory_limit', '8G');
+
 /**
  * This script will iterate over photos in the given directory, attempt
  * to identify the people in the photo, and then write the results into
