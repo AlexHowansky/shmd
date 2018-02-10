@@ -76,6 +76,8 @@ class Epson
      * Get the printer resource, opening it if needed.
      *
      * @return resource The printer resource.
+     *
+     * @throws \Exception On error.
      */
     protected function getLp()
     {
@@ -92,7 +94,7 @@ class Epson
     /**
      * Send a line feed.
      *
-     * @param int $n The number of line feeds to send
+     * @param int $n The number of line feeds to send.
      *
      * @return Epson Allow method chaining.
      */

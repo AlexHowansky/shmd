@@ -3,16 +3,20 @@
     "require": {
         "php": ">=7",
         "aws/aws-sdk-php": "*",
-        "ork/base": "dev-master",
+        "ork/csv": "*",
         "ext-gd": "*",
         "ext-sqlite3": "*"
     },
     "require-dev": {
-        "ork/phpcs": "dev-master"
+        "ork/phpcs": "*"
     },
     "autoload": {
         "psr-4": {
             "Shmd\\": "src/"
         }
+    },
+    "scripts": {
+        "phpcs": "phpcs",
+        "serve": "php -S localhost:8000 -t public/"
     }
 }

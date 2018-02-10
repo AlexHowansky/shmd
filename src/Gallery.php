@@ -11,6 +11,9 @@
 
 namespace Shmd;
 
+/**
+ * Gallery handler.
+ */
 class Gallery
 {
 
@@ -42,10 +45,10 @@ class Gallery
     /**
      * Constructor.
      *
-     * @param App $app  The app that spawned us.
-     * @param string    $name The name of this gallery.
+     * @param App    $app  The app that spawned us.
+     * @param string $name The name of this gallery.
      */
-    public function __construct(App $app = null, $name = null)
+    public function __construct(App $app = null, string $name = null)
     {
         if ($app !== null) {
             $this->setApp($app);
@@ -59,6 +62,8 @@ class Gallery
      * Get the app that spawned us.
      *
      * @return App
+     *
+     * @throws \Exception On error.
      */
     public function getApp(): App
     {
@@ -170,6 +175,8 @@ class Gallery
      * @param string $name The gallery name.
      *
      * @return Gallery Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function setName(string $name): Gallery
     {

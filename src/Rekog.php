@@ -57,9 +57,9 @@ class Rekog
      *
      * @param string $directory The directory to scan for new photos.
      *
-     * @returns Rekog Allow method chaining.
+     * @return Rekog Allow method chaining.
      *
-     * @throws \RuntimeException On error
+     * @throws \RuntimeException On error.
      */
     public function identify(string $directory): Rekog
     {
@@ -101,16 +101,16 @@ class Rekog
             $facesJsonFile = $file->getPathname() . self::FACES_JSON;
             if (file_exists($facesJsonFile) === true) {
                 $faces = json_decode(file_get_contents($facesJsonFile), true);
-                echo "  already detected " . count($faces) . " faces\n";
+                echo '  already detected ' . count($faces) . " faces\n";
             } else {
-                echo "  detecting faces... ";
+                echo '  detecting faces... ';
                 $faces = $api->detectFaces([
                     'Attributes' => ['ALL'],
                     'Image' => [
                         'Bytes' => file_get_contents($file->getPathname()),
                     ],
                 ])->get('FaceDetails');
-                echo "found " . count($faces) . "\n";
+                echo 'found ' . count($faces) . "\n";
                 file_put_contents($facesJsonFile, json_encode($faces));
             }
 
@@ -140,7 +140,7 @@ class Rekog
 
                 // Crop out the detected face and save it.
                 if (file_exists($faceFile) === true) {
-                    echo "    already created $faceFile\n";
+                    echo '    already created ' . $faceFile . "\n";
                 } else {
                     $cropped = imagecrop(
                         $gd,
@@ -152,7 +152,7 @@ class Rekog
                         ]
                     );
                     imagejpeg($cropped, $faceFile);
-                    echo "    face $num saved to $faceFile\n";
+                    echo '    face ' . $num . ' saved to ' . $faceFile . "\n";
                 }
 
                 // Look for matches for this face.
@@ -172,7 +172,7 @@ class Rekog
                         if (empty($row) === true) {
                             echo "        not identified\n";
                         } else {
-                            echo "        indentified as " . $row['name'] . "\n";
+                            echo '        indentified as ' . $row['name'] . "\n";
                             $recognized = [
                                 'name' => $row['name'],
                                 'gallery' => basename($file->getPath()),
@@ -208,6 +208,8 @@ class Rekog
      * @param array  $grades    Only process these grades.
      *
      * @return Rekog Allow method chaining.
+     *
+     * @throws \RuntimeException On error.
      */
     public function index(string $directory, array $grades): Rekog
     {

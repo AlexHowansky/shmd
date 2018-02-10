@@ -2,8 +2,6 @@
 <ruleset name="Ork Base">
     <rule ref="vendor/ork/phpcs/Ork">
         <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before"/>
-        <exclude name="Ork.Formatting.MultiLineAssignment"/>
-        <exclude name="Ork.Functions.FunctionCallSignature"/>
     </rule>
     <file>src</file>
 </ruleset>

@@ -4,26 +4,30 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "750c9ce757413ce3453b095e88f8bc10",
+    "content-hash": "65525cb430733ceafa06f4391367da08",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.23.1",
+            "version": "3.52.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "7d319413995f9326e7aa41e02bcc799490038deb"
+                "reference": "c9af7657eddc0267cc7ac4f969c10d5c18459992"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7d319413995f9326e7aa41e02bcc799490038deb",
-                "reference": "7d319413995f9326e7aa41e02bcc799490038deb",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c9af7657eddc0267cc7ac4f969c10d5c18459992",
+                "reference": "c9af7657eddc0267cc7ac4f969c10d5c18459992",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
+                "ext-pcre": "*",
+                "ext-simplexml": "*",
+                "ext-spl": "*",
                 "guzzlehttp/guzzle": "^5.3.1|^6.2.1",
                 "guzzlehttp/promises": "~1.0",
-                "guzzlehttp/psr7": "~1.3.1",
+                "guzzlehttp/psr7": "^1.4.1",
                 "mtdowling/jmespath.php": "~2.2",
                 "php": ">=5.5"
             },
@@ -33,13 +37,9 @@
                 "behat/behat": "~3.0",
                 "doctrine/cache": "~1.4",
                 "ext-dom": "*",
-                "ext-json": "*",
                 "ext-openssl": "*",
-                "ext-pcre": "*",
-                "ext-simplexml": "*",
-                "ext-spl": "*",
                 "nette/neon": "^2.3",
-                "phpunit/phpunit": "~4.0|~5.0",
+                "phpunit/phpunit": "^4.8.35|^5.4.3",
                 "psr/cache": "^1.0"
             },
             "suggest": {
@@ -84,31 +84,34 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-02-28T03:16:27+00:00"
+            "time": "2018-02-09T22:53:37+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.2.2",
+            "version": "6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "ebf29dee597f02f09f4d5bbecc68230ea9b08f60"
+                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ebf29dee597f02f09f4d5bbecc68230ea9b08f60",
-                "reference": "ebf29dee597f02f09f4d5bbecc68230ea9b08f60",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f4db5a78a5ea468d4831de7f0bf9d9415e348699",
+                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/promises": "^1.0",
-                "guzzlehttp/psr7": "^1.3.1",
+                "guzzlehttp/psr7": "^1.4",
                 "php": ">=5.5"
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.0",
+                "phpunit/phpunit": "^4.0 || ^5.0",
                 "psr/log": "^1.0"
+            },
+            "suggest": {
+                "psr/log": "Required for using the Log middleware"
             },
             "type": "library",
             "extra": {
@@ -146,7 +149,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2016-10-08T15:01:37+00:00"
+            "time": "2017-06-22T18:50:49+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -201,16 +204,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.3.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "5c6447c9df362e8f8093bda8f5d8873fe5c7f65b"
+                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/5c6447c9df362e8f8093bda8f5d8873fe5c7f65b",
-                "reference": "5c6447c9df362e8f8093bda8f5d8873fe5c7f65b",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
+                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
                 "shasum": ""
             },
             "require": {
@@ -246,16 +249,23 @@
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "homepage": "https://github.com/Tobion"
                 }
             ],
-            "description": "PSR-7 message implementation",
+            "description": "PSR-7 message implementation that also provides common utility methods",
             "keywords": [
                 "http",
                 "message",
+                "request",
+                "response",
                 "stream",
-                "uri"
+                "uri",
+                "url"
             ],
-            "time": "2016-06-24T23:00:38+00:00"
+            "time": "2017-03-20T17:10:46+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -313,31 +323,32 @@
             "time": "2016-12-03T22:08:25+00:00"
         },
         {
-            "name": "ork/base",
-            "version": "dev-master",
+            "name": "ork/core",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/AlexHowansky/ork-base.git",
-                "reference": "5f4ab14e63bbc8b17898639fd1fff86ee6659bb0"
+                "url": "https://github.com/AlexHowansky/ork-core.git",
+                "reference": "077b10b6654891e098b0132780d910386ee2df8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AlexHowansky/ork-base/zipball/5f4ab14e63bbc8b17898639fd1fff86ee6659bb0",
-                "reference": "5f4ab14e63bbc8b17898639fd1fff86ee6659bb0",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-core/zipball/077b10b6654891e098b0132780d910386ee2df8f",
+                "reference": "077b10b6654891e098b0132780d910386ee2df8f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5"
+                "php": "^7.1"
             },
             "require-dev": {
-                "mikey179/vfsstream": ">=1.2",
-                "ork/phpcs": "dev-master",
-                "phpunit/phpunit": ">=4.0"
+                "mikey179/vfsstream": "^1.6.5",
+                "ork/phpcs": "^2.0.4",
+                "phpdocumentor/phpdocumentor": "^2.9.0",
+                "phpunit/phpunit": "^7.0.0"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Ork\\": "src/"
+                    "Ork\\Core\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -351,9 +362,61 @@
                     "homepage": "https://github.com/AlexHowansky"
                 }
             ],
-            "description": "A PHP utility library used by Ork packages.",
-            "homepage": "http://github.com/AlexHowansky/ork-base",
-            "time": "2016-09-26 16:36:17"
+            "description": "Core bits of the Ork toolset.",
+            "homepage": "http://github.com/AlexHowansky/ork-core",
+            "keywords": [
+                "ork"
+            ],
+            "time": "2018-02-10T16:59:21+00:00"
+        },
+        {
+            "name": "ork/csv",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AlexHowansky/ork-csv.git",
+                "reference": "92c122f08b4aa24a908360fe2870e607f6b441ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-csv/zipball/92c122f08b4aa24a908360fe2870e607f6b441ad",
+                "reference": "92c122f08b4aa24a908360fe2870e607f6b441ad",
+                "shasum": ""
+            },
+            "require": {
+                "ork/core": "^1.0.0",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6.4",
+                "ork/phpcs": "^1.4.1",
+                "phpdocumentor/phpdocumentor": "^2.9.0",
+                "phpunit/phpunit": "^6.0.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ork\\Csv\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Howansky",
+                    "email": "alex.howansky@gmail.com",
+                    "homepage": "https://github.com/AlexHowansky"
+                }
+            ],
+            "description": "A library to read and write CSV files.",
+            "homepage": "http://github.com/AlexHowansky/ork-csv",
+            "keywords": [
+                "csv",
+                "ork"
+            ],
+            "time": "2017-05-02T01:22:34+00:00"
         },
         {
             "name": "psr/http-message",
@@ -409,23 +472,20 @@
     "packages-dev": [
         {
             "name": "ork/phpcs",
-            "version": "dev-master",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AlexHowansky/ork-phpcs.git",
-                "reference": "0b284a67a4078bd36c51536cdff9b8ae2f24037a"
+                "reference": "47b9cc8c5014c81ab8297cedef25302375d0bf57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AlexHowansky/ork-phpcs/zipball/0b284a67a4078bd36c51536cdff9b8ae2f24037a",
-                "reference": "0b284a67a4078bd36c51536cdff9b8ae2f24037a",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-phpcs/zipball/47b9cc8c5014c81ab8297cedef25302375d0bf57",
+                "reference": "47b9cc8c5014c81ab8297cedef25302375d0bf57",
                 "shasum": ""
             },
             "require": {
-                "squizlabs/php_codesniffer": "~2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4"
+                "squizlabs/php_codesniffer": "^3.0.2"
             },
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -441,67 +501,40 @@
             ],
             "description": "A set of PHPCS rules that describe the Ork coding standard.",
             "homepage": "http://github.com/AlexHowansky/ork-phpcs",
-            "time": "2016-12-12 23:24:21"
+            "time": "2017-09-12T14:37:03+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.8.0",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "86dd55a522238211f9f3631e3361703578941d9a"
+                "reference": "d7c00c3000ac0ce79c96fcbfef86b49a71158cd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/86dd55a522238211f9f3631e3361703578941d9a",
-                "reference": "86dd55a522238211f9f3631e3361703578941d9a",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d7c00c3000ac0ce79c96fcbfef86b49a71158cd1",
+                "reference": "d7c00c3000ac0ce79c96fcbfef86b49a71158cd1",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
                 "ext-tokenizer": "*",
                 "ext-xmlwriter": "*",
-                "php": ">=5.1.2"
+                "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0"
             },
             "bin": [
-                "scripts/phpcs",
-                "scripts/phpcbf"
+                "bin/phpcs",
+                "bin/phpcbf"
             ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.x-dev"
+                    "dev-master": "3.x-dev"
                 }
-            },
-            "autoload": {
-                "classmap": [
-                    "CodeSniffer.php",
-                    "CodeSniffer/CLI.php",
-                    "CodeSniffer/Exception.php",
-                    "CodeSniffer/File.php",
-                    "CodeSniffer/Fixer.php",
-                    "CodeSniffer/Report.php",
-                    "CodeSniffer/Reporting.php",
-                    "CodeSniffer/Sniff.php",
-                    "CodeSniffer/Tokens.php",
-                    "CodeSniffer/Reports/",
-                    "CodeSniffer/Tokenizers/",
-                    "CodeSniffer/DocGenerators/",
-                    "CodeSniffer/Standards/AbstractPatternSniff.php",
-                    "CodeSniffer/Standards/AbstractScopeSniff.php",
-                    "CodeSniffer/Standards/AbstractVariableSniff.php",
-                    "CodeSniffer/Standards/IncorrectPatternException.php",
-                    "CodeSniffer/Standards/Generic/Sniffs/",
-                    "CodeSniffer/Standards/MySource/Sniffs/",
-                    "CodeSniffer/Standards/PEAR/Sniffs/",
-                    "CodeSniffer/Standards/PSR1/Sniffs/",
-                    "CodeSniffer/Standards/PSR2/Sniffs/",
-                    "CodeSniffer/Standards/Squiz/Sniffs/",
-                    "CodeSniffer/Standards/Zend/Sniffs/"
-                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -519,15 +552,12 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2017-02-02T03:30:00+00:00"
+            "time": "2017-12-19T21:44:46+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ork/base": 20,
-        "ork/phpcs": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

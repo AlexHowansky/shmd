@@ -143,6 +143,8 @@ class App
      * @param string $id The order ID.
      *
      * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function archiveOrder(string $id): App
     {
@@ -155,7 +157,7 @@ class App
     /**
      * Render the page body.
      *
-     * @return null
+     * @return void
      */
     public function body()
     {
@@ -166,6 +168,8 @@ class App
      * Create a new order.
      *
      * @return string The order ID.
+     *
+     * @throws \Exception On error.
      */
     public function createOrder(): string
     {
@@ -244,7 +248,7 @@ class App
      *
      * @throws \Exception If the page does not exist.
      */
-    protected function getFileForPage($page)
+    protected function getFileForPage(string $page)
     {
         $file = $this->getPageDir() . '/' . $page . '.php';
         if (file_exists($file) === false) {
@@ -300,6 +304,8 @@ class App
      * @param string $id The order ID.
      *
      * @return array The order data.
+     *
+     * @throws \Exception On error.
      */
     public function getOrder(string $id): array
     {
@@ -422,8 +428,10 @@ class App
      * @param string $size The size to get the price for.
      *
      * @return float The price for that size.
+     *
+     * @throws \Exception On error.
      */
-    public function getPriceForSize($size)
+    public function getPriceForSize(string $size)
     {
         if (array_key_exists($size, $this->prices) === false) {
             throw new \Exception('Invalid size.');
@@ -435,6 +443,8 @@ class App
      * Get the the photo directory relative to the document root.
      *
      * @return string The photo directory relative to the document root.
+     *
+     * @throws \Exception On error.
      */
     public function getRelativePhotoDir(): string
     {
@@ -451,7 +461,7 @@ class App
      *
      * @return bool True if the receipt printed successfully.
      */
-    public function printReceipt($id): bool
+    public function printReceipt(string $id): bool
     {
         try {
             $order = $this->getOrder($id);
@@ -495,7 +505,7 @@ class App
     /**
      * Render this page.
      *
-     * @return null
+     * @return void
      */
     public function render()
     {
@@ -548,6 +558,8 @@ class App
      * @param string $dir The order archive directory.
      *
      * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function setArchiveDir(string $dir): App
     {
@@ -578,6 +590,8 @@ class App
      * @param string $dir The order directory.
      *
      * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function setOrderDir(string $dir): App
     {
@@ -595,6 +609,8 @@ class App
      * @param string $page The page to render.
      *
      * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function setPage(string $page): App
     {
@@ -616,6 +632,8 @@ class App
      * @param string $dir The page directory.
      *
      * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function setPageDir(string $dir): App
     {
@@ -643,7 +661,7 @@ class App
     /**
      * Set the page parameters.
      *
-     * @param array $params The page Parameters
+     * @param array $params The page parameters.
      *
      * @return App Allow method chaining.
      */
@@ -659,6 +677,8 @@ class App
      * @param string $dir The photo directory.
      *
      * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
      */
     public function setPhotoDir(string $dir): App
     {

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script will make copies of the staging photos, and
+# reduce them in size until they're under 5Mb, which is
+# the cap for the Rekognition API. These resized photos
+# can then be used with the identifyPhotos.php script.
+
 SCRIPT_DIR=$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 STAGE_DIR=${SCRIPT_DIR}/../staging
 REKOG_DIR=${SCRIPT_DIR}/../rekog

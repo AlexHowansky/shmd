@@ -49,6 +49,7 @@ class Config implements \ArrayAccess
      *
      * @return bool True if the offset exists.
      */
+    // @codingStandardsIgnoreLine
     public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->config);
@@ -60,7 +61,10 @@ class Config implements \ArrayAccess
      * @param string $offset The offset to get.
      *
      * @return mixed The value of the offset.
+     *
+     * @throws \RuntimeException On error.
      */
+    // @codingStandardsIgnoreLine
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset) === false) {
@@ -77,6 +81,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
+    // @codingStandardsIgnoreLine
     public function offsetSet($offset, $value)
     {
         $this->config[$offset] = $value;
@@ -89,6 +94,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
+    // @codingStandardsIgnoreLine
     public function offsetUnset($offset)
     {
         unset($this->config[$offset]);
