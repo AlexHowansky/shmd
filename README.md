@@ -60,6 +60,10 @@ Photos will not appear in the app until after they have been so processed.
 Note that the files in `public/photos/<gallery>` must be readable by the web
 server process user.
 
+The galleries will be displayed in the order they were created. If you would
+like to manually adjust this order, simply `touch public/photos/<gallery>` to
+move that gallery to the end of the list.
+
 ### Facial Recognition
 
 To seed the facial recognition database, run the script `bin/indexPhotos.php`
