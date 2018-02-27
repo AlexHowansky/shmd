@@ -496,11 +496,11 @@ class App
                 ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
                 ->writeLabel('Photo', $order['photo'])
                 ->linefeed();
-            $lp->writeLine('Size        Quantity Unit Price   Subtotal');
-            $lp->writeLine('----------- -------- ---------- ----------');
+            $lp->writeLine('Size            Quantity Unit Price Subtotal');
+            $lp->writeLine('--------------- -------- ---------- --------');
             foreach ($order['quantity'] as $size => $quantity) {
                 $lp->writeLine(sprintf(
-                    '%11s %8s %10s %10s',
+                    '%-15s %8s %10s %8s',
                     $size,
                     $quantity,
                     money_format('%n', $this->getPriceForSize($size)),

@@ -33,7 +33,7 @@ class Epson
     const JUSTIFY_LEFT = "\x1B\x61\x00";
     const JUSTIFY_RIGHT = "\x1B\x61\x02";
 
-    const WIDTH = 42;
+    const WIDTH = 44;
 
     /**
      * The printer resource.
