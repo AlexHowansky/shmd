@@ -1,9 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
+
 setlocale(LC_MONETARY, 'en_US');
 
-$sub = [];
+$totals = [];
 
 foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(realpath(__DIR__ . '/../orders'))) as $file) {
 
@@ -19,27 +21,25 @@ foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(realpath
         continue;
     }
 
-    if (array_key_exists($json['size'], $sub) === false) {
-        $sub[$json['size']] = [
-            'quantity' => 0,
-            'price' => 0,
-        ];
+    foreach ($json['quantity'] as $size => $quantity) {
+        if (array_key_exists($size, $totals) === false) {
+            $totals[$size] = 0;
+        }
+        $totals[$size] += $quantity;
     }
-    $sub[$json['size']]['quantity'] += $json['quantity'];
-    $sub[$json['size']]['price'] += $json['price'];
 
 }
 
 $num = 0;
 $tot = 0;
-foreach ($sub as $size => $data) {
-    $num += $data['quantity'];
-    $tot += $data['price'];
+foreach ($totals as $size => $count) {
+    $num += $count;
+    $tot += \Shmd\App::PRICES[$size] * $count;
     printf(
         "Size: %s\n  Count: %d\n  Total: %s\n\n",
         $size,
-        $data['quantity'],
-        money_format('%n', $data['price'])
+        $count,
+        money_format('%n', \Shmd\App::PRICES[$size] * $count)
     );
 }
 

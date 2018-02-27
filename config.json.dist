@@ -2,10 +2,11 @@
     "aws": {
         "key": "<put your AWS key here>",
         "secret": "<put your AWS secret here>",
-        "region": "us-east-1",
-        "collection": "<put your collection name here>"
+        "region": "<put your AWS Rekognition region here>",
+        "collection": "<put your AWS Rekognition collection name here>"
     },
     "database": "/path/to/your/sqlite.db",
+    "searchLog": "/path/to/optional/search.log",
     "locale": "en_US",
     "printer": "/dev/usb/lp0",
     "title": "The Name of Your Event"

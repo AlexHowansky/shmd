@@ -92,6 +92,17 @@ class Db
         while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $photos[] = $row;
         }
+        if (empty($this->config['searchLog']) === false) {
+            file_put_contents(
+                $this->config['searchLog'],
+                json_encode([
+                    'timestamp' => time(),
+                    'searchTerm' => $name,
+                    'results' => $photos,
+                ]) . "\n",
+                FILE_APPEND
+            );
+        }
         return $photos;
     }
 

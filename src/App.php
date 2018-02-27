@@ -19,7 +19,7 @@ class App
 
     use Configurable;
 
-    const DATE_FORMAT = 'j M Y H:i:s';
+    const DATE_FORMAT = 'M j Y h:i:s a';
 
     const DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
 
@@ -34,6 +34,13 @@ class App
     const DEFAULT_PAGE_WRAPPER = '_page';
 
     const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
+
+    const PRICES = [
+        '4x6' => 2,
+        '5x7' => 5,
+        '8x10' => 8,
+        '13x19' => 20,
+    ];
 
     const SEARCH_LIMIT = 20;
 
@@ -92,18 +99,6 @@ class App
      * @var string
      */
     protected $photoDir = null;
-
-    /**
-     * Prices.
-     *
-     * @var array
-     */
-    protected $prices = [
-        '4x6' => '2',
-        '5x7' => '5',
-        '8x10' => '8',
-        '13x19' => '20',
-    ];
 
     /**
      * Constructor.
@@ -174,16 +169,30 @@ class App
     public function createOrder(): string
     {
 
-        $order = [];
-        foreach (['gallery', 'photo', 'name', 'quantity', 'size'] as $field) {
+        $order = ['quantity' => []];
+        foreach (['gallery', 'photo', 'name'] as $field) {
             if (empty($_POST[$field]) === true) {
                 throw new \Exception('Field "' . $field . '" can not be empty.');
             }
             $order[$field] = $_POST[$field];
         }
+
+        $total = 0;
+        foreach ($this->getSizes() as $size) {
+            $key = 'qty_' . $size;
+            if (empty($_POST[$key]) === false) {
+                $order['quantity'][$size] = (int) $_POST[$key];
+                $total += $order['quantity'][$size] * $this->getPriceForSize($size);
+            }
+        }
+
+        if ($total === 0) {
+            throw new \Exception('No quantities selected.');
+        }
+
         $order['comments'] = $_POST['comments'];
-        $order['time'] = microtime(true);
-        $order['price'] = $this->getPriceForSize($order['size']) * $order['quantity'];
+        $order['time'] = time();
+        $order['total'] = $total;
 
         $orderJson = json_encode($order);
         $orderHash = sha1($orderJson);
@@ -318,7 +327,6 @@ class App
             throw new \Exception('Bad order.');
         }
         $order['id'] = $id;
-        $order['total'] = $this->getPriceForSize($order['size']) * $order['quantity'];
         return $order;
     }
 
@@ -433,10 +441,10 @@ class App
      */
     public function getPriceForSize(string $size)
     {
-        if (array_key_exists($size, $this->prices) === false) {
+        if (array_key_exists($size, self::PRICES) === false) {
             throw new \Exception('Invalid size.');
         }
-        return $this->prices[$size];
+        return self::PRICES[$size];
     }
 
     /**
@@ -452,6 +460,16 @@ class App
             throw new \Exception('Photo dir must be located under DOCUMENT_ROOT.');
         }
         return substr($this->getPhotoDir(), strlen($_SERVER['DOCUMENT_ROOT']));
+    }
+
+    /**
+     * Get the list of possible print sizes.
+     *
+     * @return array The list of possible print sizes.
+     */
+    public function getSizes(): array
+    {
+        return array_keys(self::PRICES);
     }
 
     /**
@@ -477,21 +495,27 @@ class App
                 ->linefeed()
                 ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
                 ->writeLabel('Photo', $order['photo'])
-                ->writeLabel('Size', $order['size'])
-                ->writeLabel('Quantity', $order['quantity']);
+                ->linefeed();
+            $lp->writeLine('Size        Quantity Unit Price   Subtotal');
+            $lp->writeLine('----------- -------- ---------- ----------');
+            foreach ($order['quantity'] as $size => $quantity) {
+                $lp->writeLine(sprintf(
+                    '%11s %8s %10s %10s',
+                    $size,
+                    $quantity,
+                    money_format('%n', $this->getPriceForSize($size)),
+                    money_format('%n', $this->getPriceForSize($size) * $quantity)
+                ));
+            }
             if (empty($order['comments']) === false) {
                 $lp
-                    ->linefeed(2)
+                    ->linefeed()
                     ->writeLine('Comments:')
                     ->writeLine($order['comments']);
             }
             $lp
                 ->linefeed(2)
-                ->writeLabel(
-                    'Total Due',
-                    money_format('%n', $this->getPriceForSize($order['size']) * $order['quantity']),
-                    true
-                )
+                ->writeLabel('Total', money_format('%n', $order['total']), true)
                 ->linefeed(2)
                 ->writeLineCenter('Thank You For Your Support', true)
                 ->linefeed(8)
