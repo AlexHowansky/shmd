@@ -418,6 +418,19 @@ class App
     }
 
     /**
+     * Get a list of people in a given photo.
+     *
+     * @param string $gallery The gallery the photo is in.
+     * @param string $photo   The photo to get the list of people in.
+     *
+     * @return array The people in the photo.
+     */
+    public function getPeopleInPhoto(string $gallery, string $photo)
+    {
+        return (new Db($this->config))->getPeopleInPhoto($gallery, $photo);
+    }
+
+    /**
      * Get the photo directory.
      *
      * @return string The photo directory.
@@ -545,8 +558,7 @@ class App
      */
     public function search(string $text): array
     {
-
-        $names = (new Db($this->config))->search($text, self::SEARCH_LIMIT);
+        $names = (new Db($this->config))->search(urldecode($text), self::SEARCH_LIMIT);
         if (empty($names) === false) {
             $nameMatches = [];
             foreach ($names as $name) {

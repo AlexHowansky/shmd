@@ -50,13 +50,40 @@ class Db
             );
             $this->db->exec(
                 'CREATE TABLE IF NOT EXISTS photos (
-                    name TEXT NOT NULL,
+                    face_id TEXT NOT NULL,
                     gallery TEXT NOT NULL,
                     photo TEXT NOT NULL
                 );'
             );
-            $this->db->exec('CREATE UNIQUE INDEX IF NOT EXISTS photos_unique ON photos (name, gallery, photo);');
+            $this->db->exec('CREATE UNIQUE INDEX IF NOT EXISTS photos_unique ON photos (face_id, gallery, photo);');
+            $this->db->exec('CREATE INDEX IF NOT EXISTS photos_photo ON photos (gallery, photo);');
         }
+    }
+
+    /**
+     * Get a list of people in a given photo.
+     *
+     * @param string $gallery The gallery the photo is in.
+     * @param string $photo   The photo to get the list of people in.
+     *
+     * @return array The people in the photo.
+     */
+    public function getPeopleInPhoto(string $gallery, string $photo)
+    {
+        $stmt = $this->db->prepare(
+            'SELECT faces.id, faces.name, faces.gender, faces.class FROM faces ' .
+            'JOIN photos ON photos.face_id = faces.id ' .
+            'WHERE photos.gallery = :gallery and photos.photo = :photo ' .
+            'ORDER BY faces.name'
+        );
+        $stmt->bindValue(':gallery', $gallery);
+        $stmt->bindValue(':photo', $photo);
+        $result = $stmt->execute();
+        $people = [];
+        while (($row = $result->fetchArray(SQLITE3_ASSOC)) !== false) {
+            $people[] = $row;
+        }
+        return $people;
     }
 
     /**
@@ -77,17 +104,31 @@ class Db
     /**
      * Search for the photos a name appears in.
      *
-     * @param string $name  The name to search for.
-     * @param int    $limit Limit the search to this many records.
+     * @param string $string The id or name to search for.
+     * @param int    $limit  Limit the search to this many records.
      *
-     * @return array The photos the name appears in.
+     * @return array The photos the person appears in.
      */
-    public function search(string $name, int $limit = 20): array
+    public function search(string $string, int $limit = 20): array
     {
         $photos = [];
-        $stmt = $this->db->prepare('SELECT DISTINCT gallery, photo FROM photos WHERE name like :name LIMIT :limit');
-        $stmt->bindValue(':name', '%' . $name . '%');
-        $stmt->bindValue(':limit', $limit);
+        if (preg_match('/^[0-9a-f-]{36}$/', $string) === 1) {
+            $stmt = $this->db->prepare(
+                'SELECT DISTINCT photos.gallery, photos.photo FROM photos ' .
+                'JOIN faces ON faces.id = photos.face_id ' .
+                'WHERE faces.id = :id LIMIT :limit'
+            );
+            $stmt->bindValue(':id', $string);
+            $stmt->bindValue(':limit', $limit);
+        } else {
+            $stmt = $this->db->prepare(
+                'SELECT DISTINCT photos.gallery, photos.photo FROM photos ' .
+                'JOIN faces ON faces.id = photos.face_id ' .
+                'WHERE faces.name like :name LIMIT :limit'
+            );
+            $stmt->bindValue(':name', '%' . $string . '%');
+            $stmt->bindValue(':limit', $limit);
+        }
         $result = $stmt->execute();
         while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $photos[] = $row;
@@ -118,11 +159,11 @@ class Db
      */
     public function write(string $table, array $row): Db
     {
-        if (preg_match('/^[a-zA-z][a-zA-Z0-9]+$/', $table) !== 1) {
+        if (preg_match('/^[a-zA-z][a-zA-Z0-9_]+$/', $table) !== 1) {
             throw new \RuntimeException('Bad table name.');
         }
         foreach (array_keys($row) as $key) {
-            if (preg_match('/^[a-zA-z][a-zA-Z0-9]+$/', $key) !== 1) {
+            if (preg_match('/^[a-zA-z][a-zA-Z0-9_]+$/', $key) !== 1) {
                 throw new \RuntimeException('Bad field name.');
             }
         }

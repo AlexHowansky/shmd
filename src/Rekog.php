@@ -173,14 +173,14 @@ class Rekog
                             echo "        not identified\n";
                         } else {
                             echo '        indentified as ' . $row['name'] . "\n";
-                            $recognized = [
-                                'name' => $row['name'],
-                                'gallery' => basename($file->getPath()),
-                                'photo' => $file->getBasename('.jpg'),
-                            ];
-                            $names[] = $recognized;
-                            $db->write('photos', $recognized);
                         }
+                        $recognized = [
+                            'face_id' => $match['Face']['FaceId'],
+                            'gallery' => basename($file->getPath()),
+                            'photo' => $file->getBasename('.jpg'),
+                        ];
+                        $names[] = $recognized;
+                        $db->write('photos', $recognized);
                     }
                 } catch (\Aws\Rekognition\Exception\RekognitionException $e) {
                     echo "      face not found\n";
