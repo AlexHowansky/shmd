@@ -1,4 +1,4 @@
-<a class="ui card" href="/photo/<?= $gallery->getName() ?>/<?= $photo ?>">
+<a class="ui card" href="/photo/<?= $gallery->getName() ?>/<?= urlencode($photo) ?>">
     <div class="image">
         <img src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
     </div>
