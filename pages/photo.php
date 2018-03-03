@@ -1,6 +1,6 @@
 <?php
 $gallery = $this->getGallery($this->getParam(0));
-$photo = $this->getParam(1);
+$photo = urldecode($this->getParam(1));
 $people = $this->getPeopleInPhoto($gallery->getName(), $photo);
 $menu = [
     '/' => 'Home',
@@ -19,7 +19,7 @@ include '_menu.php';
 <?php if (empty($people) === false): ?>
 <div class="ui raised container segment">
 <?php foreach ($people as $person): ?>
-    <a class="ui <?= $person['gender'] === 'Female' ? 'pink' : 'blue' ?> big image label" href="/search/<?= $person['id'] ?>">
+    <a class="ui big blue image label" href="/search/<?= $person['id'] ?>">
         <img src="/<?= substr($person['class'], -2) ?>.png">
         <?= $person['name'] ?>
     </a>
