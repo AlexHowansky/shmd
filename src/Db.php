@@ -138,7 +138,7 @@ class Db
                 $this->config['searchLog'],
                 json_encode([
                     'timestamp' => time(),
-                    'searchTerm' => $name,
+                    'searchTerm' => $string,
                     'results' => $photos,
                 ]) . "\n",
                 FILE_APPEND
