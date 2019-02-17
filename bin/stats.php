@@ -1,6 +1,15 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * This script will parse the order data and print a summary of orders.
+ *
+ * @package   SHMD
+ * @copyright 2016-2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @license   https://github.com/AlexHowansky/shmd/blob/master/LICENSE MIT License
+ * @link      https://github.com/AlexHowansky/shmd
+ */
+
 require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
 setlocale(LC_MONETARY, 'en_US');

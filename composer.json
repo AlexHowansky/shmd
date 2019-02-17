@@ -1,14 +1,14 @@
 {
     "name": "shmd/gallery",
     "require": {
-        "php": ">=7",
-        "aws/aws-sdk-php": "*",
-        "ork/csv": "*",
+        "php": "^7.2",
         "ext-gd": "*",
-        "ext-sqlite3": "*"
+        "ext-pdo_sqlite": "*",
+        "aws/aws-sdk-php": "^3.87.12",
+        "ork/csv": "^1.1.1"
     },
     "require-dev": {
-        "ork/phpcs": "*"
+        "ork/phpcs": "^2.0.9"
     },
     "autoload": {
         "psr-4": {

@@ -14,7 +14,7 @@ namespace Shmd;
 /**
  * AWS Rekognition interface.
  *
- * @see http://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html
+ * See http://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html
  */
 class Rekog
 {
@@ -24,8 +24,42 @@ class Rekog
     // The API version to use.
     const API_VERSION = '2016-06-27';
 
+    // The faces metadata file name extension.
     const FACES_JSON = '.faces.json';
+
+    // The names metadata file name extension.
     const NAMES_JSON = '.names.json';
+
+    /**
+     * @var \Aws\Rekognition\RekognitionClient
+     *
+     * An instance of the API client to use.
+     */
+    protected $api = null;
+
+    /**
+     * Does the collection exist?
+     *
+     * @return bool True if the collection exists.
+     */
+    protected function collectionExists(): bool
+    {
+        return in_array($this->config['aws']['collection'], $this->getApi()->listCollections()->get('CollectionIds'));
+    }
+
+    /**
+     * Create the collection if one doesn't already exist.
+     *
+     * @return void
+     */
+    protected function createCollection(): void
+    {
+        if ($this->collectionExists() === false) {
+            $this->getApi()->createCollection([
+                'CollectionId' => $this->config['aws']['collection'],
+            ]);
+        }
+    }
 
     /**
      * Get an API instance.
@@ -34,15 +68,41 @@ class Rekog
      */
     protected function getApi(): \Aws\Rekognition\RekognitionClient
     {
-        return new \Aws\Rekognition\RekognitionClient([
-            'credentials' => [
-                'key' => $this->config['aws']['key'],
-                'secret' => $this->config['aws']['secret'],
+        if ($this->api === null) {
+            $this->api = new \Aws\Rekognition\RekognitionClient([
+                'credentials' => [
+                    'key' => $this->config['aws']['key'],
+                    'secret' => $this->config['aws']['secret'],
+                ],
+                'debug' => false,
+                'region' => $this->config['aws']['region'],
+                'version' => self::API_VERSION,
+            ]);
+        }
+        return $this->api;
+    }
+
+    /**
+     * Index a face.
+     *
+     * @param string $file       The file containing the face to index.
+     * @param string $externalId The external ID to store in the Rekognition database.
+     *
+     * @return array The analysis data.
+     */
+    protected function indexFace(string $file, string $externalId): array
+    {
+        $result = $this->getApi()->indexFaces([
+            'CollectionId' => $this->config['aws']['collection'],
+            'DetectionAttributes' => ['ALL'],
+            'ExternalImageId' => $externalId,
+            'Image' => [
+                'Bytes' => file_get_contents($file),
             ],
-            'debug' => false,
-            'region' => $this->config['aws']['region'],
-            'version' => self::API_VERSION,
+            'MaxFaces' => 1,
+            'QualityFilter' => 'AUTO',
         ]);
+        return $result->get('FaceRecords')[0];
     }
 
     /**
@@ -68,13 +128,11 @@ class Rekog
             throw new \RuntimeException('Unable to open directory.');
         }
 
-        $api = $this->getApi();
-        if (in_array($this->config['aws']['collection'], $api->listCollections()->get('CollectionIds')) === false) {
+        if ($this->collectionExists() === false) {
             throw new \RuntimeException('Unknown collection.');
         }
 
         $db = new Db($this->config);
-        $api = $this->getApi();
 
         // Iterate over all the files in the named directory.
         foreach (new \DirectoryIterator($directory) as $file) {
@@ -88,12 +146,12 @@ class Rekog
                 continue;
             }
 
-            echo $file->getFileName() . "\n";
+            Ansi::printf("{{white:%s}} ", $file->getFileName());
 
             // We'll save the identified people to this JSON file.
             $namesJsonFile = $file->getPathname() . self::NAMES_JSON;
             if (file_exists($namesJsonFile) === true) {
-                echo "  already recognized, skipping\n";
+                Ansi::printf("{{yellow:%s}}\n", 'already recognized, skipping');
                 continue;
             }
 
@@ -101,10 +159,12 @@ class Rekog
             $facesJsonFile = $file->getPathname() . self::FACES_JSON;
             if (file_exists($facesJsonFile) === true) {
                 $faces = json_decode(file_get_contents($facesJsonFile), true);
+                Ansi::printf();
                 echo '  already detected ' . count($faces) . " faces\n";
+                exit;
             } else {
                 echo '  detecting faces... ';
-                $faces = $api->detectFaces([
+                $faces = $this->getApi()->detectFaces([
                     'Attributes' => ['ALL'],
                     'Image' => [
                         'Bytes' => file_get_contents($file->getPathname()),
@@ -157,7 +217,7 @@ class Rekog
 
                 // Look for matches for this face.
                 try {
-                    $matches = $api->searchFacesByImage([
+                    $matches = $this->getApi()->searchFacesByImage([
                         'CollectionId' => $this->config['aws']['collection'],
                         'MaxFaces' => 1,
                         'Image' => [
@@ -198,81 +258,67 @@ class Rekog
     }
 
     /**
-     * Add a directory of Bielmar-formatted photos to a collection.
+     * Add Bielmar-formatted photos to a collection.
      *
-     * These photos will serve as the baseline for future searches.
-     * Output will be written to faces.csv in the current directory
-     * and to the database table "faces".
+     * These photos will serve as the baseline for future searches. Results
+     * will be saved to the database table "faces".
      *
-     * @param string $directory The directory containing the photos.
-     * @param array  $grades    Only process these grades.
+     * @param string $indexFile The index file containing the photo metadata.
+     * @param int    $year      The school year represented by the photos.
      *
      * @return Rekog Allow method chaining.
      *
      * @throws \RuntimeException On error.
      */
-    public function index(string $directory, array $grades): Rekog
+    public function index(string $indexFile, int $year = null): Rekog
     {
 
-        if (is_dir($directory) === false) {
-            throw new \RuntimeException('Unable to open directory.');
+        if (file_exists($indexFile) === false) {
+            throw new \RuntimeException('Index file does not exist.');
         }
 
-        $api = $this->getApi();
-        if (in_array($this->config['aws']['collection'], $api->listCollections()->get('CollectionIds')) === false) {
-            $api->createCollection([
-                'CollectionId' => $this->config['aws']['collection'],
-            ]);
+        if ($year === null) {
+            if (preg_match('/(20\d\d)/', realpath($indexFile), $match) === 1) {
+                $year = $match[1];
+            } else {
+                throw new \RuntimeException('Must provide year or put index file in a path that contains year.');
+            }
         }
 
-        if (preg_match('/(20\d\d)$/', $directory, $match) === 1) {
-            $year = $match[1];
-        } else {
-            $year = date('Y');
-        }
+        $index = new \Ork\Csv\Reader([
+            'columns' => ['yearbook', 'directory', 'file', 'class', 'last', 'first', 'unk1', 'homeroom', 'teacher', 'unk3'],
+            'file' => $indexFile,
+            'header' => false,
+            'delimiter' => "\t",
+        ]);
+
+        $this->createCollection();
 
         $db = new Db($this->config);
-        $out = new \Ork\Csv\Writer();
 
-        foreach (empty($grades) === false ? $grades : [9, 10, 11, 12] as $grade) {
-            $class = $year + 12 - $grade;
-            $dataDir = $directory . '/' . $grade . '/';
-            $dataFile = $dataDir . $grade . '.TXT';
-            if (file_exists($dataFile) === false) {
-                throw new \RuntimeException('Unable to open grade data file: ' . $dataFile);
+        foreach ($index as $row) {
+            $file = realpath(dirname($indexFile) . '/' . $row['directory'] . '/' . $row['file']);
+            if (file_exists($file) === false) {
+                throw new \RuntimeException('Missing photo file: ' . $file);
             }
-            $csv = new \Ork\Csv\Reader([
-                'file' => $dataFile,
-                'header' => false,
-                'delimiter' => "\t",
-            ]);
-            foreach ($csv as $row) {
-                $name = trim($row[5]) . ' ' . trim($row[4]);
-                $photo = $dataDir . $row[2];
-                if (file_exists($photo) === false) {
-                    throw new \RuntimeException('Missing photo file: ' . $photo);
-                }
-                $result = $api->indexFaces([
-                    'CollectionId' => $this->config['aws']['collection'],
-                    'DetectionAttributes' => ['ALL'],
-                    'Image' => [
-                        'Bytes' => file_get_contents($photo),
-                    ],
-                ]);
-                $faces = $result->get('FaceRecords');
-                $face = array_shift($faces);
-                $id = $face['Face']['FaceId'];
-                $gender = $face['FaceDetail']['Gender']['Value'];
-                $row = [
-                    'id' => $id,
-                    'name' => $name,
-                    'gender' => $gender,
-                    'class' => $class,
-                    'photo' => $grade . '/' . basename($photo),
-                ];
-                $db->write('faces', $row);
-                $out->write($row);
-            }
+            $externalId = $year . ':' .  $row['directory'] . ':' . $row['file'];
+            $face = $this->indexFace($file, $externalId);
+            $row = [
+                'id' => $face['Face']['FaceId'],
+                'name' => trim($row['first'] . ' ' . $row['last']),
+                'class' => is_numeric($row['class']) === true ? ($year + 12 - $row['class']) : strtoupper(trim($row['class'])),
+                'external_id' => $externalId,
+                'metadata' => base64_encode(gzdeflate(json_encode($face))),
+            ];
+            $action = $db->writeFace($row) ? 'added' : 'duplicate';
+            Ansi::printf(
+                '{{BLACK:%4d}} {{cyan:%s}} {{white:%s}} {{YELLOW:%s}} {{' . ($action === 'added' ? 'GREEN' : 'red') . ":%s}}\n",
+                $index->getLineNumber(),
+                $row['id'],
+                $row['external_id'],
+                $row['name'],
+                $action
+            );
         }
 
         return $this;

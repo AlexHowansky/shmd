@@ -22,7 +22,7 @@ class Db
     /**
      * Database connector.
      *
-     * @var \SQLite3
+     * @var \PDO
      */
     protected $db = null;
 
@@ -37,27 +37,43 @@ class Db
             $this->setConfig($config);
         }
         $exists = file_exists($this->config['database']);
-        $this->db = new \SQLite3($this->config['database']);
+        $this->db = new \PDO('sqlite:' . $this->config['database']);
+        $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         if ($exists === false) {
             $this->db->exec(
-                'CREATE TABLE IF NOT EXISTS faces (
+                'CREATE TABLE faces (
                     id TEXT NOT NULL PRIMARY KEY,
                     name TEXT NOT NULL,
-                    gender TEXT,
-                    class INT,
-                    photo TEXT
+                    class TEXT NOT NULL,
+                    external_id TEXT NOT NULL,
+                    metadata TEXT NOT NULL
                 );'
             );
             $this->db->exec(
-                'CREATE TABLE IF NOT EXISTS photos (
+                'CREATE TABLE photos (
                     face_id TEXT NOT NULL,
                     gallery TEXT NOT NULL,
                     photo TEXT NOT NULL
                 );'
             );
-            $this->db->exec('CREATE UNIQUE INDEX IF NOT EXISTS photos_unique ON photos (face_id, gallery, photo);');
-            $this->db->exec('CREATE INDEX IF NOT EXISTS photos_photo ON photos (gallery, photo);');
+            $this->db->exec('CREATE UNIQUE INDEX photos_unique ON photos (face_id, gallery, photo);');
+            $this->db->exec('CREATE INDEX photos_photo ON photos (gallery, photo);');
         }
+    }
+
+    /**
+     * Find the person associated with a FaceID.
+     *
+     * @param string $id The FaceID.
+     *
+     * @return array The record if found.
+     */
+    public function findFace(string $id): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM faces WHERE id = :id LIMIT 1');
+        $stmt->bindValue(':id', $id);
+        $result = $stmt->execute();
+        return $result->fetchArray(SQLITE3_ASSOC) ?: [];
     }
 
     /**
@@ -84,21 +100,6 @@ class Db
             $people[] = $row;
         }
         return $people;
-    }
-
-    /**
-     * Find the person associated with a FaceID.
-     *
-     * @param string $id The FaceID.
-     *
-     * @return array The record if found.
-     */
-    public function findFace(string $id): array
-    {
-        $stmt = $this->db->prepare('SELECT * FROM faces WHERE id = :id LIMIT 1');
-        $stmt->bindValue(':id', $id);
-        $result = $stmt->execute();
-        return $result->fetchArray(SQLITE3_ASSOC) ?: [];
     }
 
     /**
@@ -130,7 +131,7 @@ class Db
             $stmt->bindValue(':limit', $limit);
         }
         $result = $stmt->execute();
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        while (($row = $result->fetchArray(SQLITE3_ASSOC)) !== false) {
             $photos[] = $row;
         }
         if (empty($this->config['searchLog']) === false) {
@@ -147,38 +148,33 @@ class Db
         return $photos;
     }
 
-    /**
-     * Write a row to a table.
-     *
-     * @param string $table The table to write to.
-     * @param array  $row   The data to write.
-     *
-     * @return Db Allow method chaining.
-     *
-     * @throws \RuntimeException On error.
-     */
-    public function write(string $table, array $row): Db
+    protected function write(string $sql, array $row): bool
     {
-        if (preg_match('/^[a-zA-z][a-zA-Z0-9_]+$/', $table) !== 1) {
-            throw new \RuntimeException('Bad table name.');
-        }
-        foreach (array_keys($row) as $key) {
-            if (preg_match('/^[a-zA-z][a-zA-Z0-9_]+$/', $key) !== 1) {
-                throw new \RuntimeException('Bad field name.');
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute($row);
+        } catch (\PDOException $e) {
+            if ($stmt->errorCode() === '23000') {
+                return false;
             }
+            throw $e;
         }
-        $stmt = $this->db->prepare(
-            'INSERT OR IGNORE INTO ' . $table . ' (' .
-            join(', ', array_keys($row)) . ') VALUES (:' .
-            join(', :', array_keys($row)) . ');'
+    }
+
+    public function writeFace(array $row): bool
+    {
+        return $this->write(
+            'INSERT INTO faces (id, name, class, external_id, metadata) VALUES (:id, :name, :class, :external_id, :metadata)',
+            $row
         );
-        foreach ($row as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
-        }
-        if ($stmt->execute() === false) {
-            throw new \RuntimeException('Database error: ' . $this->db->lastErrorMsg());
-        }
-        return $this;
+    }
+
+    public function writePhoto(array $row): bool
+    {
+        return $this->write(
+            'INSERT INTO photos (face_id, gallery, photo) VALUES (:face_id, :gallery, :photo)',
+            $row
+        );
     }
 
 }

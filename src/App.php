@@ -512,13 +512,15 @@ class App
             $lp->writeLine('Size            Quantity Unit Price Subtotal');
             $lp->writeLine('--------------- -------- ---------- --------');
             foreach ($order['quantity'] as $size => $quantity) {
-                $lp->writeLine(sprintf(
-                    '%-15s %8s %10s %8s',
-                    $size,
-                    $quantity,
-                    money_format('%n', $this->getPriceForSize($size)),
-                    money_format('%n', $this->getPriceForSize($size) * $quantity)
-                ));
+                $lp->writeLine(
+                    sprintf(
+                        '%-15s %8s %10s %8s',
+                        $size,
+                        $quantity,
+                        money_format('%n', $this->getPriceForSize($size)),
+                        money_format('%n', $this->getPriceForSize($size) * $quantity)
+                    )
+                );
             }
             if (empty($order['comments']) === false) {
                 $lp
