@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script will list the avilable AWS Rekognition collections.
+
 if ! hash aws 2>/dev/null
 then
     echo "ERROR: Requires awscli. See https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html"
