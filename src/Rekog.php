@@ -301,7 +301,7 @@ class Rekog
             if (file_exists($file) === false) {
                 throw new \RuntimeException('Missing photo file: ' . $file);
             }
-            $externalId = $year . ':' .  $row['directory'] . ':' . $row['file'];
+            $externalId = str_replace(' ', '_', $year . ':' .  $row['directory'] . ':' . $row['file']);
             $face = $this->indexFace($file, $externalId);
             $row = [
                 'id' => $face['Face']['FaceId'],
