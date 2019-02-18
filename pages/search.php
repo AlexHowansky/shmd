@@ -1,5 +1,14 @@
 <?php
 $results = $this->search($this->getParam());
+if (empty($results)) {
+    unset($_COOKIE['lastSearch']);
+    setcookie('lastSearch', '', 0, '/');
+} else {
+    if (preg_match('/^[0-9a-f-]{36}$/', $this->getParam()) !== 1) {
+        setcookie('lastSearch', $this->getParam(), 0, '/');
+        $_COOKIE['lastSearch'] = $this->getParam();
+    }
+}
 $menu = ['/' => 'Home'];
 require_once '_menu.php';
 ?>

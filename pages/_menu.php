@@ -6,7 +6,12 @@
 <?php endif; ?>
     <div class="right menu">
         <div class="item">
+<?php if ($_COOKIE['lastSearch']): ?>
+            <div class="ui left action icon input">
+                <a class="ui big black button" href="/search/<?= $_COOKIE['lastSearch'] ?>"><?= urldecode($_COOKIE['lastSearch']) ?></a>
+<?php else: ?>
             <div class="ui icon input">
+<?php endif; ?>
                 <input id="search_text" type="text" placeholder="Search...">
                 <i id="search_icon" class="search link icon"></i>
             </div>
