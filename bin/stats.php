@@ -14,6 +14,8 @@ require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
 setlocale(LC_MONETARY, 'en_US');
 
+$config = new \Shmd\Config(realpath(__DIR__ . '/../config.json'));
+
 $totals = [];
 
 foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(realpath(__DIR__ . '/../orders'))) as $file) {
@@ -43,12 +45,12 @@ $num = 0;
 $tot = 0;
 foreach ($totals as $size => $count) {
     $num += $count;
-    $tot += \Shmd\App::PRICES[$size] * $count;
+    $tot += $config['prices'][$size] * $count;
     printf(
         "Size: %s\n  Count: %d\n  Total: %s\n\n",
         $size,
         $count,
-        money_format('%n', \Shmd\App::PRICES[$size] * $count)
+        money_format('%n', $config['prices'][$size] * $count)
     );
 }
 
