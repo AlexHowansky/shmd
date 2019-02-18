@@ -31,9 +31,9 @@ class Rekog
     const NAMES_JSON = '.names.json';
 
     /**
-     * @var \Aws\Rekognition\RekognitionClient
-     *
      * An instance of the API client to use.
+     *
+     * @var \Aws\Rekognition\RekognitionClient
      */
     protected $api = null;
 
@@ -80,29 +80,6 @@ class Rekog
             ]);
         }
         return $this->api;
-    }
-
-    /**
-     * Index a face.
-     *
-     * @param string $file       The file containing the face to index.
-     * @param string $externalId The external ID to store in the Rekognition database.
-     *
-     * @return array The analysis data.
-     */
-    protected function indexFace(string $file, string $externalId): array
-    {
-        $result = $this->getApi()->indexFaces([
-            'CollectionId' => $this->config['aws']['collection'],
-            'DetectionAttributes' => ['ALL'],
-            'ExternalImageId' => $externalId,
-            'Image' => [
-                'Bytes' => file_get_contents($file),
-            ],
-            'MaxFaces' => 1,
-            'QualityFilter' => 'AUTO',
-        ]);
-        return $result->get('FaceRecords')[0];
     }
 
     /**
@@ -159,7 +136,7 @@ class Rekog
                 $faces = json_decode(file_get_contents($facesJsonFile), true);
                 Ansi::printf("{{BLUE:%s}} {{YELLOW}}already detected %d faces\n", $file->getFileName(), count($faces));
             } else {
-                Ansi::printf("{{BLUE:%s}} ", $file->getFileName());
+                Ansi::printf('{{BLUE:%s}} ', $file->getFileName());
                 $faces = $this->getApi()->detectFaces([
                     'Attributes' => ['ALL'],
                     'Image' => [
@@ -232,7 +209,11 @@ class Rekog
                         if (empty($row) === true) {
                             Ansi::printf("        {{red}}face not in database\n");
                         } else {
-                            Ansi::printf("        {{CYAN:%s}} {{GREEN}}identified as {{WHITE:%s}}\n", $match['Face']['FaceId'], $row['name']);
+                            Ansi::printf(
+                                "        {{CYAN:%s}} {{GREEN}}identified as {{WHITE:%s}}\n",
+                                $match['Face']['FaceId'],
+                                $row['name']
+                            );
                         }
                         $recognized = [
                             'face_id' => $match['Face']['FaceId'],
@@ -285,7 +266,18 @@ class Rekog
         }
 
         $index = new \Ork\Csv\Reader([
-            'columns' => ['yearbook', 'directory', 'file', 'class', 'last', 'first', 'unk1', 'homeroom', 'teacher', 'unk3'],
+            'columns' => [
+                'yearbook',
+                'directory',
+                'file',
+                'class',
+                'last',
+                'first',
+                'unk1',
+                'homeroom',
+                'teacher',
+                'unk3',
+            ],
             'file' => $indexFile,
             'header' => false,
             'delimiter' => "\t",
@@ -300,18 +292,21 @@ class Rekog
             if (file_exists($file) === false) {
                 throw new \RuntimeException('Missing photo file: ' . $file);
             }
-            $externalId = str_replace(' ', '_', $year . ':' .  $row['directory'] . ':' . $row['file']);
+            $externalId = str_replace(' ', '_', $year . ':' . $row['directory'] . ':' . $row['file']);
             $face = $this->indexFace($file, $externalId);
             $row = [
                 'id' => $face['Face']['FaceId'],
                 'name' => trim($row['first'] . ' ' . $row['last']),
-                'class' => is_numeric($row['class']) === true ? ($year + 12 - $row['class']) : strtoupper(trim($row['class'])),
+                'class' => is_numeric($row['class']) === true
+                    ? ($year + 12 - $row['class'])
+                    : strtoupper(trim($row['class'])),
                 'external_id' => $externalId,
                 'metadata' => base64_encode(gzdeflate(json_encode($face))),
             ];
-            $action = $db->writeFace($row) ? 'added' : 'already processed';
+            $action = $db->writeFace($row) === true ? 'added' : 'already processed';
             Ansi::printf(
-                '{{white:%4d}} {{CYAN:%s}} {{BLUE:%s}} {{WHITE:%s}} {{' . ($action === 'added' ? 'GREEN' : 'YELLOW') . ":%s}}\n",
+                '{{white:%4d}} {{CYAN:%s}} {{BLUE:%s}} {{WHITE:%s}} {{' .
+                ($action === 'added' ? 'GREEN' : 'YELLOW') . ":%s}}\n",
                 $index->getLineNumber(),
                 $row['id'],
                 $row['external_id'],
@@ -322,6 +317,29 @@ class Rekog
 
         return $this;
 
+    }
+
+    /**
+     * Index a face.
+     *
+     * @param string $file       The file containing the face to index.
+     * @param string $externalId The external ID to store in the Rekognition database.
+     *
+     * @return array The analysis data.
+     */
+    protected function indexFace(string $file, string $externalId): array
+    {
+        $result = $this->getApi()->indexFaces([
+            'CollectionId' => $this->config['aws']['collection'],
+            'DetectionAttributes' => ['ALL'],
+            'ExternalImageId' => $externalId,
+            'Image' => [
+                'Bytes' => file_get_contents($file),
+            ],
+            'MaxFaces' => 1,
+            'QualityFilter' => 'AUTO',
+        ]);
+        return $result->get('FaceRecords')[0];
     }
 
 }

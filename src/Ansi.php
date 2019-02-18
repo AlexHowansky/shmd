@@ -19,6 +19,14 @@ class Ansi
 
     const RESET = "\033[0m";
 
+    /**
+     * A wrapper for printf() that supports colorizing placeholders.
+     *
+     * @param string $string  The format string.
+     * @param mixed  ...$args An arbitrary number of arguments.
+     *
+     * @return void
+     */
     public static function printf(string $string, ...$args): void
     {
         $codes = [
@@ -43,9 +51,12 @@ class Ansi
         printf(
             preg_replace_callback(
                 '/\{\{([a-zA-Z]+)(?::([^\{\}]+))?\}\}/',
-                function($match) use ($codes) {
-                    return array_key_exists($match[1], $codes)
-                        ? ("\033[" . $codes[$match[1]] . 'm' . (isset($match[2]) ? ($match[2] . self::RESET) : ''))
+                function ($match) use ($codes) {
+                    return array_key_exists($match[1], $codes) === true
+                        ? (
+                            "\033[" . $codes[$match[1]] . 'm' .
+                            (isset($match[2]) === true ? ($match[2] . self::RESET) : '')
+                        )
                         : $match[0];
                 },
                 $string

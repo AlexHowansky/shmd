@@ -87,10 +87,10 @@ class Db
     public function getPeopleInPhoto(string $gallery, string $photo)
     {
         $stmt = $this->db->prepare(
-            'SELECT faces.id, faces.name, faces.class FROM faces ' .
-            'JOIN photos ON photos.face_id = faces.id ' .
-            'WHERE photos.gallery = :gallery and photos.photo = :photo ' .
-            'ORDER BY faces.name'
+            'SELECT faces.id, faces.name, faces.class FROM faces
+            JOIN photos ON photos.face_id = faces.id
+            WHERE photos.gallery = :gallery and photos.photo = :photo
+            ORDER BY faces.name'
         );
         $stmt->bindValue(':gallery', $gallery);
         $stmt->bindValue(':photo', $photo);
@@ -105,23 +105,25 @@ class Db
      * @param int    $limit  Limit the search to this many records.
      *
      * @return array The photos the person appears in.
+     *
+     * @throws \RuntimeException On error.
      */
     public function search(string $string, int $limit = 20): array
     {
         $photos = [];
         if (preg_match('/^[0-9a-f-]{36}$/', $string) === 1) {
             $stmt = $this->db->prepare(
-                'SELECT DISTINCT photos.gallery, photos.photo, faces.name FROM photos ' .
-                'JOIN faces ON faces.id = photos.face_id ' .
-                'WHERE faces.id = :id LIMIT :limit'
+                'SELECT DISTINCT photos.gallery, photos.photo, faces.name FROM photos
+                JOIN faces ON faces.id = photos.face_id
+                WHERE faces.id = :id LIMIT :limit'
             );
             $stmt->bindValue(':id', $string);
             $stmt->bindValue(':limit', $limit);
         } else {
             $stmt = $this->db->prepare(
-                'SELECT DISTINCT photos.gallery, photos.photo, faces.name FROM photos ' .
-                'JOIN faces ON faces.id = photos.face_id ' .
-                'WHERE faces.name like :name LIMIT :limit'
+                'SELECT DISTINCT photos.gallery, photos.photo, faces.name FROM photos
+                JOIN faces ON faces.id = photos.face_id
+                WHERE faces.name like :name LIMIT :limit'
             );
             $stmt->bindValue(':name', '%' . $string . '%');
             $stmt->bindValue(':limit', $limit);
@@ -139,7 +141,7 @@ class Db
                 FILE_APPEND
             );
             if ($result === false) {
-                throw new \RuntimeException('Unable to write to search log: '. $this->config['searchLog']);
+                throw new \RuntimeException('Unable to write to search log: ' . $this->config['searchLog']);
             }
         }
         return $photos;
@@ -152,6 +154,8 @@ class Db
      * @param array  $row The values to bind.
      *
      * @return bool True if the insert worked.
+     *
+     * @throws \PDOException On error.
      */
     protected function write(string $sql, array $row): bool
     {
@@ -176,7 +180,8 @@ class Db
     public function writeFace(array $row): bool
     {
         return $this->write(
-            'INSERT INTO faces (id, name, class, external_id, metadata) VALUES (:id, :name, :class, :external_id, :metadata)',
+            'INSERT INTO faces (id, name, class, external_id, metadata)
+            VALUES (:id, :name, :class, :external_id, :metadata)',
             $row
         );
     }
