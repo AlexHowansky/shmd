@@ -35,13 +35,6 @@ class App
 
     const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
-    const PRICES = [
-        '4x6' => 2,
-        '5x7' => 5,
-        '8x10' => 8,
-        '13x19' => 20,
-    ];
-
     const SEARCH_LIMIT = 20;
 
     /**
@@ -454,10 +447,10 @@ class App
      */
     public function getPriceForSize(string $size)
     {
-        if (array_key_exists($size, self::PRICES) === false) {
+        if (array_key_exists($size, $this->config['prices']) === false) {
             throw new \Exception('Invalid size.');
         }
-        return self::PRICES[$size];
+        return $this->config['prices'][$size];
     }
 
     /**
@@ -482,7 +475,7 @@ class App
      */
     public function getSizes(): array
     {
-        return array_keys(self::PRICES);
+        return array_keys($this->config['prices']);
     }
 
     /**

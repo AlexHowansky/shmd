@@ -1,5 +1,3 @@
- * Make the photo sizes and prices configurable via the `config.json` file.
- * Update the database calls to PDO.
  * Move the order data into the database.
  * Move the rekog data into the database.
  * Watch staging dir and automatically resize/identify.

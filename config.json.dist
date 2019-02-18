@@ -5,6 +5,12 @@
         "region": "<put your AWS Rekognition region here>",
         "collection": "<put your AWS Rekognition collection name here>"
     },
+    "prices": {
+        "4x6": 2,
+        "5x7": 5,
+        "8x10": 8,
+        "13x19": 20
+    },
     "database": "/path/to/your/sqlite.db",
     "searchLog": "/path/to/optional/search.log",
     "locale": "en_US",
