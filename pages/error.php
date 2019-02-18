@@ -1,6 +1,6 @@
 <?php
 $menu = ['/' => 'Home'];
-include '_menu.php';
+require_once '_menu.php';
 $e = $this->getLastError();
 if ($e === null) {
     header('HTTP/1.1 404 Page Not Found');

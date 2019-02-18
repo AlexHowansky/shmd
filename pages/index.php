@@ -1,4 +1,4 @@
-<?php include '_menu.php'; ?>
+<?php require_once '_menu.php'; ?>
 <div class="ui relaxed list">
     <div class="item">
         <h1 class="ui centered header"><?= $this->config['title'] ?></h1>

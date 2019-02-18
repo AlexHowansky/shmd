@@ -1,7 +1,7 @@
 <?php
 $gallery = $this->getGallery($this->getParam());
 $menu = ['/' => 'Home'];
-include '_menu.php';
+require_once '_menu.php';
 ?>
 <div class="ui relaxed list">
     <div class="item">
@@ -11,7 +11,7 @@ include '_menu.php';
 <div class="ui cards" style="padding: 0 25px 0 25px;">
 <?php
 foreach ($gallery->getPhotos() as $photo) {
-    include '_card.php';
+    require '_card.php';
 }
 ?>
 </div>

@@ -1,6 +1,6 @@
 <?php
 $menu = ['/orders' => 'Orders'];
-include '_order_menu.php';
+require_once '_order_menu.php';
 ?>
 <div class="ui huge relaxed celled list">
 <?php foreach ($this->getOrders() as $order): ?>

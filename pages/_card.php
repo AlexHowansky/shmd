@@ -3,6 +3,12 @@
         <img src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
     </div>
     <div class="content">
-        <div class="header"><?= $photo ?></div>
+        <div class="center aligned header">
+<?php if ($name): ?>
+            <button class="ui big blue image label"><?= $name ?></button>
+<?php else: ?>
+            <?= $photo ?>
+<?php endif; ?>
+        </div>
     </div>
 </a>

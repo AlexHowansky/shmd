@@ -1,6 +1,6 @@
 <?php
 $menu = ['/' => 'Home'];
-include '_menu.php';
+require_once '_menu.php';
 ?>
 <div class="ui relaxed list">
     <div class="item">

@@ -111,7 +111,7 @@ class Db
         $photos = [];
         if (preg_match('/^[0-9a-f-]{36}$/', $string) === 1) {
             $stmt = $this->db->prepare(
-                'SELECT DISTINCT photos.gallery, photos.photo FROM photos ' .
+                'SELECT DISTINCT photos.gallery, photos.photo, faces.name FROM photos ' .
                 'JOIN faces ON faces.id = photos.face_id ' .
                 'WHERE faces.id = :id LIMIT :limit'
             );
@@ -119,7 +119,7 @@ class Db
             $stmt->bindValue(':limit', $limit);
         } else {
             $stmt = $this->db->prepare(
-                'SELECT DISTINCT photos.gallery, photos.photo FROM photos ' .
+                'SELECT DISTINCT photos.gallery, photos.photo, faces.name FROM photos ' .
                 'JOIN faces ON faces.id = photos.face_id ' .
                 'WHERE faces.name like :name LIMIT :limit'
             );

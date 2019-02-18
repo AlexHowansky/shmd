@@ -3,7 +3,7 @@ $order = $this->getOrder($this->getParam());
 $gallery = $this->getGallery($order['gallery']);
 $photo = $order['photo'];
 $menu = ['/orders' => 'Orders'];
-include '_order_menu.php';
+require_once '_order_menu.php';
 ?>
 <div class="ui raised container segment">
     <img class="ui big centered rounded bordered image" src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">

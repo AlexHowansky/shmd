@@ -6,7 +6,7 @@ $menu = [
     '/' => 'Home',
     '/gallery/' . $gallery->getName() => $gallery->getTitle(),
 ];
-include '_menu.php';
+require_once '_menu.php';
 ?>
 <div class="ui raised container segment">
     <div class="ui list">

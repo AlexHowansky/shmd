@@ -555,16 +555,14 @@ class App
     {
         $names = (new Db($this->config))->search(urldecode($text), self::SEARCH_LIMIT);
         if (empty($names) === false) {
-            $nameMatches = [];
-            foreach ($names as $name) {
-                $nameMatches[] = [
-                    'gallery' => new Gallery($this, $name['gallery']),
-                    'photo' => $name['photo'],
-                ];
+            foreach ($names as $index => $name) {
+                if ($index >= self::SEARCH_LIMIT) {
+                    break;
+                }
+                $names[$index]['gallery'] = new Gallery($this, $name['gallery']);
             }
-            return $nameMatches;
+            return $names;
         }
-
         $fileMatches = [];
         foreach ($this->getGalleries() as $gallery) {
             foreach ($gallery->getPhotos() as $photo) {

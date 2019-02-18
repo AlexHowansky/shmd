@@ -1,6 +1,6 @@
 <?php
 $menu = ['/orders' => 'Orders'];
-include '_order_menu.php';
+require_once '_order_menu.php';
 ?>
 <div class="ui relaxed list">
     <div class="item">
