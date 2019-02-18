@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4cdb2bda247ee9593588c0d0bf7a17cd",
+    "content-hash": "0051cde39ce175ef40c5280465f81adc",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.87.12",
+            "version": "3.87.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2f3f01d43a8d90b68e6fa0a17257d16fa7f07c47"
+                "reference": "a9b67cbcf53eaebdc0de5b7f0c78818ae9848a15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2f3f01d43a8d90b68e6fa0a17257d16fa7f07c47",
-                "reference": "2f3f01d43a8d90b68e6fa0a17257d16fa7f07c47",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a9b67cbcf53eaebdc0de5b7f0c78818ae9848a15",
+                "reference": "a9b67cbcf53eaebdc0de5b7f0c78818ae9848a15",
                 "shasum": ""
             },
             "require": {
@@ -86,7 +86,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-02-15T19:08:26+00:00"
+            "time": "2019-02-18T19:17:32+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -270,6 +270,54 @@
                 "url"
             ],
             "time": "2018-12-04T20:46:45+00:00"
+        },
+        {
+            "name": "mike42/escpos-php",
+            "version": "v1.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mike42/escpos-php.git",
+                "reference": "b3665b96f6e3cf4d64891cd750a12186a1aaaa1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mike42/escpos-php/zipball/b3665b96f6e3cf4d64891cd750a12186a1aaaa1f",
+                "reference": "b3665b96f6e3cf4d64891cd750a12186a1aaaa1f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mike42\\": "src/Mike42"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Billington",
+                    "email": "michael.billington@gmail.com"
+                }
+            ],
+            "description": "PHP receipt printer library for use with ESC/POS-compatible thermal and impact printers",
+            "homepage": "https://github.com/mike42/escpos-php",
+            "keywords": [
+                "ESC-POS",
+                "driver",
+                "escpos",
+                "print",
+                "receipt"
+            ],
+            "time": "2016-11-03T10:49:26+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",

@@ -3,8 +3,10 @@
     "require": {
         "php": "^7.2",
         "ext-gd": "*",
+        "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.87.12",
+        "aws/aws-sdk-php": "^3.87.13",
+        "mike42/escpos-php": "^1.4.2",
         "ork/csv": "^1.1.1"
     },
     "require-dev": {
