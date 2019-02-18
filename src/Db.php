@@ -72,8 +72,8 @@ class Db
     {
         $stmt = $this->db->prepare('SELECT * FROM faces WHERE id = :id LIMIT 1');
         $stmt->bindValue(':id', $id);
-        $result = $stmt->execute();
-        return $result->fetchArray(SQLITE3_ASSOC) ?: [];
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC)[0] ?? [];
     }
 
     /**
