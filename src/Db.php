@@ -87,19 +87,15 @@ class Db
     public function getPeopleInPhoto(string $gallery, string $photo)
     {
         $stmt = $this->db->prepare(
-            'SELECT faces.id, faces.name, faces.gender, faces.class FROM faces ' .
+            'SELECT faces.id, faces.name, faces.class FROM faces ' .
             'JOIN photos ON photos.face_id = faces.id ' .
             'WHERE photos.gallery = :gallery and photos.photo = :photo ' .
             'ORDER BY faces.name'
         );
         $stmt->bindValue(':gallery', $gallery);
         $stmt->bindValue(':photo', $photo);
-        $result = $stmt->execute();
-        $people = [];
-        while (($row = $result->fetchArray(SQLITE3_ASSOC)) !== false) {
-            $people[] = $row;
-        }
-        return $people;
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -130,12 +126,10 @@ class Db
             $stmt->bindValue(':name', '%' . $string . '%');
             $stmt->bindValue(':limit', $limit);
         }
-        $result = $stmt->execute();
-        while (($row = $result->fetchArray(SQLITE3_ASSOC)) !== false) {
-            $photos[] = $row;
-        }
+        $stmt->execute();
+        $photos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if (empty($this->config['searchLog']) === false) {
-            file_put_contents(
+            $result = file_put_contents(
                 $this->config['searchLog'],
                 json_encode([
                     'timestamp' => time(),
@@ -144,10 +138,21 @@ class Db
                 ]) . "\n",
                 FILE_APPEND
             );
+            if ($result === false) {
+                throw new \RuntimeException('Unable to write to search log: '. $this->config['searchLog']);
+            }
         }
         return $photos;
     }
 
+    /**
+     * Generic insert runner.
+     *
+     * @param string $sql The SQL to run.
+     * @param array  $row The values to bind.
+     *
+     * @return bool True if the insert worked.
+     */
     protected function write(string $sql, array $row): bool
     {
         try {
@@ -161,6 +166,13 @@ class Db
         }
     }
 
+    /**
+     * Insert a face.
+     *
+     * @param array $row The values to insert.
+     *
+     * @return bool True on success.
+     */
     public function writeFace(array $row): bool
     {
         return $this->write(
@@ -169,6 +181,13 @@ class Db
         );
     }
 
+    /**
+     * Insert a photo.
+     *
+     * @param array $row The values to insert.
+     *
+     * @return bool True on success.
+     */
     public function writePhoto(array $row): bool
     {
         return $this->write(
