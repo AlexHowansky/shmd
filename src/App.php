@@ -4,7 +4,7 @@
  * SHMD
  *
  * @package   SHMD
- * @copyright 2016-2017 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2016-2019 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/shmd/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/shmd
  */
@@ -502,12 +502,12 @@ class App
                 ->writeLabel('Gallery', $this->getGallery($order['gallery'])->getTitle())
                 ->writeLabel('Photo', $order['photo'])
                 ->linefeed();
-            $lp->writeLine('Size            Quantity Unit Price Subtotal');
-            $lp->writeLine('--------------- -------- ---------- --------');
+            $lp->writeLine('Size          Quantity Unit Price Subtotal');
+            $lp->writeLine('------------- -------- ---------- --------');
             foreach ($order['quantity'] as $size => $quantity) {
                 $lp->writeLine(
                     sprintf(
-                        '%-15s %8s %10s %8s',
+                        '%-13s %8s %10s %8s',
                         $size,
                         $quantity,
                         money_format('%n', $this->getPriceForSize($size)),

@@ -4,7 +4,7 @@
  * SHMD
  *
  * @package   SHMD
- * @copyright 2016-2017 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2016-2019 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/shmd/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/shmd
  */
@@ -33,7 +33,7 @@ class Epson
     const JUSTIFY_LEFT = "\x1B\x61\x00";
     const JUSTIFY_RIGHT = "\x1B\x61\x02";
 
-    const WIDTH = 44;
+    const WIDTH = 42;
 
     /**
      * The printer resource.
