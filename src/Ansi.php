@@ -17,7 +17,9 @@ namespace Shmd;
 class Ansi
 {
 
-    public static function printf(string $string, ...$args): int
+    const RESET = "\033[0m";
+
+    public static function printf(string $string, ...$args): void
     {
         $codes = [
             'reset' => '0',
@@ -38,18 +40,19 @@ class Ansi
             'CYAN' => '36;1',
             'WHITE' => '37;1',
         ];
-        return printf(
+        printf(
             preg_replace_callback(
                 '/\{\{([a-zA-Z]+)(?::([^\{\}]+))?\}\}/',
                 function($match) use ($codes) {
                     return array_key_exists($match[1], $codes)
-                        ? ("\033[" . $codes[$match[1]] . 'm' . (isset($match[2]) ? ($match[2] . "\033[0m") : ''))
+                        ? ("\033[" . $codes[$match[1]] . 'm' . (isset($match[2]) ? ($match[2] . self::RESET) : ''))
                         : $match[0];
                 },
                 $string
             ),
             ...$args
         );
+        echo self::RESET;
     }
 
 }
