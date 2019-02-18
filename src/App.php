@@ -108,6 +108,7 @@ class App
             $this->setConfig($config);
         }
         setlocale(LC_MONETARY, $this->config['locale']);
+        date_default_timezone_set($this->config['timezone']);
         try {
             $url = parse_url($_SERVER['REQUEST_URI']);
             $params = explode('/', trim($url['path'], '/'));

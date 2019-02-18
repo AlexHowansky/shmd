@@ -14,6 +14,7 @@
     "database": "/path/to/your/sqlite.db",
     "searchLog": "/path/to/optional/search.log",
     "locale": "en_US",
+    "timezone": "America/New_York",
     "printer": "/dev/usb/lp0",
     "title": "The Name of Your Event"
 }
