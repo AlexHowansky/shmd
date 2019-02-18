@@ -146,12 +146,10 @@ class Rekog
                 continue;
             }
 
-            Ansi::printf("{{white:%s}} ", $file->getFileName());
-
             // We'll save the identified people to this JSON file.
             $namesJsonFile = $file->getPathname() . self::NAMES_JSON;
             if (file_exists($namesJsonFile) === true) {
-                Ansi::printf("{{yellow:%s}}\n", 'already recognized, skipping');
+                Ansi::printf("{{BLUE:%s}} {{YELLOW}}already recognized\n", $file->getFileName());
                 continue;
             }
 
@@ -159,19 +157,21 @@ class Rekog
             $facesJsonFile = $file->getPathname() . self::FACES_JSON;
             if (file_exists($facesJsonFile) === true) {
                 $faces = json_decode(file_get_contents($facesJsonFile), true);
-                Ansi::printf();
-                echo '  already detected ' . count($faces) . " faces\n";
-                exit;
+                Ansi::printf("{{BLUE:%s}} {{YELLOW}}already detected %d faces\n", $file->getFileName(), count($faces));
             } else {
-                echo '  detecting faces... ';
+                Ansi::printf("{{BLUE:%s}} ", $file->getFileName());
                 $faces = $this->getApi()->detectFaces([
                     'Attributes' => ['ALL'],
                     'Image' => [
                         'Bytes' => file_get_contents($file->getPathname()),
                     ],
                 ])->get('FaceDetails');
-                echo 'found ' . count($faces) . "\n";
                 file_put_contents($facesJsonFile, json_encode($faces));
+                if (count($faces) > 0) {
+                    Ansi::printf("{{GREEN}}found %d faces\n", count($faces));
+                } else {
+                    Ansi::printf("{{YELLOW}}found no faces\n");
+                }
             }
 
             // We use imagecreatefromstring() here so we can support
@@ -200,7 +200,7 @@ class Rekog
 
                 // Crop out the detected face and save it.
                 if (file_exists($faceFile) === true) {
-                    echo '    already created ' . $faceFile . "\n";
+                    Ansi::printf("    {{YELLOW}}already created {{BLUE:%s}}\n", $faceFile);
                 } else {
                     $cropped = imagecrop(
                         $gd,
@@ -212,7 +212,7 @@ class Rekog
                         ]
                     );
                     imagejpeg($cropped, $faceFile);
-                    echo '    face ' . $num . ' saved to ' . $faceFile . "\n";
+                    Ansi::printf("    {{GREEN}}face %d saved to {{BLUE:%s}}\n", $num, $faceFile);
                 }
 
                 // Look for matches for this face.
@@ -225,32 +225,31 @@ class Rekog
                         ],
                     ])->get('FaceMatches');
                     if (empty($matches) === true) {
-                        echo "      face not found\n";
+                        Ansi::printf("        {{YELLOW}}face not identified\n");
                     } else {
                         $match = array_shift($matches);
                         $row = $db->findFace($match['Face']['FaceId']);
                         if (empty($row) === true) {
-                            echo "        not identified\n";
+                            Ansi::printf("        {{red}}face not in database\n");
                         } else {
-                            echo '        indentified as ' . $row['name'] . "\n";
+                            Ansi::printf("        {{CYAN:%s}} {{GREEN}}identified as {{WHITE:%s}}\n", $match['Face']['FaceId'], $row['name']);
                         }
                         $recognized = [
                             'face_id' => $match['Face']['FaceId'],
-                            'gallery' => basename($file->getPath()),
+                            'gallery' => basename(realpath($file->getPath())),
                             'photo' => $file->getBasename('.jpg'),
                         ];
                         $names[] = $recognized;
-                        $db->write('photos', $recognized);
+                        $db->writePhoto($recognized);
                     }
                 } catch (\Aws\Rekognition\Exception\RekognitionException $e) {
-                    echo "      face not found\n";
+                    Ansi::printf("        {{red}}face not found\n");
                 }
 
             }
 
             // Output the recognition cache so we don't process this file again.
             file_put_contents($namesJsonFile, json_encode($names));
-
         }
 
         return $this;
@@ -310,9 +309,9 @@ class Rekog
                 'external_id' => $externalId,
                 'metadata' => base64_encode(gzdeflate(json_encode($face))),
             ];
-            $action = $db->writeFace($row) ? 'added' : 'duplicate';
+            $action = $db->writeFace($row) ? 'added' : 'already processed';
             Ansi::printf(
-                '{{BLACK:%4d}} {{cyan:%s}} {{white:%s}} {{YELLOW:%s}} {{' . ($action === 'added' ? 'GREEN' : 'red') . ":%s}}\n",
+                '{{white:%4d}} {{CYAN:%s}} {{BLUE:%s}} {{WHITE:%s}} {{' . ($action === 'added' ? 'GREEN' : 'YELLOW') . ":%s}}\n",
                 $index->getLineNumber(),
                 $row['id'],
                 $row['external_id'],
