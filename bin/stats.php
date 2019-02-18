@@ -12,9 +12,8 @@
 
 require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
-setlocale(LC_MONETARY, 'en_US');
-
 $config = new \Shmd\Config(realpath(__DIR__ . '/../config.json'));
+setlocale(LC_MONETARY, $config['locale']);
 
 $totals = [];
 
