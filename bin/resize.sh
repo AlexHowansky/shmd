@@ -54,7 +54,7 @@ do
             echo "resized for public"
         fi
 
-        echo -n "    ${PHOTO} "
+        echo -n "    ${PHOTO}"
         if [ -f "${REKOG_DIR}/${GALLERY}/${PHOTO}" ]
         then
             echo "skipped Rekognition API resize"
@@ -62,7 +62,7 @@ do
             cp ${FILE} "${REKOG_DIR}/${GALLERY}/${PHOTO}"
             while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt 5000000 ]
             do
-                echo -n "."
+                echo -n " ."
                 mogrify -resize 80x80% "${REKOG_DIR}/${GALLERY}/${PHOTO}"
             done
             echo " resized for Rekognition API"
