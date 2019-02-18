@@ -20,7 +20,6 @@ include '_menu.php';
 <div class="ui raised container segment">
 <?php foreach ($people as $person): ?>
     <a class="ui big blue image label" href="/search/<?= $person['id'] ?>">
-        <img src="/<?= substr($person['class'], -2) ?>.png">
         <?= $person['name'] ?>
     </a>
 <?php endforeach; ?>
@@ -32,11 +31,11 @@ include '_menu.php';
         <input type="hidden" name="photo" value="<?= $photo ?>">
         <div class="fields ui grid">
             <div class="row">
-                <div class="field four wide column">
+                <div class="field five wide column">
                     <label>Name</label>
                     <input type="text" id="name" name="name" autocomplete="off">
                 </div>
-                <div class="field twelve wide column">
+                <div class="field eleven wide column">
                     <label>Comments</label>
                     <input type="text" name="comments" autocomplete="off">
                 </div>
@@ -44,16 +43,16 @@ include '_menu.php';
         </div>
         <div class="fields ui grid">
             <div class="row">
-                <div class="field four wide column">
+                <div class="field two wide column center aligned">
                     <label class="underline">Quantity</label>
                 </div>
-                <div class="field four wide column">
+                <div class="field one wide column center aligned">
                     <label class="underline">Size</label>
                 </div>
-                <div class="field four wide column right aligned">
+                <div class="field one wide column center aligned">
                     <label class="underline">Price</label>
                 </div>
-                <div class="field four wide column right aligned">
+                <div class="field one wide column center aligned">
                     <label class="underline">Subtotal</label>
                 </div>
             </div>
@@ -61,32 +60,32 @@ include '_menu.php';
         <div class="ui grid">
 <?php foreach ($this->getSizes() as $index => $size): ?>
             <div class="row">
-                <div class="four wide column">
+                <div class="two wide column">
                     <select id="qty_<?= $size ?>" class="ui dropdown" name="qty_<?= $size ?>">
 <?php for ($i = 0; $i <= 10; $i++): ?>
                         <option value="<?= $i ?>"><?= $i ?></option>
 <?php endfor; ?>
                     </select>
                 </div>
-                <div class="four wide column middle aligned">
+                <div class="one wide column middle aligned">
                     <?= preg_replace('/(\d+)/', '$1"', $size) ?>
                 </div>
-                <div class="four wide column middle aligned right aligned">
+                <div class="one wide column middle aligned right aligned">
                     $<span id="amt_<?= $size ?>"><?=  $this->getPriceForSize($size) ?></span>
                 </div>
-                <div class="four wide column middle aligned right aligned">
+                <div class="one wide column middle aligned right aligned">
                     $<span id="sub_<?= $size ?>">0</span>
                 </div>
-            </div>
-<?php endforeach; ?>
-            <div class="row">
-                <div class="sixteen wide column right aligned">
+<?php if ($index === 3): ?>
+                <div class="eleven wide column right aligned">
                     <div class="ui labeled huge button">
                         <div id="orderButton" class="ui huge red submit button disabled">Submit Order</div>
                         <div id="totalButton" class="ui basic red label">Total $<span id="total">0</span></div>
                     </div>
                 </div>
+<?php endif; ?>
             </div>
+<?php endforeach; ?>
         </div>
     </form>
 </div>
