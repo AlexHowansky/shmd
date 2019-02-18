@@ -13,6 +13,7 @@ require_once '_order_menu.php';
         <div class="item">Gallery: <?= $gallery->getTitle() ?></div>
         <div class="item">Photo: <?= $order['photo'] ?></div>
         <div class="item">Date: <?= date(self::DATE_FORMAT, $order['time']) ?></div>
+        <div class="item">Comments: <?= $order['comments'] ?></div>
     </div>
     <table class="ui celled table">
         <thead>
