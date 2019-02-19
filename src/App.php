@@ -528,14 +528,15 @@ class App
                         $size,
                         $quantity,
                         money_format('%n', $this->getPriceForSize($size)),
-                            money_format('%n', $this->getPriceForSize($size) * $quantity)
+                        money_format('%n', $this->getPriceForSize($size) * $quantity)
                     )
                 );
             }
 
             if (empty($order['comments']) === false) {
-                $lp->feed();
-                $lp->text("Comments:\n");
+                $lp->feed(1);
+                $lp->text("Comments\n");
+                $lp->text("--------\n");
                 $lp->text($order['comments'] . "\n");
             }
 

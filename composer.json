@@ -6,7 +6,7 @@
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
         "aws/aws-sdk-php": "^3.87.13",
-        "mike42/escpos-php": "^1.4.2",
+        "mike42/escpos-php": "^2.0.2",
         "ork/csv": "^1.1.1"
     },
     "require-dev": {
