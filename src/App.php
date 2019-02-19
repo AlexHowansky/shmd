@@ -487,70 +487,78 @@ class App
      * Print an order receipt.
      *
      * @param string $id The order ID.
+     *
+     * @return bool True if the receipt printed.
      */
-    public function printReceipt(string $id)
+    public function printReceipt(string $id): bool
     {
         $order = $this->getOrder($id);
 
-        $lp = new Printer(new FilePrintConnector($this->config['printer']));
-        $lp->initialize();
-        $lp->feed(1);
+        try {
+            $lp = new Printer(new FilePrintConnector($this->config['printer']));
+            $lp->initialize();
+            $lp->feed(1);
 
-        $lp->setEmphasis(true);
-        $lp->setTextSize(2, 2);
-        $lp->setJustification(Printer::JUSTIFY_CENTER);
-        $lp->text($this->config['title']);
-        $lp->feed(2);
+            $lp->setEmphasis(true);
+            $lp->setTextSize(2, 2);
+            $lp->setJustification(Printer::JUSTIFY_CENTER);
+            $lp->text($this->config['title']);
+            $lp->feed(2);
 
-        $lp->setEmphasis(true);
-        $lp->setTextSize(2, 2);
-        $lp->setJustification(Printer::JUSTIFY_LEFT);
-        $lp->text('Name: ' . $order['name']);
-        $lp->feed(2);
+            $lp->setEmphasis(true);
+            $lp->setTextSize(2, 2);
+            $lp->setJustification(Printer::JUSTIFY_LEFT);
+            $lp->text('Name: ' . $order['name']);
+            $lp->feed(2);
 
-        $lp->setEmphasis(false);
-        $lp->setTextSize(1, 1);
-        $lp->setJustification(Printer::JUSTIFY_LEFT);
-        $lp->text('   Time: ' . date(self::DATE_FORMAT, $order['time']) . "\n");
-        $lp->text('  Order: ' . substr($id, 0, 16) . "\n");
-        $lp->text('Gallery: ' . $this->getGallery($order['gallery'])->getTitle() . "\n");
-        $lp->text('  Photo: ' . $order['photo'] . "\n");
-        $lp->feed(1);
-        $lp->text("Size          Quantity Unit Price Subtotal\n");
-        $lp->text("------------- -------- ---------- --------\n");
-        foreach ($order['quantity'] as $size => $quantity) {
-            $lp->text(
-                sprintf(
-                    "%-13s %8s %10s %8s\n",
-                    $size,
-                    $quantity,
-                    money_format('%n', $this->getPriceForSize($size)),
-                        money_format('%n', $this->getPriceForSize($size) * $quantity)
-                )
-            );
+            $lp->setEmphasis(false);
+            $lp->setTextSize(1, 1);
+            $lp->setJustification(Printer::JUSTIFY_LEFT);
+            $lp->text('   Time: ' . date(self::DATE_FORMAT, $order['time']) . "\n");
+            $lp->text('  Order: ' . substr($id, 0, 16) . "\n");
+            $lp->text('Gallery: ' . $this->getGallery($order['gallery'])->getTitle() . "\n");
+            $lp->text('  Photo: ' . $order['photo'] . "\n");
+            $lp->feed(1);
+            $lp->text("Size          Quantity Unit Price Subtotal\n");
+            $lp->text("------------- -------- ---------- --------\n");
+            foreach ($order['quantity'] as $size => $quantity) {
+                $lp->text(
+                    sprintf(
+                        "%-13s %8s %10s %8s\n",
+                        $size,
+                        $quantity,
+                        money_format('%n', $this->getPriceForSize($size)),
+                            money_format('%n', $this->getPriceForSize($size) * $quantity)
+                    )
+                );
+            }
+
+            if (empty($order['comments']) === false) {
+                $lp->feed();
+                $lp->text("Comments:\n");
+                $lp->text($order['comments'] . "\n");
+            }
+
+            $lp->feed(2);
+            $lp->setEmphasis(true);
+            $lp->setTextSize(2, 2);
+            $lp->setJustification(Printer::JUSTIFY_RIGHT);
+            $lp->text('Total: ' . money_format('%n', $order['total']));
+            $lp->feed(3);
+
+            $lp->setEmphasis(true);
+            $lp->setTextSize(1, 2);
+            $lp->setJustification(Printer::JUSTIFY_CENTER);
+            $lp->text("Thank You For Your Support\n");
+
+            $lp->feed(8);
+            $lp->cut();
+            $lp->close();
+        } catch (\Exception $e) {
+            return false;
         }
 
-        if (empty($order['comments']) === false) {
-            $lp->feed();
-            $lp->text("Comments:\n");
-            $lp->text($order['comments'] . "\n");
-        }
-
-        $lp->feed(2);
-        $lp->setEmphasis(true);
-        $lp->setTextSize(2, 2);
-        $lp->setJustification(Printer::JUSTIFY_RIGHT);
-        $lp->text('Total: ' . money_format('%n', $order['total']));
-        $lp->feed(3);
-
-        $lp->setEmphasis(true);
-        $lp->setTextSize(1, 2);
-        $lp->setJustification(Printer::JUSTIFY_CENTER);
-        $lp->text("Thank You For Your Support\n");
-
-        $lp->feed(8);
-        $lp->cut();
-        $lp->close();
+        return true;
     }
 
     /**
