@@ -398,9 +398,9 @@ class App
      *
      * @param int $index The index of the parameter to get.
      *
-     * @return string The Nth parameter.
+     * @return string|null The Nth parameter.
      */
-    public function getParam(int $index = 0): string
+    public function getParam(int $index = 0): ?string
     {
         return $this->params[$index] ?? null;
     }
@@ -579,8 +579,13 @@ class App
      *
      * @return array The matching photos.
      */
-    public function search(string $text): array
+    public function search(?string $text): array
     {
+        if (empty($text) === true) {
+            unset($_COOKIE['lastSearch']);
+            setcookie('lastSearch', '', 0, '/');
+            throw new \Exception('Must provide a search term.');
+        }
         $names = (new Db($this->config))->search(urldecode($text), self::SEARCH_LIMIT);
         if (empty($names) === false) {
             foreach ($names as $index => $name) {
