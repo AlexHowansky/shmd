@@ -4,7 +4,7 @@
     </div>
     <div class="content">
         <div class="center aligned header">
-<?php if ($name): ?>
+<?php if ($name ?? null): ?>
             <button class="ui big blue image label"><?= $name ?></button>
 <?php else: ?>
             <?= $photo ?>
