@@ -495,7 +495,7 @@ class App
         $order = $this->getOrder($id);
 
         try {
-            $lp = new Printer(new FilePrintConnector($this->config['printer']));
+            $lp = new Printer(new FilePrintConnector($this->config['receipt']['device']));
             $lp->initialize();
             $lp->feed(1);
 
