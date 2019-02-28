@@ -11,7 +11,7 @@
 
 namespace Shmd;
 
-use Mike42\Escpos\EscposImage;
+use Mike42\Escpos\GdEscposImage;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 
@@ -220,6 +220,61 @@ class App
             $this->setArchiveDir(self::DEFAULT_ARCHIVE_DIR);
         }
         return $this->archiveDir;
+    }
+
+    /**
+     * Dither an image so it looks decent on a receipt printer.
+     *
+     * @param string $file The image to dither.
+     *
+     * @return resource The GD image resource for the dithered image.
+     */
+    protected function getDitheredImage(string $file)
+    {
+        $img = imagecreatefromstring(file_get_contents($file));
+        $width = imagesx($img);
+        $height = imagesy($img);
+        $arr = [];
+        for ($x = 0; $x < $width; $x++) {
+            for ($y = 0; $y < $height; $y++) {
+                $arr[$x][$y] = imagecolorat($img, $x, $y);
+            }
+        }
+        $output = imagecreate($width, $height);
+        $black = imagecolorallocate($output, 0, 0, 0);
+        $white = imagecolorallocate($output, 0xff, 0xff, 0xff);
+        for ($x = 0; $x < $width; $x++) {
+            for ($y = 0; $y < $height; $y++) {
+                $old = $arr[$x][$y];
+                if ($old > 0xffffff * 0.5) {
+                    $new = 0xffffff;
+                    imagesetpixel($output, $x, $y, $white);
+                } else {
+                    $new = 0x000000;
+                }
+                $quantErr = $old - $new;
+                $errDiff = (1 / 8) * $quantErr;
+                if (isset($arr[$x + 1][$y]) === true) {
+                    $arr[$x + 1][$y] += $errDiff;
+                }
+                if (isset($arr[$x + 2][$y]) === true) {
+                    $arr[$x + 2][$y] += $errDiff;
+                }
+                if (isset($arr[$x - 1][$y + 1]) === true) {
+                    $arr[$x - 1][$y + 1] += $errDiff;
+                }
+                if (isset($arr[$x][$y + 1]) === true) {
+                    $arr[$x][$y + 1] += $errDiff;
+                }
+                if (isset($arr[$x + 1][$y + 1]) === true) {
+                    $arr[$x + 1][$y + 1] += $errDiff;
+                }
+                if (isset($arr[$x][$y + 2]) === true) {
+                    $arr[$x][$y + 2] += $errDiff;
+                }
+            }
+        }
+        return $output;
     }
 
     /**
@@ -510,6 +565,17 @@ class App
             $lp->setJustification(Printer::JUSTIFY_LEFT);
             $lp->text('Name: ' . $order['name']);
             $lp->feed(2);
+
+            if ($this->config['receipt']['image'] === true) {
+                $image = new GdEscposImage();
+                $image->readImageFromGdResource(
+                    $this->getDitheredImage(
+                        realpath(__DIR__ . '/../public/photos/' . $order['gallery'] . '/' . $order['photo'] . '.jpg')
+                    )
+                );
+                $lp->graphics($image);
+                $lp->feed(1);
+            }
 
             $lp->setEmphasis(false);
             $lp->setTextSize(1, 1);

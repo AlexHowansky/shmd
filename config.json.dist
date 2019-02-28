@@ -16,7 +16,8 @@
     "locale": "en_US",
     "timezone": "America/New_York",
     "receipt": {
-        "device": "/dev/usb/lp0"
+        "device": "/dev/usb/lp0",
+        "image": true
     }
     "title": "The Name of Your Event",
 }
