@@ -224,7 +224,10 @@ class Rekog
                         $db->writePhoto($recognized);
                     }
                 } catch (\Aws\Rekognition\Exception\RekognitionException $e) {
-                    Ansi::printf("        {{red}}face not found: {{white:%s}}\n", json_decode($e->getResponse()->getBody(), true)['Message']);
+                    Ansi::printf(
+                        "        {{red}}face not found: {{white:%s}}\n",
+                        json_decode($e->getResponse()->getBody(), true)['Message']
+                    );
                 }
 
             }

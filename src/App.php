@@ -644,6 +644,8 @@ class App
      * @param string $text The text to search for.
      *
      * @return array The matching photos.
+     *
+     * @throws \Exception On error.
      */
     public function search(?string $text): array
     {
