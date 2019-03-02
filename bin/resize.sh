@@ -57,7 +57,7 @@ do
         echo -n "    ${PHOTO}"
         if [ -f "${REKOG_DIR}/${GALLERY}/${PHOTO}" ]
         then
-            echo "skipped Rekognition API resize"
+            echo " skipped Rekognition API resize"
         else
             cp ${FILE} "${REKOG_DIR}/${GALLERY}/${PHOTO}"
             while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt 5000000 ]
