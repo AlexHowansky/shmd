@@ -539,6 +539,22 @@ class App
     }
 
     /**
+     * Format a monetary value.
+     *
+     * @param float $value The value to format.
+     *
+     * @return string The formatted value.
+     */
+    protected function moneyFormat(float $value): string
+    {
+        static $formatter;
+        if ($formatter === null) {
+            $formatter = new NumberFormatter($this->config['locale'], NumberFormatter::CURRENCY);
+        }
+        return $formatter->format($value);
+    }
+
+    /**
      * Print an order receipt.
      *
      * @param string $id The order ID.
@@ -593,8 +609,8 @@ class App
                         "%-13s %8s %10s %8s\n",
                         $size,
                         $quantity,
-                        money_format('%n', $this->getPriceForSize($size)),
-                        money_format('%n', $this->getPriceForSize($size) * $quantity)
+                        $this->moneyFormat($this->getPriceForSize($size)),
+                        $this->moneyFormat($this->getPriceForSize($size) * $quantity)
                     )
                 );
             }
@@ -610,7 +626,7 @@ class App
             $lp->setEmphasis(true);
             $lp->setTextSize(2, 2);
             $lp->setJustification(Printer::JUSTIFY_RIGHT);
-            $lp->text('Total: ' . money_format('%n', $order['total']));
+            $lp->text('Total: ' . $this->moneyFormat($order['total']));
             $lp->feed(3);
 
             $lp->setEmphasis(true);
