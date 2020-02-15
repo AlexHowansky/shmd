@@ -6,8 +6,8 @@
         "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.132.5",
-        "mike42/escpos-php": "^2.2.0",
+        "aws/aws-sdk-php": "^3.133",
+        "mike42/escpos-php": "^2.2",
         "ork/csv": "^1.1.1"
     },
     "require-dev": {
@@ -20,7 +20,6 @@
     },
     "scripts": {
         "phpcs": "phpcs",
-        "phpstan": "phpstan analyze",
         "serve": "php -S localhost:8000 -t public/"
     }
 }
