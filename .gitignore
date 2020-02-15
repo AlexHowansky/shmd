@@ -1,6 +1,6 @@
-config.json
 /orders/
-/vendor/
-/staging/
-/rekog/
 /public/photos/
+/rekog/
+/staging/
+/vendor/
+config.json

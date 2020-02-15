@@ -37,7 +37,7 @@ class Config implements \ArrayAccess
             throw new \RuntimeException('Missing configuration file.');
         }
         $this->config = json_decode(file_get_contents($file), true);
-        if ($this->config === false) {
+        if (empty($this->config) === true) {
             throw new \RuntimeException('Bad configuration file.');
         }
     }
