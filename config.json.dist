@@ -19,5 +19,5 @@
         "device": "/dev/usb/lp0",
         "image": true
     },
-    "title": "The Name of Your Event",
+    "title": "The Name of Your Event"
 }
