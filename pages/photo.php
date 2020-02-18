@@ -84,9 +84,11 @@ require_once '_menu.php';
                         <div class="ui basic green label">Total $<span id="total">0</span></div>
                     </div>
                 </div>
+<?php if ($this->getHotFolder()): ?>
                 <div class="four wide column right aligned">
                     <div id="printButton" class="ui huge green button">Print 4x6</a>
                 </div>
+<?php endif; ?>
 <?php endif; ?>
             </div>
 <?php endforeach; ?>

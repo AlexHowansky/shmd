@@ -368,10 +368,7 @@ class App
      */
     public function getHotFolder(): ?string
     {
-        if (isset($this->config['hotFolder']) === false) {
-            throw new \Exception('Hot folder missing.');
-        }
-        return $this->config['hotFolder'];
+        return $this->config['hotFolder'] ?? null;
     }
 
     /**
@@ -605,6 +602,7 @@ class App
         $destFile = sprintf('%s/%s.jpg', $this->getHotFolder(), md5(microtime(true)));
         if (
             file_exists($sourceFile) === false ||
+            file_exists($this->getHotFolder()) === false ||
             copy($sourceFile, $destFile) === false
         ) {
             header('HTTP/1.1 400 Bad Request');
