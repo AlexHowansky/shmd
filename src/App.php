@@ -39,6 +39,8 @@ class App
 
     const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
+    const DEFAULT_STAGING_DIR = __DIR__ . '/../staging';
+
     const SEARCH_LIMIT = 20;
 
     /**
@@ -96,6 +98,13 @@ class App
      * @var string
      */
     protected $photoDir = null;
+
+    /**
+     * The photo staging directory.
+     *
+     * @var string
+     */
+    protected $stagingDir = null;
 
     /**
      * Constructor.
@@ -351,6 +360,21 @@ class App
     }
 
     /**
+     * Get the hot folder.
+     *
+     * @return string The hot folder.
+     *
+     * @throws \Exception On error.
+     */
+    public function getHotFolder(): ?string
+    {
+        if (isset($this->config['hotFolder']) === false) {
+            throw new \Exception('Hot folder missing.');
+        }
+        return $this->config['hotFolder'];
+    }
+
+    /**
      * Get the last error that occurred.
      *
      * @return \Exception
@@ -539,6 +563,19 @@ class App
     }
 
     /**
+     * Get the staging directory.
+     *
+     * @return string The staging directory.
+     */
+    public function getStagingDir(): string
+    {
+        if ($this->stagingDir === null) {
+            $this->setStagingDir(self::DEFAULT_STAGING_DIR);
+        }
+        return $this->stagingDir;
+    }
+
+    /**
      * Format a monetary value.
      *
      * @param float $value The value to format.
@@ -552,6 +589,26 @@ class App
             $formatter = new \NumberFormatter($this->config['locale'], \NumberFormatter::CURRENCY);
         }
         return $formatter->format($value);
+    }
+
+    /**
+     * Print a photo immediately.
+     *
+     * @param string $gallery The gallery that the photo is in.
+     * @param string $photo   The name of the photo to print.
+     *
+     * @return void
+     */
+    public function printPhoto(string $gallery, string $photo)
+    {
+        $sourceFile = sprintf('%s/%s/%s.jpg', $this->getStagingDir(), $gallery, $photo);
+        $destFile = sprintf('%s/%s.jpg', $this->getHotFolder(), md5(microtime(true)));
+        if (
+            file_exists($sourceFile) === false ||
+            copy($sourceFile, $destFile) === false
+        ) {
+            header('HTTP/1.1 400 Bad Request');
+        }
     }
 
     /**
@@ -833,6 +890,25 @@ class App
             throw new \Exception('Invalid photo directory.');
         }
         $this->photoDir = $dir;
+        return $this;
+    }
+
+    /**
+     * Set the staging directory.
+     *
+     * @param string $dir The staging directory.
+     *
+     * @return App Allow method chaining.
+     *
+     * @throws \Exception On error.
+     */
+    public function setStagingDir(string $dir): App
+    {
+        $dir = realpath($dir);
+        if (is_dir($dir) === false) {
+            throw new \Exception('Invalid staging directory.');
+        }
+        $this->stagingDir = $dir;
         return $this;
     }
 

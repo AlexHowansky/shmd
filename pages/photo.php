@@ -2,6 +2,7 @@
 $gallery = $this->getGallery($this->getParam(0));
 $photo = urldecode($this->getParam(1));
 $people = $this->getPeopleInPhoto($gallery->getName(), $photo);
+$last = count($this->getSizes()) - 1;
 $menu = [
     '/' => 'Home',
     '/gallery/' . $gallery->getName() => $gallery->getTitle(),
@@ -35,7 +36,7 @@ require_once '_menu.php';
                     <label>Name</label>
                     <input type="text" id="name" name="name" autocomplete="off">
                 </div>
-                <div class="field eleven wide column">
+                <div class="field seven wide column">
                     <label>Comments</label>
                     <input type="text" name="comments" autocomplete="off">
                 </div>
@@ -76,18 +77,41 @@ require_once '_menu.php';
                 <div class="one wide column middle aligned right aligned">
                     $<span id="sub_<?= $size ?>">0</span>
                 </div>
-<?php if ($index === 3): ?>
-                <div class="eleven wide column right aligned">
-                    <div class="ui labeled huge button">
-                        <div id="orderButton" class="ui huge red submit button disabled">Submit Order</div>
-                        <div id="totalButton" class="ui basic red label">Total $<span id="total">0</span></div>
+<?php if ($index === $last): ?>
+                <div class="seven wide column right aligned">
+                    <div id="orderButton" class="ui labeled huge button disabled">
+                        <div class="ui huge green submit button">Submit Order</div>
+                        <div class="ui basic green label">Total $<span id="total">0</span></div>
                     </div>
+                </div>
+                <div class="four wide column right aligned">
+                    <div id="printButton" class="ui huge green button">Print 4x6</a>
                 </div>
 <?php endif; ?>
             </div>
 <?php endforeach; ?>
         </div>
     </form>
+</div>
+<div id="printModal" class="ui mini modal">
+    <div class="header">
+        <div class="ui centered header">
+            Photo queued for printing.
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui large positive button">OK</div>
+    </div>
+</div>
+<div id="failModal" class="ui mini modal">
+    <div class="header">
+        <div class="ui centered header">
+            Printing error.
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui large negative button">OK</div>
+    </div>
 </div>
 <script>
 $().ready(function() {
@@ -115,6 +139,16 @@ $().ready(function() {
         }
     });
 
+    $('#printButton').click(function() {
+        $.ajax({
+            url: '/print/<?= $gallery->getName() ?>/<?= $photo ?>',
+        }).done(function() {
+            $('#printModal').modal('show');
+        }).fail(function() {
+            $('#failModal').modal('show');
+        });
+    });
+
     $('select').change(function() {
         var size = $(this).attr('id').replace('qty_', '');
         $('#sub_' + size).html($('#amt_' + size).html() * $(this).val());
@@ -124,16 +158,8 @@ $().ready(function() {
 <?php endforeach; ?>
         $('#total').html(total);
         if (total == 0) {
-            $('#totalButton').removeClass('green');
-            $('#totalButton').addClass('red');
-            $('#orderButton').removeClass('green');
-            $('#orderButton').addClass('red');
             $('#orderButton').addClass('disabled');
         } else {
-            $('#totalButton').removeClass('red');
-            $('#totalButton').addClass('green');
-            $('#orderButton').removeClass('red');
-            $('#orderButton').addClass('green');
             $('#orderButton').removeClass('disabled');
         }
     });
