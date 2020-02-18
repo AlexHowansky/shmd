@@ -549,7 +549,7 @@ class App
     {
         static $formatter;
         if ($formatter === null) {
-            $formatter = new NumberFormatter($this->config['locale'], NumberFormatter::CURRENCY);
+            $formatter = new \NumberFormatter($this->config['locale'], \NumberFormatter::CURRENCY);
         }
         return $formatter->format($value);
     }

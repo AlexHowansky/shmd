@@ -29,8 +29,8 @@ require_once '_order_menu.php';
             <tr>
                 <td><?= $size ?></td>
                 <td class="right aligned"><?= $quantity ?></td>
-                <td class="right aligned"><?= money_format('%n', $this->getPriceForSize($size)) ?></td>
-                <td class="right aligned"><?= money_format('%n', $this->getPriceForSize($size) * $quantity) ?></td>
+                <td class="right aligned"><?= $this->moneyFormat($this->getPriceForSize($size)) ?></td>
+                <td class="right aligned"><?= $this->moneyFormat($this->getPriceForSize($size) * $quantity) ?></td>
             </tr>
 <?php endforeach; ?>
         </tbody>
@@ -38,7 +38,7 @@ require_once '_order_menu.php';
             <tr>
                 <th colspan="4" class="right aligned">
                     <h1 class="ui header">
-                        <?= money_format('%n', $order['total']) ?>
+                        <?= $this->moneyFormat($order['total']) ?>
                     </h1>
                 </th>
             </tr>
