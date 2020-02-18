@@ -109,6 +109,12 @@ $().ready(function() {
         inline: true
     });
 
+    $('#orderButton').click(function() {
+        if ($('.ui.form').form('is valid')) {
+            $('#orderButton').addClass('disabled');
+        }
+    });
+
     $('select').change(function() {
         var size = $(this).attr('id').replace('qty_', '');
         $('#sub_' + size).html($('#amt_' + size).html() * $(this).val());
