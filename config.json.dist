@@ -12,6 +12,7 @@
         "13x19": 20
     },
     "hotFolder": "/path/to/your/hot/folder",
+    "hotFolderLog": "/path/to/optional/hotFolder.log",
     "database": "/path/to/your/sqlite.db",
     "searchLog": "/path/to/optional/search.log",
     "locale": "en_US",
