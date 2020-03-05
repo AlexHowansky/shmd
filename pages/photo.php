@@ -107,7 +107,7 @@ require_once '_menu.php';
 </div>
 <div id="failModal" class="ui mini modal">
     <div class="header">
-        <div class="ui centered header">
+        <div id="failModalMessage" class="ui centered header">
             Printing error.
         </div>
     </div>
@@ -143,9 +143,16 @@ $().ready(function() {
 
     $('#printButton').click(function() {
         $.ajax({
-            url: '/print/<?= $gallery->getName() ?>/<?= $photo ?>',
-        }).done(function() {
-            $('#printModal').modal('show');
+            method: 'post',
+            dataType: 'json',
+            url: '/print/<?= $gallery->getName() ?>/<?= $photo ?>'
+        }).done(function(data) {
+            if (data.success) {
+                $('#printModal').modal('show');
+            } else {
+                $('#failModalMessage').html(data.message);
+                $('#failModal').modal('show');
+            }
         }).fail(function() {
             $('#failModal').modal('show');
         });

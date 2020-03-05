@@ -122,6 +122,9 @@ class App
             $url = parse_url($_SERVER['REQUEST_URI']);
             $params = explode('/', trim($url['path'], '/'));
             ob_start();
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $this->setPageWrapper('_null');
+            }
             $this
                 ->setPage(array_shift($params))
                 ->setParams($params)
@@ -600,12 +603,21 @@ class App
     {
         $sourceFile = sprintf('%s/%s/%s.jpg', $this->getStagingDir(), $gallery, $photo);
         $destFile = sprintf('%s/%s.jpg', $this->getHotFolder(), md5(microtime(true)));
-        if (
-            file_exists($sourceFile) === false ||
-            file_exists($this->getHotFolder()) === false ||
-            copy($sourceFile, $destFile) === false
-        ) {
-            header('HTTP/1.1 400 Bad Request');
+        $error = '';
+        if (file_exists($sourceFile) === false) {
+            $error = 'No such photo.';
+        } elseif (file_exists($this->getHotFolder()) === false) {
+            $error = 'Hot folder missing.';
+        } elseif (copy($sourceFile, $destFile) === false) {
+            $error = 'Copy to hot folder failed.';
+        }
+        if (empty($error) === true) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => $error,
+            ]);
         }
     }
 
@@ -856,7 +868,7 @@ class App
     public function setPageWrapper(string $pageWrapper): App
     {
         $this->pageWrapper = $pageWrapper;
-        return this;
+        return $this;
     }
 
     /**
