@@ -1,5 +1,5 @@
 <?php
-$order = $this->getOrder($this->getParam());
+$order = $this->getOrder($this->getParam(), true);
 $menu = ['/' => 'Home'];
 require_once '_order_menu.php';
 ?>

@@ -387,17 +387,25 @@ class App
     /**
      * Get an order.
      *
-     * @param string $id The order ID.
+     * @param string  $id      The order ID.
+     * @param boolean $archive True to consider archived orders too.
      *
      * @return array The order data.
      *
      * @throws \Exception On error.
      */
-    public function getOrder(string $id): array
+    public function getOrder(string $id, $archive = false): array
     {
         $orderFile = $this->getFileForOrder($id);
         if (file_exists($orderFile) === false) {
-            throw new \Exception('No such order.');
+            if ($archive === true) {
+                $orderFile = $this->getFiLeForArchive($id);
+                if (file_exists($orderFile) === false) {
+                    throw new \Exception('No such order.');
+                }
+            } else {
+                throw new \Exception('No such order.');
+            }
         }
         $order = json_decode(file_get_contents($orderFile), true);
         if (is_array($order) === false) {
