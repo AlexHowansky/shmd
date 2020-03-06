@@ -142,6 +142,7 @@ $().ready(function() {
     });
 
     $('#printButton').click(function() {
+        $('#printButton').addClass('loading');
         $.ajax({
             method: 'post',
             dataType: 'json',
@@ -155,6 +156,8 @@ $().ready(function() {
             }
         }).fail(function() {
             $('#failModal').modal('show');
+        }).always(function() {
+            $('#printButton').removeClass('loading');
         });
     });
 
