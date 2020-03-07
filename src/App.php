@@ -41,7 +41,7 @@ class App
 
     const DEFAULT_STAGING_DIR = __DIR__ . '/../staging';
 
-    const SEARCH_LIMIT = 20;
+    const SEARCH_LIMIT = 100;
 
     /**
      * The order archive dir.
