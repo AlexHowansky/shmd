@@ -17,9 +17,9 @@ namespace Shmd;
 class Gallery
 {
 
-    const DESCRIPTION_FILE = 'description';
+    protected const DESCRIPTION_FILE = 'description';
 
-    const TITLE_FILE = 'title';
+    protected const TITLE_FILE = 'title';
 
     /**
      * The app that spawned us.

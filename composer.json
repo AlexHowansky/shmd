@@ -1,17 +1,29 @@
 {
     "name": "shmd/gallery",
+    "type": "project",
+    "description": "South High Marathon Dance photo ordering application.",
+    "homepage": "http://github.com/AlexHowansky/shmd",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Howansky",
+            "email": "alex.howansky@gmail.com",
+            "homepage": "https://github.com/AlexHowansky"
+        }
+    ],
     "require": {
-        "php": "^7.2",
+        "php": ">=7.3.0",
         "ext-gd": "*",
         "ext-intl": "*",
+        "ext-imagick": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.133",
+        "aws/aws-sdk-php": "^3.199.2",
         "mike42/escpos-php": "^2.2",
-        "ork/csv": "^1.1.1"
+        "ork/csv": "^1.4.1"
     },
     "require-dev": {
-        "ork/phpcs": "^2.1.0"
+        "ork/phpcs": "^2.6.0"
     },
     "autoload": {
         "psr-4": {
@@ -20,6 +32,8 @@
     },
     "scripts": {
         "phpcs": "phpcs",
-        "serve": "php -S localhost:8000 -t public/"
+        "post-install-cmd": "phpcs --config-set php_version 70331",
+        "post-update-cmd": "phpcs --config-set php_version 70331",
+        "go": "php -S localhost:8000 -t public/"
     }
 }

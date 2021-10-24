@@ -19,16 +19,16 @@ namespace Shmd;
 class Rekog
 {
 
-    use Configurable;
+    use ConfigurableTrait;
 
     // The API version to use.
-    const API_VERSION = '2016-06-27';
+    protected const API_VERSION = '2016-06-27';
 
     // The faces metadata file name extension.
-    const FACES_JSON = '.faces.json';
+    protected const FACES_JSON = '.faces.json';
 
     // The names metadata file name extension.
-    const NAMES_JSON = '.names.json';
+    protected const NAMES_JSON = '.names.json';
 
     /**
      * An instance of the API client to use.

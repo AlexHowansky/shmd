@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <ruleset name="Ork SHMD">
-    <rule ref="vendor/ork/phpcs/Ork"/>
+    <rule ref="Ork"/>
     <file>src</file>
 </ruleset>

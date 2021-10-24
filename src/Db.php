@@ -17,7 +17,7 @@ namespace Shmd;
 class Db
 {
 
-    use Configurable;
+    use ConfigurableTrait;
 
     /**
      * Database connector.

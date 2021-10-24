@@ -14,7 +14,7 @@ namespace Shmd;
 /**
  * Configuration trait.
  */
-trait Configurable
+trait ConfigurableTrait
 {
 
     /**

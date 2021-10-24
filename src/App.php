@@ -21,27 +21,27 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 class App
 {
 
-    use Configurable;
+    use ConfigurableTrait;
 
-    const DATE_FORMAT = 'M j Y h:i:s a';
+    protected const DATE_FORMAT = 'M j Y h:i:s a';
 
-    const DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
+    protected const DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
 
-    const DEFAULT_ERROR_PAGE = 'error';
+    protected const DEFAULT_ERROR_PAGE = 'error';
 
-    const DEFAULT_ORDER_DIR = __DIR__ . '/../orders';
+    protected const DEFAULT_ORDER_DIR = __DIR__ . '/../orders';
 
-    const DEFAULT_PAGE = 'index';
+    protected const DEFAULT_PAGE = 'index';
 
-    const DEFAULT_PAGE_DIR = __DIR__ . '/../pages';
+    protected const DEFAULT_PAGE_DIR = __DIR__ . '/../pages';
 
-    const DEFAULT_PAGE_WRAPPER = '_page';
+    protected const DEFAULT_PAGE_WRAPPER = '_page';
 
-    const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
+    protected const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
-    const DEFAULT_STAGING_DIR = __DIR__ . '/../staging';
+    protected const DEFAULT_STAGING_DIR = __DIR__ . '/../staging';
 
-    const SEARCH_LIMIT = 100;
+    protected const SEARCH_LIMIT = 100;
 
     /**
      * The order archive dir.
@@ -394,7 +394,7 @@ class App
      *
      * @throws \Exception On error.
      */
-    public function getOrder(string $id, $archive = false): array
+    public function getOrder(string $id, bool $archive = false): array
     {
         $orderFile = $this->getFileForOrder($id);
         if (file_exists($orderFile) === false) {
