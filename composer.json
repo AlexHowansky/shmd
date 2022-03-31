@@ -18,12 +18,12 @@
         "ext-imagick": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.199.2",
+        "aws/aws-sdk-php": "^3.218.0",
         "mike42/escpos-php": "^2.2",
-        "ork/csv": "^1.4.1"
+        "ork/csv": "^1.5.1"
     },
     "require-dev": {
-        "ork/phpcs": "^2.6.0"
+        "ork/phpcs": "^2.7.0"
     },
     "autoload": {
         "psr-4": {
@@ -35,5 +35,10 @@
         "post-install-cmd": "phpcs --config-set php_version 70331",
         "post-update-cmd": "phpcs --config-set php_version 70331",
         "go": "php -S localhost:8000 -t public/"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
