@@ -291,7 +291,9 @@ class Rekog
         $db = new Db($this->config);
 
         foreach ($index as $row) {
-            $file = realpath(dirname($indexFile) . '/' . $row['directory'] . '/' . $row['file']);
+            // Support reading either the subdir index or the master index.
+            $dir = preg_replace('|/' . $row['directory'] . '$|', '', dirname($indexFile));
+            $file = realpath($dir . '/' . $row['directory'] . '/' . $row['file']);
             if (file_exists($file) === false) {
                 throw new \RuntimeException('Missing photo file: ' . $file);
             }
