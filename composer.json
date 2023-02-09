@@ -12,18 +12,18 @@
         }
     ],
     "require": {
-        "php": ">=7.3.0",
+        "php": "^8.0",
         "ext-gd": "*",
         "ext-intl": "*",
         "ext-imagick": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.218.0",
+        "aws/aws-sdk-php": "^3.258",
         "mike42/escpos-php": "^2.2",
-        "ork/csv": "^1.5.1"
+        "ork/csv": "^1.6.0"
     },
     "require-dev": {
-        "ork/phpcs": "^2.7.0"
+        "ork/phpcs": "^2.8.1"
     },
     "autoload": {
         "psr-4": {
@@ -32,8 +32,6 @@
     },
     "scripts": {
         "phpcs": "phpcs",
-        "post-install-cmd": "phpcs --config-set php_version 70331",
-        "post-update-cmd": "phpcs --config-set php_version 70331",
         "go": "php -S localhost:8000 -t public/"
     },
     "config": {

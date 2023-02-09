@@ -17,7 +17,7 @@ $index = $argv[1] ?? './Index.txt';
 
 if (file_exists($index) === false) {
     echo "Usage:\n";
-    echo "    ${argv[0]} <index file> [<year>]\n\n";
+    echo "    $argv[0] <index file> [<year>]\n\n";
     echo "Where:\n";
     echo "    <index file> The CSV file containing the photo metadata.\n";
     echo "    <year>       The school year represented by the photos.\n";
