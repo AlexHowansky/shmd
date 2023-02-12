@@ -11,10 +11,12 @@
 
 namespace Shmd;
 
+use Countable;
+
 /**
  * Gallery handler.
  */
-class Gallery
+class Gallery implements Countable
 {
 
     protected const DESCRIPTION_FILE = 'description';
@@ -43,6 +45,13 @@ class Gallery
     protected $name = null;
 
     /**
+     * Cache for the directory iterator.
+     *
+     * @var array
+     */
+    protected static array $photos = [];
+
+    /**
      * Constructor.
      *
      * @param App    $app  The app that spawned us.
@@ -56,6 +65,16 @@ class Gallery
         if ($name !== null) {
             $this->setName($name);
         }
+    }
+
+    /**
+     * Get the count of photos in this gallery.
+     *
+     * @return int The count of photos in this gallery.
+     */
+    public function count(): int
+    {
+        return count($this->getPhotos());
     }
 
     /**
@@ -80,7 +99,7 @@ class Gallery
      */
     public function getDescription(): string
     {
-        return $this->getFileContents(self::DESCRIPTION_FILE) ?: $this->getName();
+        return $this->getFileContents(self::DESCRIPTION_FILE);
     }
 
     /**
@@ -110,6 +129,16 @@ class Gallery
     }
 
     /**
+     * Get the highlight photo for this gallery.
+     *
+     * @return string The highlight photo for this gallery.
+     */
+    public function getHighlightPhoto(): string
+    {
+        return $this->getPhotos()[0];
+    }
+
+    /**
      * Get the name of the gallery.
      *
      * @return string The name of the gallery.
@@ -126,14 +155,16 @@ class Gallery
      */
     public function getPhotos(): array
     {
-        $photos = [];
-        foreach (new \DirectoryIterator($this->getDir()) as $item) {
-            if ($item->isFile() === true && $item->isDot() === false && $item->getExtension() === 'jpg') {
-                $photos[] = $item->getBasename('.jpg');
+        if (array_key_exists($this->getName(), self::$photos) === false) {
+            self::$photos[$this->getName()] = [];
+            foreach (new \DirectoryIterator($this->getDir()) as $item) {
+                if ($item->isFile() === true && $item->isDot() === false && $item->getExtension() === 'jpg') {
+                    self::$photos[$this->getName()][] = $item->getBasename('.jpg');
+                }
             }
+            asort(self::$photos[$this->getName()]);
         }
-        asort($photos);
-        return $photos;
+        return self::$photos[$this->getName()];
     }
 
     /**

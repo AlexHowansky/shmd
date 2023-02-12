@@ -4,16 +4,26 @@
         <h1 class="ui centered header"><?= $this->config['title'] ?></h1>
     </div>
 </div>
-<div class="ui huge relaxed celled list">
+<div class="ui cards" style="padding: 0 25px 0 25px;">
 <?php foreach ($this->getGalleries() as $gallery): ?>
-    <div class="item">
-        <div class="right floated content">
-            <a class="ui big blue button" href="gallery/<?= $gallery->getName() ?>">View</a>
+    <a class="ui raised card" href="/gallery/<?= $gallery->getName() ?>">
+<?php if ($gallery->count()): ?>
+        <div class="image">
+            <img src="<?= $gallery->getRelativePath() ?>/<?= $gallery->getHighlightPhoto() ?>.jpg">
         </div>
+<?php endif; ?>
         <div class="content">
-            <div class="header"><?= $gallery->getTitle() ?></div>
-            <div class="description"><?= $gallery->getDescription() ?></div>
+            <div class="center aligned header">
+                <?= $gallery->getTitle() ?>
+            </div>
+            <div class="center aligned description">
+                <?= $gallery->getDescription() ?>
+            </div>
         </div>
-    </div>
+        <div class="extra content">
+            <i class="camera icon"></i>
+            <?= $gallery->count() ?> Photos
+        </div>
+    </a>
 <?php endforeach; ?>
 </div>
