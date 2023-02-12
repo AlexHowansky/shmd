@@ -32,7 +32,10 @@
     },
     "scripts": {
         "phpcs": "phpcs",
-        "go": "php -S localhost:8000 -t public/"
+        "go": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:8000 -t public/"
+        ]
     },
     "config": {
         "allow-plugins": {
