@@ -44,9 +44,10 @@ characters. The directory name will be used as the URL slug for the gallery.
 Create another subdirectory with the same name under the `public/photos`
 directory. Make sure it's readable by the web server user. If you would like
 the app to show a more descriptive name for the gallery, you may create a text
-file `public/photos/<gallery>/title` containing the  gallery title. You may
-also create `public/photos/<gallery>/description` with a short description of
-the gallery contents.
+file `public/photos/<gallery>/title` containing the gallery title. You may also
+create `public/photos/<gallery>/description` with a short description of the
+gallery contents and `public/photos/<gallery>/highlight` with the name of the
+photo to use for the index page highlight.
 
 ### Photos
 
@@ -60,14 +61,14 @@ Photos will not appear in the app until after they have been so processed.
 Note that the files in `public/photos/<gallery>` must be readable by the web
 server process user.
 
-The galleries will be displayed in the order they were created. If you would
-like to manually adjust this order, simply `touch public/photos/<gallery>` to
-move that gallery to the end of the list.
-
 ### Facial Recognition
 
 To seed the facial recognition database, run the script `bin/indexPhotos.php`
 which will import your yearbook portraits into your Rekognition collection.
+
+To perform facial recognition on photos, run the `bin/identifyPhotos.php`
+script. This can be run at any time, it will not interfere with app usage. The
+process will update the SQLite database and enable searches by name in the app.
 
 ### Printing
 
@@ -89,12 +90,6 @@ photos, and run the order out to the patron. Alternatively, print workers may
 browse the `/orders` URL to watch for incoming orders. Once fulfilled, they may
 click the Complete button, which will archive the order and remove it from the
 order page so that it does not get printed twice.
-
-### Facial Recognition
-
-To perform facial recognition on photos, run the `bin/identifyPhotos.php`
-script. This can be run at any time, it will not interfere with app usage. The
-process will update the SQLite database and enable searches by name in the app.
 
 ## Data
 
