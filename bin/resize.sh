@@ -32,7 +32,7 @@ umask 0022
 
 cd "${STAGE_DIR}" || exit
 
-for DIR in $(find . -mindepth 1 -maxdepth 1 -type d | sort)
+for DIR in ${1:-$(find . -mindepth 1 -maxdepth 1 -type d | sort)}
 do
 
     GALLERY=$(echo "${DIR}" | cut -d'/' -f2)
