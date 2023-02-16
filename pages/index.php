@@ -1,10 +1,5 @@
 <?php require_once '_menu.php'; ?>
-<div class="ui relaxed list">
-    <div class="item">
-        <h1 class="ui centered header"><?= $this->config['title'] ?></h1>
-    </div>
-</div>
-<div class="ui cards" style="padding: 0 25px 0 25px;">
+<div class="ui cards" style="padding: 1em;">
 <?php foreach ($this->getGalleries() as $gallery): ?>
     <a class="ui raised card" href="/gallery/<?= $gallery->getName() ?>">
 <?php if ($gallery->count()): ?>
