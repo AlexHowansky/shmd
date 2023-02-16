@@ -21,6 +21,8 @@ class Gallery implements Countable
 
     protected const DESCRIPTION_FILE = 'description';
 
+    protected const HIGHLIGHT_FILE = 'highlight';
+
     protected const TITLE_FILE = 'title';
 
     /**
@@ -135,7 +137,7 @@ class Gallery implements Countable
      */
     public function getHighlightPhoto(): string
     {
-        return $this->getPhotos()[0];
+        return $this->getFileContents(self::HIGHLIGHT_FILE) ?: $this->getPhotos()[0];
     }
 
     /**
