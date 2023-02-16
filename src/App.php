@@ -341,10 +341,17 @@ class App
         $galleries = [];
         foreach (new \DirectoryIterator($this->getPhotoDir()) as $item) {
             if ($item->isDir() === true && $item->isDot() === false) {
-                $galleries[$item->getFilename()] = $item->getCTime();
+                $galleries[$item->getFilename()] = match ($this->config['sort']['index']['field'] ?? null) {
+                    'time' => $item->getCTime(),
+                    default => $item->getFilename(),
+                };
             }
         }
-        asort($galleries);
+        if (($this->config['sort']['index']['direction'] ?? 'ascending') === 'ascending') {
+            asort($galleries);
+        } else {
+            arsort($galleries);
+        }
         foreach (array_keys($galleries) as $gallery) {
             yield $this->getGallery($gallery);
         }
