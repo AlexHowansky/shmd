@@ -1,10 +1,27 @@
 #!/bin/bash
 
-# This script will traverse all raw files in the staging directory, rename
-# the extensions to lowercase, and then drop resized copies into the public
-# directory. It can be run at any time -- it will process only new photos.
-# It will also create resized copies in the rekog directory -- these are
-# required because the Rekognition API caps image size at 5Mb.
+# This script will traverse all image files in the staging directory, rename
+# extensions to lowercase, and then drop appropriately resized copies into the
+# public directory. It will also create resized copies in the rekog directory,
+# which are required because the Rekognition API caps image size at 5Mb.
+#
+# This script can be run at any time, it will process only new photos.
+
+if [ -x "$(type -p imgp)" ]
+then
+    IMGP=1
+else
+    IMGP=0
+    if [ -x "$(type -p convert)" ] || [ ! -x "$(type -p mogrify)" ]
+    then
+        echo "Unable to find the preferred resizing tool imgp, falling back to the slower ImageMagick."
+        echo "Try running: 'sudo apt install imgp'"
+    else
+        echo "Unable to find a resizing tool."
+        echo "Try running: 'sudo apt install imgp' or 'sudo dnf install ImageMagick'"
+        exit 1
+    fi
+fi
 
 SCRIPT_DIR=$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 STAGE_DIR="${SCRIPT_DIR}/../staging"
@@ -15,17 +32,15 @@ umask 0022
 
 cd "${STAGE_DIR}" || exit
 
-for DIR in $(find . -mindepth 1 -maxdepth 1 -type d)
+for DIR in $(find . -mindepth 1 -maxdepth 1 -type d | sort)
 do
 
-    GALLERY=$(echo ${DIR} | cut -d'/' -f2)
+    GALLERY=$(echo "${DIR}" | cut -d'/' -f2)
     cd "${STAGE_DIR}/${GALLERY}" || exit
-    echo ${GALLERY}
+    echo "${GALLERY}"
 
     echo "  renaming photos"
-    rename .JPG .jpg *.JPG 2>/dev/null
-    rename .JPEG .jpg *.JPEG 2>/dev/null
-    rename .jpeg .jpg *.jpeg 2>/dev/null
+    rename 's/\.jpe?g$/.jpg/i' ./*.JPG ./*.JPEG ./*.jpeg 2>/dev/null
 
     if [ ! -d "${PHOTO_DIR}/${GALLERY}" ]
     then
@@ -45,25 +60,32 @@ do
     do
         PHOTO=$(basename "${FILE}")
 
-        echo -n "    ${PHOTO} "
-        if [ -f "${PHOTO_DIR}/${GALLERY}/${PHOTO}" ]
+        if [ ! -f "${PHOTO_DIR}/${GALLERY}/${PHOTO}" ]
         then
-            echo "skipped public resize"
-        else
-            convert -resize 600x600 ${FILE} "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
+            echo -n "    ${PHOTO} ... "
+            if [ ${IMGP} -eq 1 ]
+            then
+                cp "${FILE}" "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
+                imgp --res 600x600 --overwrite --mute "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
+            else
+                convert -resize 600x600 "${FILE}" "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
+            fi
             echo "resized for public"
         fi
 
-        echo -n "    ${PHOTO}"
-        if [ -f "${REKOG_DIR}/${GALLERY}/${PHOTO}" ]
+        if [ ! -f "${REKOG_DIR}/${GALLERY}/${PHOTO}" ]
         then
-            echo " skipped Rekognition API resize"
-        else
-            cp ${FILE} "${REKOG_DIR}/${GALLERY}/${PHOTO}"
+            echo -n "    ${PHOTO}"
+            cp "${FILE}" "${REKOG_DIR}/${GALLERY}/${PHOTO}"
             while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt 5000000 ]
             do
                 echo -n " ."
-                mogrify -resize 80x80% "${REKOG_DIR}/${GALLERY}/${PHOTO}"
+                if [ ${IMGP} -eq 1 ]
+                then
+                    imgp --res 80 --overwrite --mute "${REKOG_DIR}/${GALLERY}/${PHOTO}"
+                else
+                    mogrify -resize 80x80% "${REKOG_DIR}/${GALLERY}/${PHOTO}"
+                fi
             done
             echo " resized for Rekognition API"
         fi
