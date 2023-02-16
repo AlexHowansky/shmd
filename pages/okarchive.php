@@ -7,6 +7,6 @@ require_once '_order_menu.php';
         <h1 class="ui centered header">Order Archived</h1>
     </div>
 </div>
-<div style="padding: 25px;">
+<div style="padding: 1em 2em;">
     <a class="ui huge blue button" href="/orders">Continue</a>
 </div>

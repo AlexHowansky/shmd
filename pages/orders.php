@@ -2,7 +2,7 @@
 $menu = ['/orders' => 'Orders'];
 require_once '_order_menu.php';
 ?>
-<div class="ui huge relaxed celled list">
+<div class="ui huge celled list">
 <?php foreach ($this->getOrders() as $order): ?>
     <div class="item">
         <div class="right floated content">

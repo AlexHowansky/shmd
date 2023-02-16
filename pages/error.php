@@ -8,7 +8,7 @@ if ($e === null) {
     header('HTTP/1.1 500 Internal Server Error');
 }
 ?>
-<div style="padding: 25px;">
+<div style="padding: .5em 2em;">
 <?php if ($e === null): ?>
     <h1>Page Not Found</h1>
 <?php else: ?>

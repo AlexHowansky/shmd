@@ -1,5 +1,5 @@
 <?php require_once '_menu.php'; ?>
-<div class="ui cards" style="padding: 1em;">
+<div class="ui cards">
 <?php foreach ($this->getGalleries() as $gallery): ?>
     <a class="ui raised card" href="/gallery/<?= $gallery->getName() ?>">
 <?php if ($gallery->count()): ?>

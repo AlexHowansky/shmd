@@ -8,6 +8,13 @@
         <script src="/semantic.min.js"></script>
         <script src="/shmd.js"></script>
         <style>
+            body {
+                height: 0%;
+                margin-top: 6em;
+            }
+            .ui.cards {
+                margin-left: 1em;
+            }
             .ui.form {
                 margin: -0.75rem 0 0 -1rem;
                 max-width: none;
@@ -15,7 +22,7 @@
             .ui.form .fields {
                 margin: 0;
             }
-            .ui.grid+.grid {
+            .ui.grid + .grid {
                 margin: 0;
             }
             .ui.grid>.row {

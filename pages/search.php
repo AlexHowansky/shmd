@@ -19,7 +19,7 @@ require_once '_menu.php';
     </div>
 </div>
 <?php else: ?>
-<div class="ui cards" style="padding: 25px;">
+<div class="ui cards">
 <?php
 foreach ($results as $match) {
     $gallery = $match['gallery'];
