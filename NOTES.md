@@ -12,7 +12,7 @@ To proxy from a Windows host to a service running in WSL2:
 
 ```
 wsl hostname -I
-netsh interface portproxy add v4tov4 listenport=80 listenaddress=0.0.0.0 connectport=8000 connectaddress=<ip of wsl>
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=0.0.0.0 connectport=80 connectaddress=<ip of wsl>
 ```
 
 To list existing proxies:
