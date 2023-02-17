@@ -51,6 +51,13 @@ class App
     protected $archiveDir = null;
 
     /**
+     * The database connector.
+     *
+     * @var Db
+     */
+    protected $db = null;
+
+    /**
      * The last error that occurred.
      *
      * @var \Exception
@@ -232,6 +239,19 @@ class App
             $this->setArchiveDir(self::DEFAULT_ARCHIVE_DIR);
         }
         return $this->archiveDir;
+    }
+
+    /**
+     * Get the database connector.
+     *
+     * @return Db The database connector.
+     */
+    public function getDb(): Db
+    {
+        if ($this->db === null) {
+            $this->db = new Db($this->config);
+        }
+        return $this->db;
     }
 
     /**
@@ -519,7 +539,7 @@ class App
      */
     public function getPeopleInPhoto(string $gallery, string $photo)
     {
-        return (new Db($this->config))->getPeopleInPhoto($gallery, $photo);
+        return $this->getDb()->getPeopleInPhoto($gallery, $photo);
     }
 
     /**
@@ -752,7 +772,7 @@ class App
             setcookie('lastSearch', '', 0, '/');
             throw new \Exception('Must provide a search term.');
         }
-        $names = (new Db($this->config))->search(urldecode($text), self::SEARCH_LIMIT);
+        $names = $this->getDb()->search(urldecode($text), self::SEARCH_LIMIT);
         if (empty($names) === false) {
             foreach ($names as $index => $name) {
                 if ($index >= self::SEARCH_LIMIT) {

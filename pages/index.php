@@ -18,6 +18,8 @@
         <div class="extra content">
             <i class="camera icon"></i>
             <?= $gallery->count() ?> Photos
+            <i class="user icon"></i>
+            <?= $gallery->getFaceCount() ?> Faces
         </div>
     </a>
 <?php endforeach; ?>

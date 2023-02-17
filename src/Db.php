@@ -77,6 +77,21 @@ class Db
     }
 
     /**
+     * Get the number of identified faces in a gallery.
+     *
+     * @param string $gallery The gallery to count.
+     *
+     * @return int The number of identified facesin the gallery.
+     */
+    public function getFaceCountInGallery(string $gallery): int
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM photos WHERE gallery = :gallery');
+        $stmt->bindValue(':gallery', $gallery);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    /**
      * Get a list of people in a given photo.
      *
      * @param string $gallery The gallery the photo is in.

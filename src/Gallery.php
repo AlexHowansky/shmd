@@ -115,6 +115,16 @@ class Gallery implements Countable
     }
 
     /**
+     * Get the number of identified faces in this gallery.
+     *
+     * @return int The number of identified faces in this gallery.
+     */
+    public function getFaceCount(): int
+    {
+        return $this->app->getDb()->getFaceCountInGallery($this->getName());
+    }
+
+    /**
      * Get the contents of a file.
      *
      * @param string $name The name of the file to get.
