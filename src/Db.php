@@ -27,6 +27,13 @@ class Db
     protected $db = null;
 
     /**
+     * Face count cache.
+     *
+     * @var array
+     */
+    protected $faceCount = [];
+
+    /**
      * Constructor.
      *
      * @param Config $config The configuration.
@@ -85,10 +92,12 @@ class Db
      */
     public function getFaceCountInGallery(string $gallery): int
     {
-        $stmt = $this->db->prepare('SELECT COUNT(*) FROM photos WHERE gallery = :gallery');
-        $stmt->bindValue(':gallery', $gallery);
-        $stmt->execute();
-        return $stmt->fetchColumn();
+        if ($this->faceCount === []) {
+            $stmt = $this->db->prepare('SELECT gallery, COUNT(*) AS count FROM photos GROUP BY gallery');
+            $stmt->execute();
+            $this->faceCount = array_column($stmt->fetchAll(\PDO::FETCH_ASSOC), 'count', 'gallery');
+        }
+        return $this->faceCount[$gallery] ?? 0;
     }
 
     /**
