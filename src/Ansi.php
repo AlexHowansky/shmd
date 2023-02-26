@@ -27,7 +27,7 @@ class Ansi
      *
      * @return void
      */
-    public static function printf(string $string, ...$args): void
+    public static function printf(string $string, mixed ...$args): void
     {
         $codes = [
             'reset' => '0',

@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <ruleset name="Ork SHMD">
-    <rule ref="Ork"/>
+    <rule ref="Ork" />
+    <rule ref="Generic.Metrics.CyclomaticComplexity">
+        <properties>
+            <property name="complexity" value="13"/>
+        </properties>
+    </rule>
     <file>src</file>
 </ruleset>
