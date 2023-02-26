@@ -18,7 +18,7 @@
         "ext-imagick": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.259",
+        "aws/aws-sdk-php": "^3.260.3",
         "mike42/escpos-php": "^2.2",
         "ork/csv": "^1.6.0"
     },
