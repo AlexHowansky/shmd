@@ -665,6 +665,10 @@ class App
      */
     public function printReceipt(string $id): bool
     {
+        if (empty($this->config['receipt']['device'] ?? null) === true) {
+            return false;
+        }
+
         $order = $this->getOrder($id);
 
         try {
