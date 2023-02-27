@@ -13,7 +13,7 @@ namespace Shmd;
 
 use Mike42\Escpos\GdEscposImage;
 use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\PrintConnectors\UriPrintConnector;
 
 /**
  * Simple front controller.
@@ -672,7 +672,7 @@ class App
         $order = $this->getOrder($id);
 
         try {
-            $lp = new Printer(new FilePrintConnector($this->config['receipt']['device']));
+            $lp = new Printer(UriPrintConnector::get($this->config['receipt']['device']));
             $lp->initialize();
             $lp->feed(1);
 
