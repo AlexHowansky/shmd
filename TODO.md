@@ -1,3 +1,5 @@
+ * In search rsults for a name or face id, show the results newest photos first.
+ * Fix bin/stats so that it works without needing a price entry for 4x6.
  * If a face area is smaller than a certain size, don't try to recog it.
  * In search results for a name, show a list of matching names first.
  * In search results for a name, draw a box around the found face.
