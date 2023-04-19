@@ -801,7 +801,6 @@ class App
             }
         }
         return $fileMatches;
-
     }
 
     /**

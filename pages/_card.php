@@ -9,7 +9,7 @@
                 <?= $name ?>
             </div>
 <?php else: ?>
-            <?= $photo ?>
+            <?= htmlspecialchars($photo) ?>
 <?php endif; ?>
         </div>
     </div>

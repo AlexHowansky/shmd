@@ -12,7 +12,7 @@ require_once '_menu.php';
 <div class="ui raised container segment">
     <div class="ui list">
         <div class="item">
-            <h1 class="ui centered header"><?= $photo ?></h1>
+            <h1 class="ui centered header"><?= htmlspecialchars($photo) ?></h1>
         </div>
     </div>
     <img class="ui big centered rounded bordered image" src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
@@ -30,7 +30,7 @@ require_once '_menu.php';
 <div class="ui raised container segment">
     <form class="ui form" method="post" action="/order">
         <input type="hidden" name="gallery" value="<?= $gallery->getName() ?>">
-        <input type="hidden" name="photo" value="<?= $photo ?>">
+        <input type="hidden" name="photo" value="<?= htmlspecialchars($photo) ?>">
         <div class="fields ui grid">
             <div class="row">
                 <div class="field five wide column">
