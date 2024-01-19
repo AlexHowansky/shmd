@@ -268,23 +268,12 @@ class Rekog
             }
         }
 
-        $index = new \Ork\Csv\Reader([
-            'columns' => [
-                'yearbook',
-                'directory',
-                'file',
-                'class',
-                'last',
-                'first',
-                'unk1',
-                'homeroom',
-                'teacher',
-                'unk3',
-            ],
-            'file' => $indexFile,
-            'header' => false,
-            'delimiter' => "\t",
-        ]);
+        $index = new \Ork\Csv\Reader(
+            columnNames: ['u1', 'directory', 'file', 'class', 'last', 'first', 'u2', 'u3', 'u4', 'u5'],
+            delimiterCharacter: "\t",
+            file: $indexFile,
+            hasHeader: false,
+        );
 
         $this->createCollection();
 
