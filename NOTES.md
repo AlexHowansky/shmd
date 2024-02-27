@@ -27,3 +27,15 @@ To delete existing proxies:
 netsh interface portproxy delete v4tov4 22 0.0.0.0
 netsh interface portproxy delete v4tov4 80 0.0.0.0
 ```
+
+To allow inbound HTTP connections on the Windows host:
+
+```
+netsh advfirewall firewall add rule name="SHMD Photo App" dir=in action=allow protocol=TCP localport=80
+```
+
+To delete:
+
+```
+netsh advfirewall firewall delete rule name="SHMD Photo App" protocol=TCP localport=80
+```
