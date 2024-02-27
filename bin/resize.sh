@@ -7,18 +7,26 @@
 #
 # This script can be run at any time, it will process only new photos.
 
+if [ ! -x "$(type -p rename)" ]
+then
+    echo "Unable to find rename tool."
+    echo "Try running: 'sudo apt install rename'"
+    exit 1
+fi
+
 if [ -x "$(type -p imgp)" ]
 then
     IMGP=1
 else
     IMGP=0
-    if [ -x "$(type -p convert)" ] || [ ! -x "$(type -p mogrify)" ]
+    if [ -x "$(type -p convert)" ] && [ -x "$(type -p mogrify)" ]
     then
         echo "Unable to find the preferred resizing tool imgp, falling back to the slower ImageMagick."
         echo "Try running: 'sudo apt install imgp'"
+        echo
     else
         echo "Unable to find a resizing tool."
-        echo "Try running: 'sudo apt install imgp' or 'sudo dnf install ImageMagick'"
+        echo "Try running: 'sudo apt install imgp' or 'sudo apt install imagemagick'"
         exit 1
     fi
 fi
@@ -36,6 +44,11 @@ for DIR in ${1:-$(find . -mindepth 1 -maxdepth 1 -type d | sort)}
 do
 
     GALLERY=$(echo "${DIR}" | cut -d'/' -f2)
+    if ! echo "${GALLERY}" | grep -Eq '^[a-z0-9]+$'
+    then
+        echo "Gallery name must consist only of digits and lowercase letters: ${GALLERY}"
+        exit 1
+    fi
     cd "${STAGE_DIR}/${GALLERY}" || exit
     echo "${GALLERY}"
 
