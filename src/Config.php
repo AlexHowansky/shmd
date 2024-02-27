@@ -45,12 +45,12 @@ class Config implements \ArrayAccess
     /**
      * ArrayAccess interface.
      *
-     * @param string $offset The offset to check.
+     * @param mixed $offset The offset to check.
      *
      * @return bool True if the offset exists.
      */
     // @codingStandardsIgnoreLine
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->config);
     }
@@ -58,14 +58,14 @@ class Config implements \ArrayAccess
     /**
      * ArrayAccess interface.
      *
-     * @param string $offset The offset to get.
+     * @param mixed $offset The offset to get.
      *
      * @return mixed The value of the offset.
      *
      * @throws \RuntimeException On error.
      */
     // @codingStandardsIgnoreLine
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         if ($this->offsetExists($offset) === false) {
             throw new \RuntimeException('Invalid offset.');
@@ -76,13 +76,13 @@ class Config implements \ArrayAccess
     /**
      * ArrayAccess interface.
      *
-     * @param string $offset The offset to set.
-     * @param mixed  $value  The value to set.
+     * @param mixed $offset The offset to set.
+     * @param mixed $value  The value to set.
      *
      * @return void
      */
     // @codingStandardsIgnoreLine
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->config[$offset] = $value;
     }
@@ -90,12 +90,12 @@ class Config implements \ArrayAccess
     /**
      * ArrayAccess interface.
      *
-     * @param string $offset The offset to unset.
+     * @param mixed $offset The offset to unset.
      *
      * @return void
      */
     // @codingStandardsIgnoreLine
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->config[$offset]);
     }
