@@ -3,6 +3,8 @@
 <?php foreach ($menu as $href => $label): ?>
     <a class="item" href="<?= $href ?>"><?= $label ?></a>
 <?php endforeach; ?>
+<?php else: ?>
+    <div class="item"><?= $this->config['title'] ?></div>
 <?php endif; ?>
     <div class="right menu">
         <div class="item">
