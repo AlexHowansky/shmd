@@ -1,3 +1,5 @@
+ * Add "print now" button on the cards on the gallery page.
+ * Allow parents to opt-in to SMS/email notification of new photos of their children.
  * Parallelize resizing.
  * In search results for a name or face id, show the results newest photos first.
  * Fix bin/stats so that it works without needing a price entry for 4x6.
