@@ -29,7 +29,7 @@ trait ConfigurableTrait
      *
      * @param Config $config The configuration.
      */
-    public function __construct(Config $config = null)
+    public function __construct(?Config $config = null)
     {
         if ($config !== null) {
             $this->setConfig($config);

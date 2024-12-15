@@ -253,7 +253,7 @@ class Rekog
      *
      * @throws \RuntimeException On error.
      */
-    public function index(string $indexFile, int $year = null): Rekog
+    public function index(string $indexFile, ?int $year = null): Rekog
     {
 
         if (file_exists($indexFile) === false) {

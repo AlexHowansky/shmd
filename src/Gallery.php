@@ -59,7 +59,7 @@ class Gallery implements Countable
      * @param App    $app  The app that spawned us.
      * @param string $name The name of this gallery.
      */
-    public function __construct(App $app = null, string $name = null)
+    public function __construct(?App $app = null, ?string $name = null)
     {
         if ($app !== null) {
             $this->setApp($app);
