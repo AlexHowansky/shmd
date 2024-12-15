@@ -51,12 +51,10 @@ class Ansi
         printf(
             preg_replace_callback(
                 '/\{\{([a-zA-Z]+)(?::([^\{\}]+))?\}\}/',
-                function ($match) use ($codes) {
-                    return array_key_exists($match[1], $codes) === true
-                        ? ("\033[" . $codes[$match[1]] . 'm' .
-                            (isset($match[2]) === true ? ($match[2] . self::RESET) : ''))
-                        : $match[0];
-                },
+                fn($match) => array_key_exists($match[1], $codes) === true
+                    ? ("\033[" . $codes[$match[1]] . 'm' .
+                        (isset($match[2]) === true ? ($match[2] . self::RESET) : ''))
+                    : $match[0],
                 $string
             ),
             ...$args

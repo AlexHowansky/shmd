@@ -10,8 +10,8 @@
         <div class="item">
 <?php if (isset($_COOKIE['lastSearch']) === true): ?>
             <div class="ui left action icon input">
-                <a class="ui big black button" href="/search/<?= htmlspecialchars($_COOKIE['lastSearch']) ?>">
-                    <?= htmlspecialchars($_COOKIE['lastSearch']) ?>
+                <a class="ui big black button" href="/search/<?= htmlspecialchars((string) $_COOKIE['lastSearch']) ?>">
+                    <?= htmlspecialchars((string) $_COOKIE['lastSearch']) ?>
                 </a>
 <?php else: ?>
             <div class="ui icon input">

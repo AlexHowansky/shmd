@@ -23,7 +23,9 @@
         "ork/csv": "^2.1.0"
     },
     "require-dev": {
-        "ork/phpcs": "^2.8.4"
+        "ork/phpcs": "^2.8.4",
+        "phpstan/phpstan": "^2.0.3",
+        "rector/rector": "^2.0.3"
     },
     "autoload": {
         "psr-4": {
@@ -31,11 +33,13 @@
         }
     },
     "scripts": {
-        "phpcs": "phpcs",
         "go": [
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:8000 -t public/"
-        ]
+        ],
+        "phpcs": "phpcs",
+        "phpstan": "phpstan analyze",
+        "rector": "rector --dry-run --clear-cache"
     },
     "config": {
         "allow-plugins": {

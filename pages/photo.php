@@ -1,6 +1,6 @@
 <?php
 $gallery = $this->getGallery($this->getParam(0));
-$photo = urldecode($this->getParam(1));
+$photo = urldecode((string) $this->getParam(1));
 $people = $this->getPeopleInPhoto($gallery->getName(), $photo);
 $last = count($this->getSizes()) - 1;
 $menu = [
@@ -70,7 +70,7 @@ require_once '_menu.php';
                     </select>
                 </div>
                 <div class="one wide column middle aligned">
-                    <?= preg_replace('/(\d+)/', '$1"', $size) ?>
+                    <?= preg_replace('/(\d+)/', '$1"', (string) $size) ?>
                 </div>
                 <div class="one wide column middle aligned right aligned">
                     $<span id="amt_<?= $size ?>"><?=  $this->getPriceForSize($size) ?></span>

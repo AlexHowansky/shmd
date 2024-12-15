@@ -11,6 +11,7 @@
 
 namespace Shmd;
 
+use GdImage;
 use Mike42\Escpos\GdEscposImage;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\UriPrintConnector;
@@ -126,7 +127,7 @@ class App
         setlocale(LC_MONETARY, $this->config['locale']);
         date_default_timezone_set($this->config['timezone']);
         try {
-            $url = parse_url($_SERVER['REQUEST_URI']);
+            $url = parse_url((string) $_SERVER['REQUEST_URI']);
             $params = explode('/', trim($url['path'], '/'));
             ob_start();
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -259,7 +260,7 @@ class App
      *
      * @param string $file The image to dither.
      *
-     * @return resource The GD image resource for the dithered image.
+     * @return GdImage The GD image resource for the dithered image.
      */
     protected function getDitheredImage(string $file)
     {
@@ -393,8 +394,6 @@ class App
      * Get the hot folder.
      *
      * @return string The hot folder.
-     *
-     * @throws \Exception On error.
      */
     public function getHotFolder(): ?string
     {
@@ -458,7 +457,7 @@ class App
     /**
      * Get all pending orders.
      *
-     * @return array All pending orders.
+     * @return \Generator All pending orders.
      */
     public function getOrders(): \Generator
     {
@@ -581,10 +580,10 @@ class App
      */
     public function getRelativePhotoDir(): string
     {
-        if (strpos($this->getPhotoDir(), $_SERVER['DOCUMENT_ROOT']) === false) {
+        if (str_contains($this->getPhotoDir(), (string) $_SERVER['DOCUMENT_ROOT']) === false) {
             throw new \Exception('Photo dir must be located under DOCUMENT_ROOT.');
         }
-        return substr($this->getPhotoDir(), strlen($_SERVER['DOCUMENT_ROOT']));
+        return substr($this->getPhotoDir(), strlen((string) $_SERVER['DOCUMENT_ROOT']));
     }
 
     /**
@@ -637,7 +636,7 @@ class App
     public function printPhoto(string $gallery, string $photo)
     {
         $sourceFile = sprintf('%s/%s/%s.jpg', $this->getStagingDir(), $gallery, $photo);
-        $destFile = sprintf('%s/%s.jpg', $this->getHotFolder(), md5(microtime(true)));
+        $destFile = sprintf('%s/%s.jpg', $this->getHotFolder(), md5((string) microtime(true)));
         $error = '';
         if (file_exists($sourceFile) === false) {
             $error = 'No such photo.';
@@ -691,6 +690,7 @@ class App
             if ($this->config['receipt']['image'] === true) {
                 $image = new GdEscposImage();
                 $image->readImageFromGdResource(
+                    // @phpstan-ignore argument.type
                     $this->getDitheredImage(
                         realpath(__DIR__ . '/../public/photos/' . $order['gallery'] . '/' . $order['photo'] . '.jpg')
                     )
@@ -743,7 +743,7 @@ class App
             $lp->feed(8);
             $lp->cut();
             $lp->close();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
 
@@ -773,7 +773,7 @@ class App
     {
         if (empty($text) === true) {
             unset($_COOKIE['lastSearch']);
-            setcookie('lastSearch', '', 0, '/');
+            setcookie('lastSearch', '', ['expires' => 0, 'path' => '/']);
             throw new \Exception('Must provide a search term.');
         }
         $names = $this->getDb()->search(urldecode($text), self::SEARCH_LIMIT);
@@ -789,7 +789,7 @@ class App
         $fileMatches = [];
         foreach ($this->getGalleries() as $gallery) {
             foreach ($gallery->getPhotos() as $photo) {
-                if (preg_match('/' . $text . '/i', $photo) === 1) {
+                if (preg_match('/' . $text . '/i', (string) $photo) === 1) {
                     $fileMatches[] = [
                         'gallery' => $gallery,
                         'photo' => $photo,

@@ -2,10 +2,10 @@
 $results = $this->search($this->getParam());
 if (empty($results)) {
     unset($_COOKIE['lastSearch']);
-    setcookie('lastSearch', '', 0, '/');
+    setcookie('lastSearch', '', ['expires' => 0, 'path' => '/']);
 } else {
-    if (preg_match('/^[0-9a-f-]{36}$/', $this->getParam()) !== 1) {
-        setcookie('lastSearch', $this->getParam(), 0, '/');
+    if (preg_match('/^[0-9a-f-]{36}$/', (string) $this->getParam()) !== 1) {
+        setcookie('lastSearch', (string) $this->getParam(), ['expires' => 0, 'path' => '/']);
         $_COOKIE['lastSearch'] = $this->getParam();
     }
 }

@@ -293,7 +293,7 @@ class Rekog
                 'name' => trim($row['first'] . ' ' . $row['last']),
                 'class' => is_numeric($row['class']) === true
                     ? ($year + 12 - $row['class'])
-                    : strtoupper(trim($row['class'])),
+                    : strtoupper(trim((string) $row['class'])),
                 'external_id' => $externalId,
                 'metadata' => base64_encode(gzdeflate(json_encode($face))),
             ];
