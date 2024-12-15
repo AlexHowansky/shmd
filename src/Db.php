@@ -11,6 +11,10 @@
 
 namespace Shmd;
 
+use PDO;
+use PDOException;
+use RuntimeException;
+
 /**
  * Database interface.
  */
@@ -22,7 +26,7 @@ class Db
     /**
      * Database connector.
      *
-     * @var \PDO
+     * @var PDO
      */
     protected $db = null;
 
@@ -44,8 +48,8 @@ class Db
             $this->setConfig($config);
         }
         $exists = file_exists($this->config['database']);
-        $this->db = new \PDO('sqlite:' . $this->config['database']);
-        $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->db = new PDO('sqlite:' . $this->config['database']);
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         if ($exists === false) {
             $this->db->exec(
                 'CREATE TABLE faces (
@@ -80,7 +84,7 @@ class Db
         $stmt = $this->db->prepare('SELECT * FROM faces WHERE id = :id LIMIT 1');
         $stmt->bindValue(':id', $id);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC)[0] ?? [];
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0] ?? [];
     }
 
     /**
@@ -95,7 +99,7 @@ class Db
         if ($this->faceCount === []) {
             $stmt = $this->db->prepare('SELECT gallery, COUNT(*) AS count FROM photos GROUP BY gallery');
             $stmt->execute();
-            $this->faceCount = array_column($stmt->fetchAll(\PDO::FETCH_ASSOC), 'count', 'gallery');
+            $this->faceCount = array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'count', 'gallery');
         }
         return $this->faceCount[$gallery] ?? 0;
     }
@@ -119,7 +123,7 @@ class Db
         $stmt->bindValue(':gallery', $gallery);
         $stmt->bindValue(':photo', $photo);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -130,7 +134,7 @@ class Db
      *
      * @return array The photos the person appears in.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function search(string $string, int $limit = 20): array
     {
@@ -154,7 +158,7 @@ class Db
             $stmt->bindValue(':limit', $limit);
         }
         $stmt->execute();
-        $photos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $photos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (empty($this->config['searchLog']) === false) {
             $result = file_put_contents(
                 $this->config['searchLog'],
@@ -166,7 +170,7 @@ class Db
                 FILE_APPEND
             );
             if ($result === false) {
-                throw new \RuntimeException('Unable to write to search log: ' . $this->config['searchLog']);
+                throw new RuntimeException('Unable to write to search log: ' . $this->config['searchLog']);
             }
         }
         return $photos;
@@ -180,14 +184,14 @@ class Db
      *
      * @return bool True if the insert worked.
      *
-     * @throws \PDOException On error.
+     * @throws PDOException On error.
      */
     protected function write(string $sql, array $row): bool
     {
         try {
             $stmt = $this->db->prepare($sql);
             return $stmt->execute($row);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             if ($stmt->errorCode() === '23000') {
                 return false;
             }

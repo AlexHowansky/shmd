@@ -11,6 +11,12 @@
 
 namespace Shmd;
 
+use Aws\Rekognition\Exception\RekognitionException;
+use Aws\Rekognition\RekognitionClient;
+use DirectoryIterator;
+use Ork\Csv\Reader;
+use RuntimeException;
+
 /**
  * AWS Rekognition interface.
  *
@@ -33,7 +39,7 @@ class Rekog
     /**
      * An instance of the API client to use.
      *
-     * @var \Aws\Rekognition\RekognitionClient
+     * @var RekognitionClient
      */
     protected $api = null;
 
@@ -64,12 +70,12 @@ class Rekog
     /**
      * Get an API instance.
      *
-     * @return \Aws\Rekognition\RekognitionClient
+     * @return RekognitionClient
      */
-    protected function getApi(): \Aws\Rekognition\RekognitionClient
+    protected function getApi(): RekognitionClient
     {
         if ($this->api === null) {
-            $this->api = new \Aws\Rekognition\RekognitionClient([
+            $this->api = new RekognitionClient([
                 'credentials' => [
                     'key' => $this->config['aws']['key'],
                     'secret' => $this->config['aws']['secret'],
@@ -96,23 +102,23 @@ class Rekog
      *
      * @return Rekog Allow method chaining.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function identify(string $directory): Rekog
     {
 
         if (is_dir($directory) === false) {
-            throw new \RuntimeException('Unable to open directory.');
+            throw new RuntimeException('Unable to open directory.');
         }
 
         if ($this->collectionExists() === false) {
-            throw new \RuntimeException('Unknown collection.');
+            throw new RuntimeException('Unknown collection.');
         }
 
         $db = new Db($this->config);
 
         // Iterate over all the files in the named directory.
-        foreach (new \DirectoryIterator($directory) as $file) {
+        foreach (new DirectoryIterator($directory) as $file) {
 
             // Skip files that aren't photos.
             if (
@@ -223,7 +229,7 @@ class Rekog
                         $names[] = $recognized;
                         $db->writePhoto($recognized);
                     }
-                } catch (\Aws\Rekognition\Exception\RekognitionException $e) {
+                } catch (RekognitionException $e) {
                     Ansi::printf(
                         "        {{red}}face not found: {{white:%s}}\n",
                         json_decode($e->getResponse()->getBody(), true)['Message']
@@ -251,24 +257,24 @@ class Rekog
      *
      * @return Rekog Allow method chaining.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function index(string $indexFile, ?int $year = null): Rekog
     {
 
         if (file_exists($indexFile) === false) {
-            throw new \RuntimeException('Index file does not exist.');
+            throw new RuntimeException('Index file does not exist.');
         }
 
         if ($year === null) {
             if (preg_match('/(20\d\d)/', realpath($indexFile), $match) === 1) {
                 $year = $match[1];
             } else {
-                throw new \RuntimeException('Must provide year or put index file in a path that contains year.');
+                throw new RuntimeException('Must provide year or put index file in a path that contains year.');
             }
         }
 
-        $index = new \Ork\Csv\Reader(
+        $index = new Reader(
             columnNames: ['u1', 'directory', 'file', 'class', 'last', 'first', 'u2', 'u3', 'u4', 'u5'],
             delimiterCharacter: "\t",
             file: $indexFile,
@@ -284,7 +290,7 @@ class Rekog
             $dir = preg_replace('|/' . $row['directory'] . '$|', '', dirname($indexFile));
             $file = realpath($dir . '/' . $row['directory'] . '/' . $row['file']);
             if (file_exists($file) === false) {
-                throw new \RuntimeException('Missing photo file: ' . $file);
+                throw new RuntimeException('Missing photo file: ' . $file);
             }
             $externalId = str_replace(' ', '_', $year . ':' . $row['directory'] . ':' . $row['file']);
             $face = $this->indexFace($file, $externalId);

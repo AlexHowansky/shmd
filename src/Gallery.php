@@ -12,6 +12,8 @@
 namespace Shmd;
 
 use Countable;
+use DirectoryIterator;
+use Exception;
 
 /**
  * Gallery handler.
@@ -84,12 +86,12 @@ class Gallery implements Countable
      *
      * @return App
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function getApp(): App
     {
         if ($this->app === null) {
-            throw new \Exception('No App object has been set yet.');
+            throw new Exception('No App object has been set yet.');
         }
         return $this->app;
     }
@@ -169,7 +171,7 @@ class Gallery implements Countable
     {
         if (array_key_exists($this->getName(), self::$photos) === false) {
             self::$photos[$this->getName()] = [];
-            foreach (new \DirectoryIterator($this->getDir()) as $item) {
+            foreach (new DirectoryIterator($this->getDir()) as $item) {
                 if ($item->isFile() === true && $item->isDot() === false && $item->getExtension() === 'jpg') {
                     self::$photos[$this->getName()][] = $item->getBasename('.jpg');
                 }
@@ -219,16 +221,16 @@ class Gallery implements Countable
      *
      * @return Gallery Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setName(string $name): Gallery
     {
         if (preg_match('/^[a-z0-9]+$/', $name) !== 1) {
-            throw new \Exception('Invalid gallery.');
+            throw new Exception('Invalid gallery.');
         }
         $dir = realpath($this->getApp()->getPhotoDir() . '/' . $name);
         if (is_dir($dir) === false) {
-            throw new \Exception('Invalid gallery.');
+            throw new Exception('Invalid gallery.');
         }
         $this->dir = $dir;
         $this->name = $name;

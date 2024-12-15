@@ -11,10 +11,13 @@
 
 namespace Shmd;
 
+use ArrayAccess;
+use RuntimeException;
+
 /**
  * Configuration interface.
  */
-class Config implements \ArrayAccess
+class Config implements ArrayAccess
 {
 
     /**
@@ -29,16 +32,16 @@ class Config implements \ArrayAccess
      *
      * @param string $file The configuration file.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function __construct(string $file)
     {
         if (file_exists($file) === false) {
-            throw new \RuntimeException('Missing configuration file.');
+            throw new RuntimeException('Missing configuration file.');
         }
         $this->config = json_decode(file_get_contents($file), true);
         if (empty($this->config) === true) {
-            throw new \RuntimeException('Bad configuration file.');
+            throw new RuntimeException('Bad configuration file.');
         }
     }
 
@@ -62,13 +65,13 @@ class Config implements \ArrayAccess
      *
      * @return mixed The value of the offset.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     // @codingStandardsIgnoreLine
     public function offsetGet(mixed $offset): mixed
     {
         if ($this->offsetExists($offset) === false) {
-            throw new \RuntimeException('Invalid offset.');
+            throw new RuntimeException('Invalid offset.');
         }
         return $this->config[$offset];
     }

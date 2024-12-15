@@ -11,10 +11,14 @@
 
 namespace Shmd;
 
+use DirectoryIterator;
+use Exception;
 use GdImage;
+use Generator;
 use Mike42\Escpos\GdEscposImage;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\UriPrintConnector;
+use NumberFormatter;
 
 /**
  * Simple front controller.
@@ -61,7 +65,7 @@ class App
     /**
      * The last error that occurred.
      *
-     * @var \Exception
+     * @var Exception
      */
     protected $lastError = null;
 
@@ -137,14 +141,14 @@ class App
                 ->setPage(array_shift($params))
                 ->setParams($params)
                 ->render();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             ob_end_clean();
             try {
                 $this
                     ->setLastError($e)
                     ->setPage(self::DEFAULT_ERROR_PAGE)
                     ->render();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 echo $e->getMessage();
             }
         }
@@ -157,12 +161,12 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function archiveOrder(string $id): App
     {
         if (rename($this->getFileForOrder($id), $this->getFileForArchive($id)) === false) {
-            throw new \Exception('Failed to archive order.');
+            throw new Exception('Failed to archive order.');
         }
         return $this;
     }
@@ -182,7 +186,7 @@ class App
      *
      * @return string The order ID.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function createOrder(): string
     {
@@ -190,7 +194,7 @@ class App
         $order = ['quantity' => []];
         foreach (['gallery', 'photo', 'name'] as $field) {
             if (empty($_POST[$field]) === true) {
-                throw new \Exception('Field "' . $field . '" can not be empty.');
+                throw new Exception('Field "' . $field . '" can not be empty.');
             }
             $order[$field] = $_POST[$field];
         }
@@ -205,7 +209,7 @@ class App
         }
 
         if ($total === 0) {
-            throw new \Exception('No quantities selected.');
+            throw new Exception('No quantities selected.');
         }
 
         $order['comments'] = $_POST['comments'];
@@ -215,10 +219,10 @@ class App
         $orderJson = json_encode($order);
         $orderHash = sha1($orderJson);
         if (is_writable($this->getOrderDir()) === false) {
-            throw new \Exception('Order directory is not writable.');
+            throw new Exception('Order directory is not writable.');
         }
         if (file_put_contents($this->getFileForOrder($orderHash), $orderJson) === false) {
-            throw new \Exception('Error creating order.');
+            throw new Exception('Error creating order.');
         }
 
         if ($this->printReceipt($orderHash) === true) {
@@ -341,13 +345,13 @@ class App
      *
      * @return string The full path to the page.
      *
-     * @throws \Exception If the page does not exist.
+     * @throws Exception If the page does not exist.
      */
     protected function getFileForPage(string $page)
     {
         $file = $this->getPageDir() . '/' . $page . '.php';
         if (file_exists($file) === false) {
-            throw new \Exception('Page "' . $page . '" not found.');
+            throw new Exception('Page "' . $page . '" not found.');
         }
         return $file;
     }
@@ -355,12 +359,12 @@ class App
     /**
      * Get the list of available galleries
      *
-     * @return \Generator Generates Gallery objects.
+     * @return Generator Generates Gallery objects.
      */
-    public function getGalleries(): \Generator
+    public function getGalleries(): Generator
     {
         $galleries = [];
-        foreach (new \DirectoryIterator($this->getPhotoDir()) as $item) {
+        foreach (new DirectoryIterator($this->getPhotoDir()) as $item) {
             if ($item->isDir() === true && $item->isDot() === false) {
                 $galleries[$item->getFilename()] = match ($this->config['sort']['index']['field'] ?? null) {
                     'time' => $item->getCTime(),
@@ -403,9 +407,9 @@ class App
     /**
      * Get the last error that occurred.
      *
-     * @return \Exception
+     * @return Exception
      */
-    public function getLastError(): \Exception
+    public function getLastError(): Exception
     {
         return $this->lastError;
     }
@@ -418,7 +422,7 @@ class App
      *
      * @return array The order data.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function getOrder(string $id, bool $archive = false): array
     {
@@ -427,15 +431,15 @@ class App
             if ($archive === true) {
                 $orderFile = $this->getFiLeForArchive($id);
                 if (file_exists($orderFile) === false) {
-                    throw new \Exception('No such order.');
+                    throw new Exception('No such order.');
                 }
             } else {
-                throw new \Exception('No such order.');
+                throw new Exception('No such order.');
             }
         }
         $order = json_decode(file_get_contents($orderFile), true);
         if (is_array($order) === false) {
-            throw new \Exception('Bad order.');
+            throw new Exception('Bad order.');
         }
         $order['id'] = $id;
         return $order;
@@ -457,12 +461,12 @@ class App
     /**
      * Get all pending orders.
      *
-     * @return \Generator All pending orders.
+     * @return Generator All pending orders.
      */
-    public function getOrders(): \Generator
+    public function getOrders(): Generator
     {
         $orders = [];
-        foreach (new \DirectoryIterator($this->getOrderDir()) as $item) {
+        foreach (new DirectoryIterator($this->getOrderDir()) as $item) {
             if ($item->isDir() === false && $item->isDot() === false && $item->getExtension() === 'json') {
                 $orders[$item->getBasename('.json')] = $item->getCTime();
             }
@@ -561,12 +565,12 @@ class App
      *
      * @return float The price for that size.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function getPriceForSize(string $size)
     {
         if (array_key_exists($size, $this->config['prices']) === false) {
-            throw new \Exception('Invalid size.');
+            throw new Exception('Invalid size.');
         }
         return $this->config['prices'][$size];
     }
@@ -576,12 +580,12 @@ class App
      *
      * @return string The photo directory relative to the document root.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function getRelativePhotoDir(): string
     {
         if (str_contains($this->getPhotoDir(), (string) $_SERVER['DOCUMENT_ROOT']) === false) {
-            throw new \Exception('Photo dir must be located under DOCUMENT_ROOT.');
+            throw new Exception('Photo dir must be located under DOCUMENT_ROOT.');
         }
         return substr($this->getPhotoDir(), strlen((string) $_SERVER['DOCUMENT_ROOT']));
     }
@@ -620,7 +624,7 @@ class App
     {
         static $formatter;
         if ($formatter === null) {
-            $formatter = new \NumberFormatter($this->config['locale'], \NumberFormatter::CURRENCY);
+            $formatter = new NumberFormatter($this->config['locale'], NumberFormatter::CURRENCY);
         }
         return $formatter->format($value);
     }
@@ -743,7 +747,7 @@ class App
             $lp->feed(8);
             $lp->cut();
             $lp->close();
-        } catch (\Exception) {
+        } catch (Exception) {
             return false;
         }
 
@@ -767,14 +771,14 @@ class App
      *
      * @return array The matching photos.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function search(?string $text): array
     {
         if (empty($text) === true) {
             unset($_COOKIE['lastSearch']);
             setcookie('lastSearch', '', ['expires' => 0, 'path' => '/']);
-            throw new \Exception('Must provide a search term.');
+            throw new Exception('Must provide a search term.');
         }
         $names = $this->getDb()->search(urldecode($text), self::SEARCH_LIMIT);
         if (empty($names) === false) {
@@ -810,13 +814,13 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setArchiveDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
-            throw new \Exception('Invalid order archive directory.');
+            throw new Exception('Invalid order archive directory.');
         }
         $this->archiveDir = $dir;
         return $this;
@@ -825,11 +829,11 @@ class App
     /**
      * Set the last error that occurred.
      *
-     * @param \Exception $e The exception that just occurred.
+     * @param Exception $e The exception that just occurred.
      *
      * @return App Allow method chaining.
      */
-    public function setLastError(\Exception $e): App
+    public function setLastError(Exception $e): App
     {
         $this->lastError = $e;
         return $this;
@@ -842,13 +846,13 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setOrderDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
-            throw new \Exception('Invalid order directory.');
+            throw new Exception('Invalid order directory.');
         }
         $this->orderDir = $dir;
         return $this;
@@ -861,7 +865,7 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setPage(string $page): App
     {
@@ -870,7 +874,7 @@ class App
             $page = self::DEFAULT_PAGE;
         } else {
             if (preg_match('/^[a-z0-9]+$/', $page) !== 1) {
-                throw new \Exception('Invalid page name.');
+                throw new Exception('Invalid page name.');
             }
         }
         $this->page = $page;
@@ -884,13 +888,13 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setPageDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
-            throw new \Exception('Invalid page directory.');
+            throw new Exception('Invalid page directory.');
         }
         $this->pageDir = $dir;
         return $this;
@@ -929,13 +933,13 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setPhotoDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
-            throw new \Exception('Invalid photo directory.');
+            throw new Exception('Invalid photo directory.');
         }
         $this->photoDir = $dir;
         return $this;
@@ -948,13 +952,13 @@ class App
      *
      * @return App Allow method chaining.
      *
-     * @throws \Exception On error.
+     * @throws Exception On error.
      */
     public function setStagingDir(string $dir): App
     {
         $dir = realpath($dir);
         if (is_dir($dir) === false) {
-            throw new \Exception('Invalid staging directory.');
+            throw new Exception('Invalid staging directory.');
         }
         $this->stagingDir = $dir;
         return $this;
