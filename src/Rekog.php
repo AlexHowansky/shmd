@@ -166,10 +166,43 @@ class Rekog
             $num = 0;
             $names = [];
 
+            // We want to use only the best faces, so we'll sort the largest
+            // first and then abort the loop if we have a limit.
+            usort(
+                $faces,
+                fn(array $a, array $b): int =>
+                    $b['BoundingBox']['Width'] + $b['BoundingBox']['Height'] <=>
+                    $a['BoundingBox']['Width'] + $a['BoundingBox']['Height']
+            );
+
             // Loop over each face detected in the file and create
             // a separate mini face JPG for it. This is then sent
             // to Rekognition for identification.
             foreach ($faces as $face) {
+
+                if ($face['Confidence'] < $this->config['rekognition']['confidenceAtLeast']) {
+                    Ansi::printf(
+                        "    {{YELLOW}}face detected but confidence is too low {{BLUE:%0.4f}}\n",
+                        $face['Confidence']
+                    );
+                    continue;
+                }
+
+                if ($face['BoundingBox']['Width'] < $this->config['rekognition']['sizeAtLeast']) {
+                    Ansi::printf(
+                        "    {{YELLOW}}face detected but size is too small {{BLUE:%0.2f}}\n",
+                        $face['BoundingBox']['Width']
+                    );
+                    continue;
+                }
+
+                if ($num >= $this->config['rekognition']['maxFaces']) {
+                    Ansi::printf(
+                        "    {{YELLOW}}face count limited to %d\n",
+                        $this->config['rekognition']['maxFaces']
+                    );
+                    break;
+                }
 
                 // This file will contain only the detected face. It will
                 // be a JPG file, but we'll not name it with that extension,
