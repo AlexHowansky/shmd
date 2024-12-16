@@ -3,7 +3,7 @@
     <rule ref="Ork" />
     <rule ref="Generic.Metrics.CyclomaticComplexity">
         <properties>
-            <property name="complexity" value="13"/>
+            <property name="complexity" value="12"/>
         </properties>
     </rule>
     <file>src</file>

@@ -44,6 +44,13 @@ class Rekog
     protected $api = null;
 
     /**
+     * The database handle.
+     *
+     * @var Db
+     */
+    protected Db $db;
+
+    /**
      * Does the collection exist?
      *
      * @return bool True if the collection exists.
@@ -89,6 +96,20 @@ class Rekog
     }
 
     /**
+     * Get a database handle.
+     *
+     * @return Db The database handle.
+     */
+    protected function getDb(): Db
+    {
+        if (isset($this->db) === false) {
+            echo "making database\n";
+            $this->db = new Db($this->config);
+        }
+        return $this->db;
+    }
+
+    /**
      * Identify people in photos in a given directory.
      *
      * Output of the detectFaces() function will be cached in a file
@@ -106,177 +127,171 @@ class Rekog
      */
     public function identify(string $directory): Rekog
     {
-
         if (is_dir($directory) === false) {
             throw new RuntimeException('Unable to open directory.');
         }
-
         if ($this->collectionExists() === false) {
             throw new RuntimeException('Unknown collection.');
         }
-
-        $db = new Db($this->config);
-
-        // Iterate over all the files in the named directory.
         foreach (new DirectoryIterator($directory) as $file) {
-
-            // Skip files that aren't photos.
             if (
-                $file->isDot() === true ||
-                $file->isFile() === false ||
-                $file->getExtension() !== 'jpg'
+                $file->isDot() === false &&
+                $file->isFile() === true &&
+                $file->getExtension() === 'jpg'
             ) {
-                continue;
+                $this->identifyFile($file);
             }
+        }
+        return $this;
+    }
 
-            // We'll save the identified people to this JSON file.
-            $namesJsonFile = $file->getPathname() . self::NAMES_JSON;
-            if (file_exists($namesJsonFile) === true) {
-                Ansi::printf("{{BLUE:%s}} {{YELLOW}}already recognized\n", $file->getFileName());
-                continue;
-            }
+    protected function identifyFile(DirectoryIterator $file): void
+    {
 
-            // We'll save the detected faces information to this file.
-            $facesJsonFile = $file->getPathname() . self::FACES_JSON;
-            if (file_exists($facesJsonFile) === true) {
-                $faces = json_decode(file_get_contents($facesJsonFile), true);
-                Ansi::printf("{{BLUE:%s}} {{YELLOW}}already detected %d faces\n", $file->getFileName(), count($faces));
-            } else {
-                Ansi::printf('{{BLUE:%s}} ', $file->getFileName());
-                $faces = $this->getApi()->detectFaces([
-                    'Attributes' => ['ALL'],
-                    'Image' => [
-                        'Bytes' => file_get_contents($file->getPathname()),
-                    ],
-                ])->get('FaceDetails');
-                file_put_contents($facesJsonFile, json_encode($faces));
-                if (count($faces) > 0) {
-                    Ansi::printf("{{GREEN}}found %d faces\n", count($faces));
-                } else {
-                    Ansi::printf("{{YELLOW}}found no faces\n");
-                }
-            }
-
-            // We use imagecreatefromstring() here so we can support
-            // any file type without knowing what it is ahead of time.
-            $gd = imagecreatefromstring(file_get_contents($file->getPathname()));
-            $width = imagesx($gd);
-            $height = imagesy($gd);
-
-            $num = 0;
-            $names = [];
-
-            // We want to use only the best faces, so we'll sort the largest
-            // first and then abort the loop if we have a limit.
-            usort(
-                $faces,
-                fn(array $a, array $b): int =>
-                    $b['BoundingBox']['Width'] + $b['BoundingBox']['Height'] <=>
-                    $a['BoundingBox']['Width'] + $a['BoundingBox']['Height']
-            );
-
-            // Loop over each face detected in the file and create
-            // a separate mini face JPG for it. This is then sent
-            // to Rekognition for identification.
-            foreach ($faces as $face) {
-
-                if ($face['Confidence'] < $this->config['rekognition']['confidenceAtLeast']) {
-                    Ansi::printf(
-                        "    {{YELLOW}}face detected but confidence is too low {{BLUE:%0.4f}}\n",
-                        $face['Confidence']
-                    );
-                    continue;
-                }
-
-                if ($face['BoundingBox']['Width'] < $this->config['rekognition']['sizeAtLeast']) {
-                    Ansi::printf(
-                        "    {{YELLOW}}face detected but size is too small {{BLUE:%0.2f}}\n",
-                        $face['BoundingBox']['Width']
-                    );
-                    continue;
-                }
-
-                if ($num >= $this->config['rekognition']['maxFaces']) {
-                    Ansi::printf(
-                        "    {{YELLOW}}face count limited to %d\n",
-                        $this->config['rekognition']['maxFaces']
-                    );
-                    break;
-                }
-
-                // This file will contain only the detected face. It will
-                // be a JPG file, but we'll not name it with that extension,
-                // in order to avoid other processing scripts picking it up.
-                $faceFile = sprintf(
-                    '%s/%s_face_%02d',
-                    $file->getPath(),
-                    $file->getBasename('.' . $file->getExtension()),
-                    ++$num
-                );
-
-                // Crop out the detected face and save it.
-                if (file_exists($faceFile) === true) {
-                    Ansi::printf("    {{YELLOW}}already created {{BLUE:%s}}\n", $faceFile);
-                } else {
-                    $cropped = imagecrop(
-                        $gd,
-                        [
-                            'x' => $face['BoundingBox']['Left'] * $width,
-                            'y' => $face['BoundingBox']['Top'] * $height,
-                            'width' => $face['BoundingBox']['Width'] * $width,
-                            'height' => $face['BoundingBox']['Height'] * $height,
-                        ]
-                    );
-                    imagejpeg($cropped, $faceFile);
-                    Ansi::printf("    {{GREEN}}face %d saved to {{BLUE:%s}}\n", $num, $faceFile);
-                }
-
-                // Look for matches for this face.
-                try {
-                    $matches = $this->getApi()->searchFacesByImage([
-                        'CollectionId' => $this->config['aws']['collection'],
-                        'MaxFaces' => 1,
-                        'Image' => [
-                            'Bytes' => file_get_contents($faceFile),
-                        ],
-                    ])->get('FaceMatches');
-                    if (empty($matches) === true) {
-                        Ansi::printf("        {{YELLOW}}face not identified\n");
-                    } else {
-                        $match = array_shift($matches);
-                        $row = $db->findFace($match['Face']['FaceId']);
-                        if (empty($row) === true) {
-                            Ansi::printf("        {{red}}face not in database\n");
-                        } else {
-                            Ansi::printf(
-                                "        {{CYAN:%s}} {{GREEN}}identified as {{WHITE:%s}}\n",
-                                $match['Face']['FaceId'],
-                                $row['name']
-                            );
-                        }
-                        $recognized = [
-                            'face_id' => $match['Face']['FaceId'],
-                            'gallery' => basename(realpath($file->getPath())),
-                            'photo' => $file->getBasename('.jpg'),
-                        ];
-                        $names[] = $recognized;
-                        $db->writePhoto($recognized);
-                    }
-                } catch (RekognitionException $e) {
-                    Ansi::printf(
-                        "        {{red}}face not found: {{white:%s}}\n",
-                        json_decode($e->getResponse()->getBody(), true)['Message']
-                    );
-                }
-
-            }
-
-            // Output the recognition cache so we don't process this file again.
-            file_put_contents($namesJsonFile, json_encode($names));
+        // We'll save the identified people to this JSON file.
+        $namesJsonFile = $file->getPathname() . self::NAMES_JSON;
+        if (file_exists($namesJsonFile) === true) {
+            Ansi::printf("{{BLUE:%s}} {{YELLOW}}already recognized\n", $file->getFileName());
+            return;
         }
 
-        return $this;
+        // We'll save the detected faces information to this file.
+        $facesJsonFile = $file->getPathname() . self::FACES_JSON;
+        if (file_exists($facesJsonFile) === true) {
+            $faces = json_decode(file_get_contents($facesJsonFile), true);
+            Ansi::printf("{{BLUE:%s}} {{YELLOW}}already detected %d faces\n", $file->getFileName(), count($faces));
+        } else {
+            Ansi::printf('{{BLUE:%s}} ', $file->getFileName());
+            $faces = $this->getApi()->detectFaces([
+                'Attributes' => ['ALL'],
+                'Image' => [
+                    'Bytes' => file_get_contents($file->getPathname()),
+                ],
+            ])->get('FaceDetails');
+            file_put_contents($facesJsonFile, json_encode($faces));
+            if (count($faces) > 0) {
+                Ansi::printf("{{GREEN}}found %d faces\n", count($faces));
+            } else {
+                Ansi::printf("{{YELLOW}}found no faces\n");
+            }
+        }
 
+        // We use imagecreatefromstring() here so we can support
+        // any file type without knowing what it is ahead of time.
+        $gd = imagecreatefromstring(file_get_contents($file->getPathname()));
+        $width = imagesx($gd);
+        $height = imagesy($gd);
+
+        $num = 0;
+        $names = [];
+
+        // We want to use only the best faces, so we'll sort the largest
+        // first and then abort the loop if we have a limit.
+        usort(
+            $faces,
+            fn(array $a, array $b): int =>
+                $b['BoundingBox']['Width'] + $b['BoundingBox']['Height'] <=>
+                $a['BoundingBox']['Width'] + $a['BoundingBox']['Height']
+        );
+
+        // Loop over each face detected in the file and create
+        // a separate mini face JPG for it. This is then sent
+        // to Rekognition for identification.
+        foreach ($faces as $face) {
+
+            if ($face['Confidence'] < $this->config['rekognition']['confidenceAtLeast']) {
+                Ansi::printf(
+                    "    {{YELLOW}}face detected but confidence is too low {{BLUE:%0.4f}}\n",
+                    $face['Confidence']
+                );
+                continue;
+            }
+
+            if ($face['BoundingBox']['Width'] < $this->config['rekognition']['sizeAtLeast']) {
+                Ansi::printf(
+                    "    {{YELLOW}}face detected but size is too small {{BLUE:%0.2f}}\n",
+                    $face['BoundingBox']['Width']
+                );
+                continue;
+            }
+
+            if ($num >= $this->config['rekognition']['maxFaces']) {
+                Ansi::printf(
+                    "    {{YELLOW}}face count limited to %d\n",
+                    $this->config['rekognition']['maxFaces']
+                );
+                break;
+            }
+
+            // This file will contain only the detected face. It will
+            // be a JPG file, but we'll not name it with that extension,
+            // in order to avoid other processing scripts picking it up.
+            $faceFile = sprintf(
+                '%s/%s_face_%02d',
+                $file->getPath(),
+                $file->getBasename('.' . $file->getExtension()),
+                ++$num
+            );
+
+            // Crop out the detected face and save it.
+            if (file_exists($faceFile) === true) {
+                Ansi::printf("    {{YELLOW}}already created {{BLUE:%s}}\n", $faceFile);
+            } else {
+                $cropped = imagecrop(
+                    $gd,
+                    [
+                        'x' => $face['BoundingBox']['Left'] * $width,
+                        'y' => $face['BoundingBox']['Top'] * $height,
+                        'width' => $face['BoundingBox']['Width'] * $width,
+                        'height' => $face['BoundingBox']['Height'] * $height,
+                    ]
+                );
+                imagejpeg($cropped, $faceFile);
+                Ansi::printf("    {{GREEN}}face %d saved to {{BLUE:%s}}\n", $num, $faceFile);
+            }
+
+            // Look for matches for this face.
+            try {
+                $matches = $this->getApi()->searchFacesByImage([
+                    'CollectionId' => $this->config['aws']['collection'],
+                    'MaxFaces' => 1,
+                    'Image' => [
+                        'Bytes' => file_get_contents($faceFile),
+                    ],
+                ])->get('FaceMatches');
+                if (empty($matches) === true) {
+                    Ansi::printf("        {{YELLOW}}face not identified\n");
+                } else {
+                    $match = array_shift($matches);
+                    $row = $this->getDb()->findFace($match['Face']['FaceId']);
+                    if (empty($row) === true) {
+                        Ansi::printf("        {{red}}face not in database\n");
+                    } else {
+                        Ansi::printf(
+                            "        {{CYAN:%s}} {{GREEN}}identified as {{WHITE:%s}}\n",
+                            $match['Face']['FaceId'],
+                            $row['name']
+                        );
+                    }
+                    $recognized = [
+                        'face_id' => $match['Face']['FaceId'],
+                        'gallery' => basename(realpath($file->getPath())),
+                        'photo' => $file->getBasename('.jpg'),
+                    ];
+                    $names[] = $recognized;
+                    $this->getDb()->writePhoto($recognized);
+                }
+            } catch (RekognitionException $e) {
+                Ansi::printf(
+                    "        {{red}}face not found: {{white:%s}}\n",
+                    json_decode($e->getResponse()->getBody(), true)['Message']
+                );
+            }
+
+        }
+
+        // Output the recognition cache so we don't process this file again.
+        file_put_contents($namesJsonFile, json_encode($names));
     }
 
     /**
