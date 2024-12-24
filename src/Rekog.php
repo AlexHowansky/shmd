@@ -16,6 +16,7 @@ use Aws\Rekognition\RekognitionClient;
 use DirectoryIterator;
 use Ork\Csv\Reader;
 use RuntimeException;
+use SplFileInfo;
 
 /**
  * AWS Rekognition interface.
@@ -106,7 +107,7 @@ class Rekog
     }
 
     /**
-     * Identify people in photos in a given directory.
+     * Identify people in photos.
      *
      * Output of the detectFaces() function will be cached in a file
      * named <file>.faces.json. Output of the searchFacesByImage()
@@ -115,35 +116,50 @@ class Rekog
      * Names of the people identified in the photo will be written
      * to the "photos" table in the database.
      *
-     * @param string $directory The directory to scan for new photos.
+     * @param string $fileOrDir The file or directory to scan.
      *
      * @return Rekog Allow method chaining.
      *
      * @throws RuntimeException On error.
      */
-    public function identify(string $directory): Rekog
+    public function identify(string $fileOrDir): Rekog
     {
-        if (is_dir($directory) === false) {
-            throw new RuntimeException('Unable to open directory.');
-        }
         if ($this->collectionExists() === false) {
             throw new RuntimeException('Unknown collection.');
         }
-        foreach (new DirectoryIterator($directory) as $file) {
-            if (
-                $file->isDot() === false &&
-                $file->isFile() === true &&
-                $file->getExtension() === 'jpg'
-            ) {
-                $this->identifyFile($file);
-            }
-        }
+        match (true) {
+            is_dir($fileOrDir) === true => $this->identifyDirectory($fileOrDir),
+            is_file($fileOrDir) === true => $this->identifyFile(new SplFileInfo($fileOrDir)),
+            default => throw new RuntimeException('Unable to open file or directory.'),
+        };
         return $this;
     }
 
-    protected function identifyFile(DirectoryIterator $file): void
+    /**
+     * Identify people in all photos in a directory.
+     *
+     * @param string $directory The directory to scan.
+     *
+     * @return void
+     */
+    protected function identifyDirectory(string $directory): void
     {
+        foreach (new DirectoryIterator($directory) as $file) {
+            if ($file->isDot() === false && $file->getExtension() === 'jpg') {
+                $this->identifyFile($file);
+            }
+        }
+    }
 
+    /**
+     * Identify people in a photo.
+     *
+     * @param SplFileInfo $file The file to scan.
+     *
+     * @return void
+     */
+    protected function identifyFile(SplFileInfo $file): void
+    {
         // We'll save the identified people to this JSON file.
         $namesJsonFile = $file->getPathname() . self::NAMES_JSON;
         if (file_exists($namesJsonFile) === true) {
