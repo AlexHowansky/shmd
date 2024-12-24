@@ -17,7 +17,7 @@ namespace Shmd;
 class Ansi
 {
 
-    protected const RESET = "\033[0m";
+    protected const string RESET = "\033[0m";
 
     /**
      * A wrapper for printf() that supports colorizing placeholders.

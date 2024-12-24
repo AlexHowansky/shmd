@@ -25,17 +25,13 @@ class Db
 
     /**
      * Database connector.
-     *
-     * @var PDO
      */
-    protected $db = null;
+    protected ?PDO $db = null;
 
     /**
      * Face count cache.
-     *
-     * @var array
      */
-    protected $faceCount = [];
+    protected array $faceCount = [];
 
     /**
      * Constructor.
@@ -110,9 +106,9 @@ class Db
      * @param string $gallery The gallery the photo is in.
      * @param string $photo   The photo to get the list of people in.
      *
-     * @return array The people in the photo.
+     * @return array|false The people in the photo.
      */
-    public function getPeopleInPhoto(string $gallery, string $photo)
+    public function getPeopleInPhoto(string $gallery, string $photo): array|false
     {
         $stmt = $this->db->prepare(
             'SELECT faces.id, faces.name, faces.class FROM faces

@@ -28,95 +28,75 @@ class App
 
     use ConfigurableTrait;
 
-    protected const DATE_FORMAT = 'M j Y h:i:s a';
+    protected const string DATE_FORMAT = 'M j Y h:i:s a';
 
-    protected const DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
+    protected const string DEFAULT_ARCHIVE_DIR = __DIR__ . '/../orders/archive';
 
-    protected const DEFAULT_ERROR_PAGE = 'error';
+    protected const string DEFAULT_ERROR_PAGE = 'error';
 
-    protected const DEFAULT_ORDER_DIR = __DIR__ . '/../orders';
+    protected const string DEFAULT_ORDER_DIR = __DIR__ . '/../orders';
 
-    protected const DEFAULT_PAGE = 'index';
+    protected const string DEFAULT_PAGE = 'index';
 
-    protected const DEFAULT_PAGE_DIR = __DIR__ . '/../pages';
+    protected const string DEFAULT_PAGE_DIR = __DIR__ . '/../pages';
 
-    protected const DEFAULT_PAGE_WRAPPER = '_page';
+    protected const string DEFAULT_PAGE_WRAPPER = '_page';
 
-    protected const DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
+    protected const string DEFAULT_PHOTO_DIR = __DIR__ . '/../public/photos';
 
-    protected const DEFAULT_STAGING_DIR = __DIR__ . '/../staging';
+    protected const string DEFAULT_STAGING_DIR = __DIR__ . '/../staging';
 
-    protected const SEARCH_LIMIT = 100;
+    protected const int SEARCH_LIMIT = 100;
 
     /**
      * The order archive dir.
-     *
-     * @var string
      */
-    protected $archiveDir = null;
+    protected ?string $archiveDir = null;
 
     /**
      * The database connector.
-     *
-     * @var Db
      */
-    protected $db = null;
+    protected ?Db $db = null;
 
     /**
      * The last error that occurred.
-     *
-     * @var Exception
      */
-    protected $lastError = null;
+    protected ?Exception $lastError = null;
 
     /**
      * The order directory.
-     *
-     * @var string
      */
-    protected $orderDir = null;
+    protected ?string $orderDir = null;
 
     /**
      * The page to render.
-     *
-     * @var string
      */
-    protected $page = null;
+    protected ?string $page = null;
 
     /**
      * The page directory.
-     *
-     * @var string
      */
-    protected $pageDir = null;
+    protected ?string $pageDir = null;
 
     /**
      * The name of the wrapper page.
-     *
-     * @var string
      */
-    protected $pageWrapper = self::DEFAULT_PAGE_WRAPPER;
+    protected string $pageWrapper = self::DEFAULT_PAGE_WRAPPER;
 
     /**
      * Page parameters.
-     *
-     * @var array
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
      * The base photo directory.
-     *
-     * @var string
      */
-    protected $photoDir = null;
+    protected ?string $photoDir = null;
 
     /**
      * The photo staging directory.
-     *
-     * @var string
      */
-    protected $stagingDir = null;
+    protected ?string $stagingDir = null;
 
     /**
      * Constructor.
@@ -176,7 +156,7 @@ class App
      *
      * @return void
      */
-    public function body()
+    public function body(): void
     {
         include $this->getFileForPage($this->getPage());
     }
@@ -347,7 +327,7 @@ class App
      *
      * @throws Exception If the page does not exist.
      */
-    protected function getFileForPage(string $page)
+    protected function getFileForPage(string $page): string
     {
         $file = $this->getPageDir() . '/' . $page . '.php';
         if (file_exists($file) === false) {
@@ -482,7 +462,7 @@ class App
      *
      * @return string The current page.
      */
-    public function getPage()
+    public function getPage(): string
     {
         return $this->page;
     }
@@ -515,7 +495,7 @@ class App
      *
      * @param int $index The index of the parameter to get.
      *
-     * @return string|null The Nth parameter.
+     * @return ?string The Nth parameter.
      */
     public function getParam(int $index = 0): ?string
     {
@@ -540,7 +520,7 @@ class App
      *
      * @return array The people in the photo.
      */
-    public function getPeopleInPhoto(string $gallery, string $photo)
+    public function getPeopleInPhoto(string $gallery, string $photo): array
     {
         return $this->getDb()->getPeopleInPhoto($gallery, $photo);
     }
@@ -567,7 +547,7 @@ class App
      *
      * @throws Exception On error.
      */
-    public function getPriceForSize(string $size)
+    public function getPriceForSize(string $size): float
     {
         if (array_key_exists($size, $this->config['prices']) === false) {
             throw new Exception('Invalid size.');
@@ -637,7 +617,7 @@ class App
      *
      * @return void
      */
-    public function printPhoto(string $gallery, string $photo)
+    public function printPhoto(string $gallery, string $photo): void
     {
         $sourceFile = sprintf('%s/%s/%s.jpg', $this->getStagingDir(), $gallery, $photo);
         $destFile = sprintf('%s/%s.jpg', $this->getHotFolder(), md5((string) microtime(true)));
@@ -759,7 +739,7 @@ class App
      *
      * @return void
      */
-    public function render()
+    public function render(): void
     {
         include $this->getFileForPage($this->getPageWrapper());
     }

@@ -29,29 +29,21 @@ class Gallery implements Countable
 
     /**
      * The app that spawned us.
-     *
-     * @var App
      */
-    protected $app = null;
+    protected ?App $app = null;
 
     /**
      * The gallery base directory.
-     *
-     * @var string
      */
-    protected $dir = null;
+    protected ?string $dir = null;
 
     /**
      * The gallery name.
-     *
-     * @var string
      */
-    protected $name = null;
+    protected ?string $name = null;
 
     /**
      * Cache for the directory iterator.
-     *
-     * @var array
      */
     protected static array $photos = [];
 

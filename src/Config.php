@@ -25,7 +25,7 @@ class Config implements ArrayAccess
      *
      * @var array
      */
-    protected $config = null;
+    protected ?array $config = null;
 
     /**
      * Constructor.

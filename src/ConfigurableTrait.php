@@ -22,7 +22,7 @@ trait ConfigurableTrait
      *
      * @var Config
      */
-    protected $config = null;
+    protected ?Config $config = null;
 
     /**
      * Constructor.
