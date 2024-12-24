@@ -2,8 +2,8 @@
 <?php
 
 /**
- * This script will iterate over photos in the given directory, attempt to
- * identify the people in the photo, and write the results into the database.
+ * This script will attempt to identify the people in a photo or photos and
+ * write the results into the database.
  *
  * @package   SHMD
  * @copyright 2016-2024 Alex Howansky (https://github.com/AlexHowansky)
@@ -15,4 +15,12 @@ ini_set('memory_limit', '2G');
 
 require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
-(new \Shmd\Rekog(new \Shmd\Config(realpath(__DIR__ . '/../config.json'))))->identify($argv[1] ?? '.');
+if ($argc !== 2) {
+    echo "Usage:\n";
+    echo "    $argv[0] <file or dir>\n\n";
+    echo "Where:\n";
+    echo "    <file or dir> A single photo or a directory containing the photos to identify.\n";
+    exit;
+}
+
+(new \Shmd\Rekog(new \Shmd\Config(realpath(__DIR__ . '/../config.json'))))->identify($argv[1]);
