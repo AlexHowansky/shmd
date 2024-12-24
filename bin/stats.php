@@ -46,15 +46,15 @@ foreach ($totals as $size => $count) {
     $num += $count;
     $tot += $config['prices'][$size] * $count;
     printf(
-        "Size: %s\n  Count: %d\n  Total: %s\n\n",
+        "Size: %s\n  Count: %d\n  Total: \$%s\n\n",
         $size,
         $count,
-        money_format('%n', $config['prices'][$size] * $count)
+        number_format($config['prices'][$size] * $count)
     );
 }
 
 printf(
-    "Total:\n  Count: %d\n  Total: %s\n",
+    "Total:\n  Count: %d\n  Total: \$%s\n",
     $num,
-    money_format('%n', $tot)
+    number_format($tot)
 );
