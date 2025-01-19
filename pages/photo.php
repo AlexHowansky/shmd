@@ -1,6 +1,6 @@
 <?php
 $gallery = $this->getGallery($this->getParam(0));
-$photo = urldecode((string) $this->getParam(1));
+$photo = $this->getParam(1);
 $people = $this->getPeopleInPhoto($gallery->getName(), $photo);
 $last = count($this->getSizes()) - 1;
 $menu = [

@@ -1,6 +1,6 @@
 <?php
 $gallery = $this->getParam(0);
-$photo = urldecode((string) $this->getParam(1));
+$photo = $this->getParam(1);
 $this->printPhoto($gallery, $photo);
 if (empty($this->config['hotFolderLog']) === false) {
     $result = file_put_contents(

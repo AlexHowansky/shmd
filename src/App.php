@@ -495,11 +495,11 @@ class App
      *
      * @param int $index The index of the parameter to get.
      *
-     * @return ?string The Nth parameter.
+     * @return string The Nth parameter.
      */
-    public function getParam(int $index = 0): ?string
+    public function getParam(int $index = 0): string
     {
-        return $this->params[$index] ?? null;
+        return urldecode($this->params[$index] ?? '');
     }
 
     /**
@@ -760,7 +760,7 @@ class App
             setcookie('lastSearch', '', ['expires' => 0, 'path' => '/']);
             throw new Exception('Must provide a search term.');
         }
-        $names = $this->getDb()->search(urldecode($text), self::SEARCH_LIMIT);
+        $names = $this->getDb()->search($text, self::SEARCH_LIMIT);
         if (empty($names) === false) {
             foreach ($names as $index => $name) {
                 if ($index >= self::SEARCH_LIMIT) {
