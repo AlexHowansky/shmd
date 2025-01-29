@@ -8,10 +8,22 @@ mount \
     /path/to/local/app/print/ \
 ```
 
-To proxy from a Windows host to a service running in WSL2:
+To proxy from a Windows host to a service running in WSL2, first determine the
+desired distribution:
 
 ```
-wsl hostname -I
+wsl --list --verbose
+```
+
+Then determine the distribution's private IP address for the desired interface:
+
+```
+wsl -d <name of distro> ip -br addr
+```
+
+Then use that IP to create a new proxy:
+
+```
 netsh interface portproxy add v4tov4 listenport=80 listenaddress=0.0.0.0 connectport=80 connectaddress=<ip of wsl>
 ```
 
@@ -24,7 +36,6 @@ netsh interface portproxy show all
 To delete existing proxies:
 
 ```
-netsh interface portproxy delete v4tov4 22 0.0.0.0
 netsh interface portproxy delete v4tov4 80 0.0.0.0
 ```
 
