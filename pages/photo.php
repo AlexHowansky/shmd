@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var \Shmd\App $this
+ */
 $gallery = $this->getGallery($this->getParam(0));
 $photo = $this->getParam(1);
 $people = $this->getPeopleInPhoto($gallery->getName(), $photo);
