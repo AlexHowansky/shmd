@@ -127,6 +127,7 @@ class App
                 $this
                     ->setLastError($e)
                     ->setPage(self::DEFAULT_ERROR_PAGE)
+                    ->setPageWrapper(self::DEFAULT_PAGE_WRAPPER)
                     ->render();
             } catch (Exception $e) {
                 echo $e->getMessage();
