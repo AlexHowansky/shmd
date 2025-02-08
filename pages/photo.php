@@ -12,14 +12,14 @@ $menu = [
 ];
 require_once '_menu.php';
 ?>
-<div class="ui raised container segment">
-    <div class="ui list">
-        <div class="item">
-            <h1 class="ui centered header"><?= htmlspecialchars($photo) ?></h1>
-        </div>
-    </div>
-    <img class="ui big centered rounded bordered image" src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
+
+<div class="ui container" style="position: relative;">
+    <img class="ui rounded image centered" src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
+<?php if ($this->getHotFolder()): ?>
+    <div id="printButton" class="ui huge green button" style="position: absolute; bottom: 0px; right: -5px; z-index: 1;">Print</div>
+<?php endif; ?>
 </div>
+
 <?php if (empty($people) === false): ?>
 <div class="ui raised container segment">
 <?php foreach ($people as $person): ?>
@@ -36,11 +36,11 @@ require_once '_menu.php';
         <input type="hidden" name="photo" value="<?= htmlspecialchars($photo) ?>">
         <div class="fields ui grid">
             <div class="row">
-                <div class="field five wide column">
+                <div class="field seven wide column">
                     <label>Name</label>
                     <input type="text" id="name" name="name" autocomplete="off">
                 </div>
-                <div class="field seven wide column">
+                <div class="field nine wide column">
                     <label>Comments</label>
                     <input type="text" name="comments" autocomplete="off">
                 </div>
@@ -65,7 +65,7 @@ require_once '_menu.php';
         <div class="ui grid">
 <?php foreach ($this->getSizes() as $index => $size): ?>
             <div class="row">
-                <div class="two wide column">
+                <div class="four wide column">
                     <select id="qty_<?= $size ?>" class="ui dropdown" name="qty_<?= $size ?>">
 <?php for ($i = 0; $i <= 10; $i++): ?>
                         <option value="<?= $i ?>"><?= $i ?></option>
@@ -82,17 +82,12 @@ require_once '_menu.php';
                     $<span id="sub_<?= $size ?>">0</span>
                 </div>
 <?php if ($index === $last): ?>
-                <div class="seven wide column right aligned">
+                <div class="nine wide column right aligned">
                     <div id="orderButton" class="ui labeled huge button disabled">
                         <div class="ui huge green submit button">Submit Order</div>
                         <div class="ui basic green label">Total $<span id="total">0</span></div>
                     </div>
                 </div>
-<?php if ($this->getHotFolder()): ?>
-                <div class="four wide column right aligned">
-                    <div id="printButton" class="ui huge green button">Print 4x6</a>
-                </div>
-<?php endif; ?>
 <?php endif; ?>
             </div>
 <?php endforeach; ?>
@@ -121,8 +116,6 @@ require_once '_menu.php';
 </div>
 <script>
 $().ready(function() {
-
-    $('#name').focus();
 
     $('.ui.form').form({
         fields: {

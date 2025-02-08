@@ -5,7 +5,6 @@
  * Fix bin/stats so that it works without needing a price entry for 4x6.
  * In search results for a name, show a list of matching names first.
  * In search results for a name, draw a box around the found face.
- * On the detail page, don't auto-scroll down to the first text box, leave the zoomed photo fully visible. Move the insta-print button up so you don't have to scroll to get to it. Maybe change the layout to left/right instead of over/under.
  * Move the order data into the database.
  * Move the rekog data into the database.
  * Watch staging dir and automatically resize/identify.
