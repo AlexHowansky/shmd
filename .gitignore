@@ -1,7 +1,8 @@
 config.json
-/orders/
+orders/
 phpcs.xml
-/public/photos/
-/rekog/
-/staging/
-/vendor/
+public/photos/
+rekog/
+staging/
+var/
+vendor/
