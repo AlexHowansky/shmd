@@ -21,7 +21,8 @@ require_once '_menu.php';
 </div>
 
 <?php if (empty($people) === false): ?>
-<div class="ui raised container segment">
+<br>
+<div class="ui container">
 <?php foreach ($people as $person): ?>
     <a class="ui big blue label" href="/search/<?= $person['id'] ?>">
         <i class="search plus icon"></i>
