@@ -769,6 +769,7 @@ class App
                 }
                 $names[$index]['gallery'] = new Gallery($this, $name['gallery']);
             }
+            usort($names, fn($a, $b) => strcasecmp((string) $b['photo'], (string) $a['photo']));
             return $names;
         }
         $fileMatches = [];
