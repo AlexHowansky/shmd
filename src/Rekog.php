@@ -232,7 +232,6 @@ class Rekog
                     "    {{YELLOW}}face count limited to %d\n",
                     $this->config['rekognition']['maxFaces']
                 );
-                break;
             }
 
             // This file will contain only the detected face. It will
@@ -335,7 +334,7 @@ class Rekog
         }
 
         $index = new Reader(
-            columnNames: ['u1', 'directory', 'file', 'class', 'last', 'first', 'u2', 'u3', 'u4', 'u5'],
+            columnNames: [null, 'directory', 'file', 'class', 'last', 'first', null, null, null, null],
             delimiterCharacter: "\t",
             file: $indexFile,
             hasHeader: false,
@@ -373,6 +372,7 @@ class Rekog
                 $row['name'],
                 $action
             );
+            break;
         }
 
         return $this;
