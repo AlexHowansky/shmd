@@ -11,4 +11,3 @@
  * & shows as &amp; on receipts.
  * After order submit, if continue button is not pressed in 30 secs, go back to main page.
  * If cart is empty and page is idle for > 1 minute, start slide show.
- * Only accept face matches if confidence is over a certain point, to avoid the Gemma situation.

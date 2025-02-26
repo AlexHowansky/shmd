@@ -232,6 +232,7 @@ class Rekog
                     "    {{YELLOW}}face count limited to %d\n",
                     $this->config['rekognition']['maxFaces']
                 );
+                break;
             }
 
             // This file will contain only the detected face. It will
@@ -372,7 +373,6 @@ class Rekog
                 $row['name'],
                 $action
             );
-            break;
         }
 
         return $this;
