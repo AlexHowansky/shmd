@@ -100,7 +100,6 @@ class Rekog
     protected function getDb(): Db
     {
         if (isset($this->db) === false) {
-            echo "making database\n";
             $this->db = new Db($this->config);
         }
         return $this->db;
