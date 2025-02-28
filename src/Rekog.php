@@ -311,14 +311,15 @@ class Rekog
      * These photos will serve as the baseline for future searches. Results
      * will be saved to the database table "faces".
      *
-     * @param string $indexFile The index file containing the photo metadata.
-     * @param int    $year      The school year represented by the photos.
+     * @param string  $indexFile The index file containing the photo metadata.
+     * @param ?int    $year      The school year represented by the photos.
+     * @param ?string $class     Only process this class.
      *
      * @return Rekog Allow method chaining.
      *
      * @throws RuntimeException On error.
      */
-    public function index(string $indexFile, ?int $year = null): Rekog
+    public function index(string $indexFile, ?int $year = null, ?string $class = null): Rekog
     {
 
         if (file_exists($indexFile) === false) {
@@ -350,6 +351,9 @@ class Rekog
             $file = realpath($dir . '/' . $row['directory'] . '/' . $row['file']);
             if (file_exists($file) === false) {
                 throw new RuntimeException('Missing photo file: ' . $file);
+            }
+            if ($class !== null && $row['class'] !== $class) {
+                continue;
             }
             $externalId = str_replace(' ', '_', $year . ':' . $row['directory'] . ':' . $row['file']);
             $face = $this->indexFace($file, $externalId);

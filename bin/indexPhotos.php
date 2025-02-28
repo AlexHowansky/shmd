@@ -17,13 +17,14 @@ $index = $argv[1] ?? './Index.txt';
 
 if (file_exists($index) === false) {
     echo "Usage:\n";
-    echo "    $argv[0] <index file> [<year>]\n\n";
+    echo "    $argv[0] <index file> [<year>] [<class>]\n\n";
     echo "Where:\n";
     echo "    <index file> The CSV file containing the photo metadata.\n";
     echo "    <year>       The school year represented by the photos.\n";
+    echo "    <class>      Only process this class.\n";
     exit;
 }
 
 require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
-(new \Shmd\Rekog(new \Shmd\Config(realpath(__DIR__ . '/../config.json'))))->index($index, $argv[2] ?? null);
+(new \Shmd\Rekog(new \Shmd\Config(realpath(__DIR__ . '/../config.json')))) ->index($index, $argv[2] ?? null, $argv[3] ?? null);
