@@ -3,9 +3,13 @@
 # This script will traverse all image files in the staging directory, rename
 # extensions to lowercase, and then drop appropriately resized copies into the
 # public directory. It will also create resized copies in the rekog directory,
-# which are required because the Rekognition API caps image size at 5Mb.
+# which are required because the Rekognition API caps image size at 5Mb. We
+# generally don't even need photos that large however, as the recognition
+# still works fine with pretty low resolution.
 #
 # This script can be run at any time, it will process only new photos.
+
+SIZE=1000000
 
 if [ ! -x "$(type -p rename)" ]
 then
@@ -90,14 +94,14 @@ do
         then
             echo -n "    ${PHOTO}"
             cp "${FILE}" "${REKOG_DIR}/${GALLERY}/${PHOTO}"
-            while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt 5000000 ]
+            while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt "${SIZE}" ]
             do
                 echo -n " ."
                 if [ ${IMGP} -eq 1 ]
                 then
-                    imgp --res 80 --overwrite --mute "${REKOG_DIR}/${GALLERY}/${PHOTO}"
+                    imgp --res 50 --overwrite --mute "${REKOG_DIR}/${GALLERY}/${PHOTO}"
                 else
-                    mogrify -resize 80x80% "${REKOG_DIR}/${GALLERY}/${PHOTO}"
+                    mogrify -resize 50x50% "${REKOG_DIR}/${GALLERY}/${PHOTO}"
                 fi
             done
             echo " resized for Rekognition API"
