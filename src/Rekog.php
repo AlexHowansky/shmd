@@ -355,7 +355,7 @@ class Rekog
             if ($class !== null && $row['class'] !== $class) {
                 continue;
             }
-            $externalId = str_replace(' ', '_', $year . ':' . $row['directory'] . ':' . $row['file']);
+            $externalId = str_replace([' ', ','], ['_'], $year . ':' . $row['directory'] . ':' . $row['file']);
             $face = $this->indexFace($file, $externalId);
             $row = [
                 'id' => $face['Face']['FaceId'],
