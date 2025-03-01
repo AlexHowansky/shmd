@@ -28,6 +28,9 @@
             .ui.grid>.row {
                 padding: 0.25rem;
             }
+            a.ui.big.blue.label {
+                margin-bottom: 0.5em;
+            }
         </style>
     </head>
     <body>
