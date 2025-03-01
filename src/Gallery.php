@@ -168,7 +168,7 @@ class Gallery implements Countable
                     self::$photos[$this->getName()][] = $item->getBasename('.jpg');
                 }
             }
-            asort(self::$photos[$this->getName()]);
+            asort(self::$photos[$this->getName()], SORT_NATURAL);
         }
         return self::$photos[$this->getName()];
     }
