@@ -31,6 +31,7 @@ require_once '_menu.php';
 <?php endforeach; ?>
 </div>
 <?php endif; ?>
+<?php if ($this->config['showOrderPanel'] === true): ?>
 <div class="ui raised container segment">
     <form class="ui form" method="post" action="/order">
         <input type="hidden" name="gallery" value="<?= $gallery->getName() ?>">
@@ -95,6 +96,7 @@ require_once '_menu.php';
         </div>
     </form>
 </div>
+<?php endif; ?>
 <div id="printModal" class="ui mini modal">
     <div class="header">
         <div class="ui centered header">

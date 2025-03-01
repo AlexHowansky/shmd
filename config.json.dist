@@ -28,6 +28,7 @@
             "direction": "ascending"
         }
     },
+    "showOrderPanel": false,
     "rekognition": {
         "confidenceAtLeast": 99.9,
         "maxFaces": 20,
