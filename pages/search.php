@@ -34,7 +34,7 @@ require_once '_menu.php';
 foreach ($results as $match) {
     $gallery = $match['gallery'];
     $photo = $match['photo'];
-    $name = $match['name'];
+    $name = $match['name'] ?? null;
     require '_card.php';
 }
 ?>
