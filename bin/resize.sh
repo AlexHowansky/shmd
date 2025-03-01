@@ -9,7 +9,8 @@
 #
 # This script can be run at any time, it will process only new photos.
 
-SIZE=1000000
+REKOG_SIZE=1000000
+PUBLIC_SIZE=1000x1000
 
 if [ ! -x "$(type -p rename)" ]
 then
@@ -83,9 +84,9 @@ do
             if [ ${IMGP} -eq 1 ]
             then
                 cp "${FILE}" "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
-                imgp --res 600x600 --overwrite --mute "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
+                imgp --res "${PUBLIC_SIZE}" --overwrite --mute "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
             else
-                convert -resize 600x600 "${FILE}" "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
+                convert -resize "${PUBLIC_SIZE}" "${FILE}" "${PHOTO_DIR}/${GALLERY}/${PHOTO}"
             fi
             echo "resized for public"
         fi
@@ -94,7 +95,7 @@ do
         then
             echo -n "    ${PHOTO}"
             cp "${FILE}" "${REKOG_DIR}/${GALLERY}/${PHOTO}"
-            while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt "${SIZE}" ]
+            while [ $(stat --printf="%s" "${REKOG_DIR}/${GALLERY}/${PHOTO}") -gt "${REKOG_SIZE}" ]
             do
                 echo -n " ."
                 if [ ${IMGP} -eq 1 ]
