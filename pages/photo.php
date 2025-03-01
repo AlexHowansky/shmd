@@ -16,7 +16,7 @@ require_once '_menu.php';
 <div class="ui container" style="position: relative;">
     <img class="ui rounded image centered" src="<?= $gallery->getRelativePath() ?>/<?= $photo ?>.jpg">
 <?php if ($this->getHotFolder()): ?>
-    <div id="printButton" class="ui huge green button" style="position: absolute; bottom: 0px; right: 58px; z-index: 1;">Print</div>
+    <div id="printButton" class="ui huge green button" style="position: absolute; bottom: 0px; right: 59px; z-index: 1;">Print</div>
 <?php endif; ?>
 </div>
 
