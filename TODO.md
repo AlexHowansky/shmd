@@ -1,3 +1,4 @@
+ * Maybe add "print all" on search results page.
  * Add "print now" button on the cards on the gallery page.
  * Allow parents to opt-in to SMS/email notification of new photos of their children.
  * Parallelize resizing.

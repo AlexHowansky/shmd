@@ -52,7 +52,6 @@ class Config implements ArrayAccess
      *
      * @return bool True if the offset exists.
      */
-    // @codingStandardsIgnoreLine
     public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->config);
@@ -67,7 +66,6 @@ class Config implements ArrayAccess
      *
      * @throws RuntimeException On error.
      */
-    // @codingStandardsIgnoreLine
     public function offsetGet(mixed $offset): mixed
     {
         if ($this->offsetExists($offset) === false) {
@@ -84,7 +82,6 @@ class Config implements ArrayAccess
      *
      * @return void
      */
-    // @codingStandardsIgnoreLine
     public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->config[$offset] = $value;
@@ -97,7 +94,6 @@ class Config implements ArrayAccess
      *
      * @return void
      */
-    // @codingStandardsIgnoreLine
     public function offsetUnset(mixed $offset): void
     {
         unset($this->config[$offset]);
