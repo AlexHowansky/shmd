@@ -188,7 +188,7 @@ class Db
             $stmt = $this->db->prepare($sql);
             return $stmt->execute($row);
         } catch (PDOException $e) {
-            if (isset($stmt) && $stmt->errorCode() === '23000') {
+            if (isset($stmt) === true && $stmt->errorCode() === '23000') {
                 return false;
             }
             throw $e;
