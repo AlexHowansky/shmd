@@ -35,6 +35,7 @@ foreach ($results as $match) {
     $gallery = $match['gallery'];
     $photo = $match['photo'];
     $name = $match['name'] ?? null;
+    $id = $match['id'] ?? null;
     require '_card.php';
 }
 ?>
