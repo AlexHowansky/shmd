@@ -25,7 +25,7 @@ require_once '_menu.php';
 <div class="ui container">
 <?php foreach ($people as $person): ?>
     <a class="ui big blue label" href="/search/<?= $person['id'] ?>">
-        <i class="search plus icon"></i>
+        <i class="search icon"></i>
         <?= $person['name'] ?>
     </a>
 <?php endforeach; ?>

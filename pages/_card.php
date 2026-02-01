@@ -14,7 +14,7 @@
 <?php if ($name ?? null): ?>
 <?php if ($id ?? null): ?>
             <a class="ui big blue label" href="/search/<?= $id ?>">
-                <i class="search plus icon"></i>
+                <i class="search icon"></i>
                 <?= htmlspecialchars((string) $name) ?>
             </a>
 <?php else: ?>
