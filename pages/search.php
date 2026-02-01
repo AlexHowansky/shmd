@@ -8,16 +8,6 @@ if (empty($results)) {
         setcookie('lastSearch', (string) $this->getParam(), ['expires' => 0, 'path' => '/']);
         $_COOKIE['lastSearch'] = $this->getParam();
     }
-    if (count($results) === 1) {
-        header(
-            'Location: ' .
-            sprintf(
-                '/photo/%s/%s',
-                $results[0]['gallery']->getName(),
-                urlencode((string) $results[0]['photo'])
-            )
-        );
-    }
 }
 $menu = ['/' => 'Home'];
 require_once '_menu.php';
