@@ -18,15 +18,15 @@
         "ext-imagick": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.369.24",
+        "aws/aws-sdk-php": "^3.371.3",
         "bacon/bacon-qr-code": "^3.0.3",
         "mike42/escpos-php": "^4.0",
         "ork/csv": "^2.3.0"
     },
     "require-dev": {
         "ork/phpcs": "^3.0.0",
-        "phpstan/phpstan": "^2.1.38",
-        "rector/rector": "^2.3.5"
+        "phpstan/phpstan": "^2.1.40",
+        "rector/rector": "^2.3.8"
     },
     "autoload": {
         "psr-4": {
