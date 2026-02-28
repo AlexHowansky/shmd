@@ -27,4 +27,4 @@ if (file_exists($index) === false) {
 
 require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
-(new \Shmd\Rekog(new \Shmd\Config(realpath(__DIR__ . '/../config.json')))) ->index($index, $argv[2] ?? null, $argv[3] ?? null);
+(new \Shmd\Rekog(new \Shmd\Config(realpath(__DIR__ . '/../config.json'))))->index($index, $argv[2] ?? null, $argv[3] ?? null);

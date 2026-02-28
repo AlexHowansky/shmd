@@ -14,4 +14,4 @@ then
     exit
 fi
 
-aws --output json rekognition list-faces  --collection-id ${1}
+aws --output json rekognition list-faces --collection-id ${1}
