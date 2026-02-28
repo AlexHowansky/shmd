@@ -349,11 +349,11 @@ class Rekog
             // Support reading either the subdir index or the master index.
             $dir = preg_replace('|/' . $row['directory'] . '$|', '', dirname($indexFile));
             $file = realpath($dir . '/' . $row['directory'] . '/' . $row['file']);
-            if (file_exists($file) === false) {
-                throw new RuntimeException('Missing photo file: ' . $file);
-            }
             if ($class !== null && $row['class'] !== $class) {
                 continue;
+            }
+            if (file_exists($file) === false) {
+                throw new RuntimeException('Missing photo file: ' . $file);
             }
             $externalId = str_replace([' ', ','], ['_'], $year . ':' . $row['directory'] . ':' . $row['file']);
             $face = $this->indexFace($file, $externalId);
