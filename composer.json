@@ -13,25 +13,32 @@
     ],
     "require": {
         "php": "^8.4",
+        "ext-ctype": "*",
         "ext-gd": "*",
         "ext-intl": "*",
         "ext-imagick": "*",
         "ext-mbstring": "*",
         "ext-pdo_sqlite": "*",
-        "aws/aws-sdk-php": "^3.371.3",
-        "bacon/bacon-qr-code": "^3.0.3",
+        "aws/aws-sdk-php": "^3.390.5",
+        "bacon/bacon-qr-code": "^3.1.1",
         "mike42/escpos-php": "^4.0",
         "ork/csv": "^2.3.0"
     },
     "require-dev": {
-        "ork/phpcs": "^3.0.0",
-        "phpstan/phpstan": "^2.1.40",
-        "rector/rector": "^2.3.8"
+        "ork/phpcs": "^3.0.2",
+        "phpstan/phpstan": "^2.2.8",
+        "rector/rector": "^2.6.1"
     },
     "autoload": {
         "psr-4": {
             "Shmd\\": "src/"
         }
+    },
+    "replace": {
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-mbstring": "*",
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php82": "*"
     },
     "scripts": {
         "go": [
